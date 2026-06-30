@@ -1,122 +1,87 @@
-@extends('layouts.app')
-
-@section('title', 'Ubah Pengguna')
-
-@section('content')
-    <div class="space-y-6 animate-fade-in max-w-2xl mx-auto">
-        <div>
-            <a href="{{ route('users.index') }}"
-                class="inline-flex items-center gap-2 text-black font-extrabold mb-4 text-sm hover:underline">
-                <i class="fa-solid fa-arrow-left"></i>
-                Kembali ke Daftar
-            </a>
-            <h2 class="page-title">Ubah Akun Pengguna</h2>
-            <p class="page-desc">Perbarui data akun pengguna.</p>
-        </div>
-
-        @if ($errors->any())
-            <div class="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
-                <ul class="list-disc pl-4 space-y-1 font-semibold">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+<div class="modal fade" id="form_edit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Data Pengguna</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        @endif
-
-        <div class="card p-6">
-            <form action="{{ route('users.update', $user->id_user) }}" method="POST" class="space-y-6">
+            <form id="form_edit_users" action="" method="POST">
                 @csrf
                 @method('PUT')
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" name="username" id="username" value="{{ old('username', $user->username) }}"
-                            required class="form-input">
+                <div class="modal-body">
+                    <div class="fv-row mb-6">
+                        <label for="edit_username" class="form-label required fw-bolder text-dark">Username</label>
+                        <input type="text" name="username" id="edit_username" required
+                            class="form-control form-control-sm">
                     </div>
 
-                    <div>
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" id="nama_lengkap"
-                            value="{{ old('nama_lengkap', $user->nama_lengkap) }}" required 
-                            class="form-input">
-                    </div>
-                </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="edit_nama_lengkap" class="form-label required fw-bolder text-dark">Nama Lengkap</label>
+                            <input type="text" name="nama_lengkap" id="edit_nama_lengkap" required 
+                                class="form-control form-control-sm">
+                        </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="role" class="form-label">Peran (Role)</label>
-                        <select name="role" id="role" required class="form-select">
-                            <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="bak_fakultas" {{ old('role', $user->role) === 'bak_fakultas' ? 'selected' : '' }}>BAK Fakultas</option>
-                        </select>
+                        <div class="fv-row">
+                            <label for="edit_email" class="form-label fw-bolder text-dark">Email</label>
+                            <input type="email" name="email" id="edit_email" class="form-control form-control-sm">
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}"
-                            class="form-input">
-                    </div>
-                </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="edit_role" class="form-label required fw-bolder text-dark">Peran (Role)</label>
+                            <select name="role" id="edit_role" required class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Role">
+                                <option value="admin">Admin</option>
+                                <option value="bak_fakultas">BAK Fakultas</option>
+                            </select>
+                        </div>
 
-                <div id="fakultas-container" class="hidden">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <label for="id_fakultas" class="form-label">Hubungkan Fakultas</label>
-                            <select name="id_fakultas" id="id_fakultas" class="form-select">
+                        <div class="fv-row" id="edit_fakultas-container">
+                            <label for="edit_id_fakultas" class="form-label fw-bolder text-dark">Hubungkan Fakultas</label>
+                            <select name="id_fakultas" id="edit_id_fakultas" class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Fakultas">
                                 <option value="">-- Pilih Fakultas --</option>
                                 @foreach ($fakultas as $f)
-                                    <option value="{{ $f->id_fakultas }}"
-                                        {{ old('id_fakultas', $selectedFakultasId) == $f->id_fakultas ? 'selected' : '' }}>
+                                    <option value="{{ $f->id_fakultas }}">
                                         {{ $f->nama_fakultas }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="password" class="form-label">Password (Kosongkan jika tidak diubah)</label>
-                        <input type="password" name="password" id="password" class="form-input"
-                            placeholder="Minimal 6 karakter">
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="edit_password" class="form-label fw-bolder text-dark">Password (Kosongkan jika tidak diubah)</label>
+                            <input type="password" name="password" id="edit_password" class="form-control form-control-sm"
+                                placeholder="Minimal 6 karakter">
+                        </div>
+
+                        <div class="fv-row">
+                            <label class="form-label required fw-bolder text-dark">Status Akun</label>
+                            <div class="d-flex align-items-center mt-3">
+                                <div class="form-check form-check-custom form-check-sm me-5">
+                                    <input class="form-check-input" type="radio" value="1" name="aktif" id="edit_aktif_1" required />
+                                    <label class="form-check-label" for="edit_aktif_1">Aktif</label>
+                                </div>
+                                <div class="form-check form-check-custom form-check-sm">
+                                    <input class="form-check-input" type="radio" value="0" name="aktif" id="edit_aktif_0" required />
+                                    <label class="form-check-label" for="edit_aktif_0">Nonaktif</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div>
-                        <label for="aktif" class="form-label">Status Akun</label>
-                        <select name="aktif" id="aktif" required class="form-select">
-                            <option value="1" {{ old('aktif', $user->aktif) == 1 ? 'selected' : '' }}>Aktif</option>
-                            <option value="0" {{ old('aktif', $user->aktif) == 0 ? 'selected' : '' }}>Nonaktif
-                            </option>
-                        </select>
-                    </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary w-full py-3 text-sm">
-                    Simpan Perubahan
-                </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" data-kt-contacts-type="submit" class="btn btn-sm btn-primary">
+                        <span class="indicator-label">Update</span>
+                        <span class="indicator-progress" style="display: none;">
+                            Tunggu sebentar...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
-@endsection
-
-@push('scripts')
-<script>
-$(document).ready(function() {
-    function toggleFields() {
-        var role = $('#role').val();
-        if (role === 'bak_fakultas') {
-            $('#fakultas-container').removeClass('hidden');
-            $('#id_fakultas').prop('required', true);
-        } else {
-            $('#fakultas-container').addClass('hidden');
-            $('#id_fakultas').prop('required', false).val('');
-        }
-    }
-
-    $('#role').on('change', toggleFields);
-    toggleFields();
-});
-</script>
-@endpush
+</div>

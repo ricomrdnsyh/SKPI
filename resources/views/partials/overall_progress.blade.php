@@ -5,7 +5,7 @@
         <i class="fa-solid fa-route"></i>
         <h3 class="text-sm font-bold text-gray-900">Progress Penerbitan SKPI</h3>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-6 mb-6">
         @foreach($steps as $stepNum => $step)
             @php
                 $isDone = $step['status'] === 'sudah';

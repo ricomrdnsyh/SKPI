@@ -1,103 +1,117 @@
-@extends('layouts.app')
-
-@section('title', 'Ubah Program Studi')
-
-@section('content')
-<div class="space-y-6 animate-fade-in max-w-2xl mx-auto">
-    <div>
-        <a href="{{ route('prodi.index') }}" class="inline-flex items-center gap-2 text-black font-extrabold mb-4 text-sm hover:underline">
-            <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar
-        </a>
-        <h2 class="page-title">Ubah Program Studi</h2>
-    </div>
-
-    <div class="card p-6">
-        <form action="{{ route('prodi.update', $prodi->id_prodi) }}" method="POST" class="space-y-6">
-            @csrf
-            @method('PUT')
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                    <label for="id_fakultas" class="form-label">Fakultas</label>
-                    <select name="id_fakultas" id="id_fakultas" required class="form-select">
-                        @foreach($fakultas as $f)
-                            <option value="{{ $f->id_fakultas }}" {{ $prodi->id_fakultas == $f->id_fakultas ? 'selected' : '' }}>{{ $f->nama_fakultas }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label for="nama_prodi" class="form-label">Nama Program Studi</label>
-                    <input type="text" name="nama_prodi" id="nama_prodi" value="{{ $prodi->nama_prodi }}" required class="form-input">
-                </div>
+<div class="modal fade" id="form_edit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Data Program Studi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form id="form_edit_prodi" action="" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="fv-row mb-5">
+                        <label for="edit_id_fakultas" class="form-label required fw-bolder text-dark fs-6">Fakultas</label>
+                        <select name="id_fakultas" id="edit_id_fakultas" required class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Fakultas">
+                            <option value="">-- Pilih Fakultas --</option>
+                            @foreach($fakultas as $f)
+                                <option value="{{ $f->id_fakultas }}">{{ $f->nama_fakultas }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div>
-                    <label for="kode_prodi" class="form-label">Kode Prodi</label>
-                    <input type="text" name="kode_prodi" id="kode_prodi" value="{{ $prodi->kode_prodi }}" class="form-input">
-                </div>
-                <div>
-                    <label for="jenjang" class="form-label">Jenjang</label>
-                    <select name="jenjang" id="jenjang" required class="form-select">
-                        <option value="S1" {{ $prodi->jenjang === 'S1' ? 'selected' : '' }}>S1</option>
-                        <option value="D3" {{ $prodi->jenjang === 'D3' ? 'selected' : '' }}>D3</option>
-                        <option value="S2" {{ $prodi->jenjang === 'S2' ? 'selected' : '' }}>S2</option>
-                        <option value="S3" {{ $prodi->jenjang === 'S3' ? 'selected' : '' }}>S3</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="gelar" class="form-label">Gelar</label>
-                    <input type="text" name="gelar" id="gelar" value="{{ $prodi->gelar }}" class="form-input">
-                </div>
-            </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
+                        <div class="fv-row">
+                            <label for="edit_nama_prodi" class="form-label required fw-bolder text-dark fs-6">Nama Program Studi</label>
+                            <input type="text" name="nama_prodi" id="edit_nama_prodi" required class="form-control form-control-sm">
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_kode_prodi" class="form-label fw-bolder text-dark fs-6">Kode Prodi</label>
+                            <input type="text" name="kode_prodi" id="edit_kode_prodi" class="form-control form-control-sm">
+                        </div>
+                    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div>
-                    <label for="sk_akreditasi" class="form-label">SK Akreditasi</label>
-                    <input type="text" name="sk_akreditasi" id="sk_akreditasi" value="{{ $prodi->sk_akreditasi }}" class="form-input">
-                </div>
-                <div>
-                    <label for="tanggal_sk_akreditasi" class="form-label">Tanggal SK</label>
-                    <input type="date" name="tanggal_sk_akreditasi" id="tanggal_sk_akreditasi" value="{{ $prodi->tanggal_sk_akreditasi }}" class="form-input">
-                </div>
-                <div>
-                    <label for="masa_berlaku_akreditasi" class="form-label">Masa Berlaku Akreditasi</label>
-                    <input type="date" name="masa_berlaku_akreditasi" id="masa_berlaku_akreditasi" value="{{ $prodi->masa_berlaku_akreditasi }}" class="form-input">
-                </div>
-            </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
+                        <div class="fv-row">
+                            <label for="edit_jenjang" class="form-label required fw-bolder text-dark fs-6">Jenjang</label>
+                            <select name="jenjang" id="edit_jenjang" required class="form-select form-select-sm" data-control="select2" data-hide-search="true">
+                                <option value="S1">S1</option>
+                                <option value="D3">D3</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                            </select>
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_gelar" class="form-label fw-bolder text-dark fs-6">Gelar</label>
+                            <input type="text" name="gelar" id="edit_gelar" class="form-control form-control-sm">
+                        </div>
+                    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                    <label for="jenjang_kkni" class="form-label">Jenjang KKNI</label>
-                    <input type="text" name="jenjang_kkni" id="jenjang_kkni" value="{{ $prodi->jenjang_kkni }}" class="form-input">
-                </div>
-                <div>
-                    <label for="bahasa_pengantar" class="form-label">Bahasa Pengantar</label>
-                    <input type="text" name="bahasa_pengantar" id="bahasa_pengantar" value="{{ $prodi->bahasa_pengantar }}" class="form-input">
-                </div>
-            </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
+                        <div class="fv-row">
+                            <label for="edit_sk_akreditasi" class="form-label fw-bolder text-dark fs-6">SK Akreditasi</label>
+                            <input type="text" name="sk_akreditasi" id="edit_sk_akreditasi" class="form-control form-control-sm">
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_tanggal_sk_akreditasi" class="form-label fw-bolder text-dark fs-6">Tanggal SK</label>
+                            <div class="position-relative d-flex align-items-center">
+                                <i class="fas fa-calendar-alt position-absolute ms-3"></i>
+                                <input type="text" name="tanggal_sk_akreditasi" id="edit_tanggal_sk_akreditasi" class="form-control form-control-sm ps-10">
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <div>
-                    <label for="lama_studi" class="form-label">Lama Studi</label>
-                    <input type="text" name="lama_studi" id="lama_studi" value="{{ $prodi->lama_studi }}" class="form-input">
-                </div>
-                <div>
-                    <label for="jenis_pendidikan" class="form-label">Jenis Pendidikan</label>
-                    <input type="text" name="jenis_pendidikan" id="jenis_pendidikan" value="{{ $prodi->jenis_pendidikan }}" class="form-input">
-                </div>
-                <div>
-                    <label for="jenis_pendidikan_lanjutan" class="form-label">Pendidikan Lanjutan</label>
-                    <input type="text" name="jenis_pendidikan_lanjutan" id="jenis_pendidikan_lanjutan" value="{{ $prodi->jenis_pendidikan_lanjutan }}" class="form-input">
-                </div>
-            </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
+                        <div class="fv-row">
+                            <label for="edit_masa_berlaku_akreditasi" class="form-label fw-bolder text-dark fs-6">Masa Berlaku Akreditasi</label>
+                            <div class="position-relative d-flex align-items-center">
+                                <i class="fas fa-calendar-alt position-absolute ms-3"></i>
+                                <input type="text" name="masa_berlaku_akreditasi" id="edit_masa_berlaku_akreditasi" class="form-control form-control-sm ps-10">
+                            </div>
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_jenjang_kkni" class="form-label fw-bolder text-dark fs-6">Jenjang KKNI</label>
+                            <input type="text" name="jenjang_kkni" id="edit_jenjang_kkni" class="form-control form-control-sm">
+                        </div>
+                    </div>
 
-            <div>
-                <label for="persyaratan_penerimaan" class="form-label">Persyaratan Penerimaan</label>
-                <textarea name="persyaratan_penerimaan" id="persyaratan_penerimaan" rows="2" class="form-input">{{ $prodi->persyaratan_penerimaan }}</textarea>
-            </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
+                        <div class="fv-row">
+                            <label for="edit_bahasa_pengantar" class="form-label fw-bolder text-dark fs-6">Bahasa Pengantar</label>
+                            <input type="text" name="bahasa_pengantar" id="edit_bahasa_pengantar" class="form-control form-control-sm">
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_lama_studi" class="form-label fw-bolder text-dark fs-6">Lama Studi</label>
+                            <input type="text" name="lama_studi" id="edit_lama_studi" class="form-control form-control-sm">
+                        </div>
+                    </div>
 
-            <button type="submit" class="btn btn-primary w-full py-3 text-sm">Simpan Perubahan</button>
-        </form>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
+                        <div class="fv-row">
+                            <label for="edit_jenis_pendidikan" class="form-label fw-bolder text-dark fs-6">Jenis Pendidikan</label>
+                            <input type="text" name="jenis_pendidikan" id="edit_jenis_pendidikan" class="form-control form-control-sm">
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_jenis_pendidikan_lanjutan" class="form-label fw-bolder text-dark fs-6">Pendidikan Lanjutan</label>
+                            <input type="text" name="jenis_pendidikan_lanjutan" id="edit_jenis_pendidikan_lanjutan" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class="fv-row mb-5">
+                        <label for="edit_persyaratan_penerimaan" class="form-label fw-bolder text-dark fs-6">Persyaratan Penerimaan</label>
+                        <textarea name="persyaratan_penerimaan" id="edit_persyaratan_penerimaan" rows="2" class="form-control form-control-sm"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" data-kt-contacts-type="submit" class="btn btn-sm btn-primary">
+                        <span class="indicator-label">Update</span>
+                        <span class="indicator-progress" style="display: none;">
+                            Tunggu sebentar...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-@endsection

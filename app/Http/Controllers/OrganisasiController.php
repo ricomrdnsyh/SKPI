@@ -141,22 +141,9 @@ class OrganisasiController extends Controller
         return DataTables::of($query)
             ->addColumn('bukti', fn($row) => DataTableHelper::buktiLink($row->file_bukti))
             ->addColumn('status', fn($row) => DataTableHelper::statusBadgeWithReason($row->status, $row->keterangan, ['pending' => 'warning', 'approved' => 'success', 'rejected' => 'danger']))
-            ->addColumn('action', function ($row) use ($pengajuan) {
-                $isRejected = $row->status === 'rejected';
-                $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
-                $isApproved = $row->status === 'approved';
-                $readonly = $isLocked || $isApproved;
-
-                if ($readonly) {
-                    return DataTableHelper::actionButtons([
-                        ['type' => 'detail', 'url' => route('mahasiswa.organisasi.edit', $row->id_organisasi_mhs)],
-                    ]);
-                } else {
-                    return DataTableHelper::actionButtons([
-                        ['type' => 'edit', 'url' => route('mahasiswa.organisasi.edit', $row->id_organisasi_mhs)],
-                        ['type' => 'delete', 'url' => route('mahasiswa.organisasi.destroy', $row->id_organisasi_mhs)],
-                    ]);
-                }
+            ->addColumn('action', function ($row) {
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_organisasi . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action', 'bukti', 'status'])
             ->make(true);

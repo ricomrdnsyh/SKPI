@@ -1,91 +1,173 @@
-@extends('layouts.app')
+@extends('layout.main')
+@section('title', 'Program Studi')
+@section('css')
+    <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/buttons.dataTables.min.css') }}">
+    <style>
+        .table-row-dashed tr {
+            border-bottom: 1px dashed #cccccc !important;
+        }
 
-@section('title', 'Master Program Studi')
+        .dataTable thead tr th {
+            vertical-align: middle;
+            border-bottom: 1px dashed #cccccc !important;
+        }
+
+        .dataTable th,
+        .dataTable td {
+            vertical-align: middle !important;
+        }
+
+        .dataTable td.dt-control:before,
+        .dataTable th.dt-control:before {
+            display: none !important;
+            content: "" !important;
+        }
+
+        table.dataTable td.dt-control,
+        table.dataTable th.dt-control {
+            position: relative !important;
+            width: 28px !important;
+            min-width: 28px !important;
+            padding: 0 !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+
+        table.dataTable.collapsed tbody tr:not(.child) td.dt-control:before,
+        table.dataTable.collapsed tbody tr:not(.child) th.dt-control:before {
+            display: inline-flex !important;
+            content: "+" !important;
+            position: absolute !important;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, calc(-50% + 7px)) !important;
+            width: 18px !important;
+            height: 18px !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 999px !important;
+            color: #fff !important;
+            font-weight: 900 !important;
+            font-size: 13px !important;
+            line-height: 1 !important;
+            background: #0d6efd !important;
+            box-shadow: 0 0 0 2px #ffffff, 0 2px 6px rgba(0, 0, 0, .18) !important;
+        }
+
+        table.dataTable.collapsed tbody tr.parent:not(.child) td.dt-control:before,
+        table.dataTable.collapsed tbody tr.parent:not(.child) th.dt-control:before {
+            content: "-" !important;
+            background: #dc3545 !important;
+        }
+
+        table.dataTable.dtr-inline.collapsed>tbody>tr>td.child,
+        table.dataTable.dtr-inline.collapsed>tbody>tr>th.child,
+        table.dataTable.dtr-inline.collapsed>tbody>tr>td.dataTables_empty {
+            cursor: default !important;
+        }
+
+        table.dataTable.dtr-inline.collapsed>tbody>tr>td.child:before,
+        table.dataTable.dtr-inline.collapsed>tbody>tr>th.child:before,
+        table.dataTable.dtr-inline.collapsed>tbody>tr>td.dataTables_empty:before {
+            display: none !important;
+        }
+
+        table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control,
+        table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+        }
+
+        .dt-buttons .btn-export-primary,
+        .dt-buttons .btn-export-primary:focus,
+        .dt-buttons .btn-export-primary:hover,
+        .dt-buttons .btn-export-primary:active {
+            background: #004289 !important;
+            border-color: #004289 !important;
+            color: #fff !important;
+        }
+
+        .dt-buttons .btn-export-primary:focus {
+            box-shadow: none !important;
+        }
+
+        .dt-buttons .btn-export-primary i {
+            color: #fff !important;
+        }
+    </style>
+@endsection
 
 @section('content')
-    <div class="space-y-6 animate-fade-in">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="page-title">Program Studi</h2>
-                <p class="page-desc">Kelola data program studi, akreditasi, dan jenjang KKNI.</p>
-            </div>
-            @if(Auth::user()->role === 'admin')
-            <a href="{{ route('prodi.create') }}" class="btn btn-primary btn-sm">
-                <i class="fa-solid fa-plus"></i> Tambah Prodi
-            </a>
-            @endif
-        </div>
+    <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+        <div class="d-flex flex-column flex-column-fluid">
+            <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
+                <div id="kt_app_content_container" class="app-container container-fluid">
+                    <div class="card shadow-sm border border-dashed border-dark rounded">
+                        <div class="card-header border-0 pt-6">
+                            <div class="card-title">
+                                <div class="d-flex align-items-center position-relative my-1">
+                                    <h3 class="card-title align-items-start flex-column"><span
+                                            class="card-label fw-bolder fs-3 mb-1">List Program Studi</span></h3>
+                                </div>
+                            </div>
+                            <div class="card-toolbar">
+                                <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah Program
+                                        Studi</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="separator my-5"></div>
+                        <div class="card-body pt-0">
+                            <table class="table align-middle table-row-dashed fs-6 gy-5" id="table-prodi">
+                                <thead class="">
+                                    <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                                        <th class="text-center p-0" style="width:28px; min-width:28px;"></th>
+                                        <th class="text-center">Actions</th>
+                                        <th class="min-w-125px">Program Studi</th>
+                                        <th class="min-w-125px">Kode Prodi</th>
+                                        <th class="min-w-125px">Jenjang / Gelar</th>
+                                        <th class="min-w-125px">Akreditasi (SK)</th>
+                                        <th class="min-w-125px">Fakultas</th>
+                                        <th class="min-w-125px">Status</th>
 
-        <div class="filter-bar">
-            <div class="filter-label">
-                <i class="fa-solid fa-filter"></i>
-                <span>Filter</span>
-            </div>
-            <select id="filter-fakultas" class="filter-select">
-                <option value="">Semua Fakultas</option>
-                @foreach ($fakultasOptions as $opt)
-                    <option value="{{ $opt }}">{{ $opt }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="card overflow-hidden">
-            <div class="table-wrapper">
-                <table id="table-prodi" class="display w-full text-sm">
-                    <thead>
-                        <tr>
-                            <th class="th">Program Studi</th>
-                            <th class="th">Jenjang / Gelar</th>
-                            <th class="th">Akreditasi (SK)</th>
-                            <th class="th">Fakultas</th>
-                            <th class="th">Aksi</th>
-                        </tr>
-                    </thead>
-                </table>
+                                    </tr>
+                                </thead>
+                                <tbody class="fw-bold text-gray-800">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    @include('admin.prodi.create')
+    @include('admin.prodi.edit')
+    @include('admin.prodi.show')
 @endsection
+@section('js')
+    <script src="{{ asset('assets/plugins/custom/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/lodash.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/dataTables.colReorder.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/dataTables.buttons.min.js') }}"></script>
 
-@push('scripts')
-    <script>
-        $(document).ready(function() {
-            var table = $('#table-prodi').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: '{{ route('prodi.datatable') }}',
-                    data: function(d) {
-                        d.id_fakultas = $('#filter-fakultas').val();
-                    }
-                },
-                language: {
-                    url: '/i18n/id.json'
-                },
-                pageLength: 10,
-                order: [],
-                columns: [{
-                        data: 'prodi'
-                    },
-                    {
-                        data: 'jenjang'
-                    },
-                    {
-                        data: 'akreditasi'
-                    },
-                    {
-                        data: 'fakultas'
-                    },
-                    {
-                        data: 'action',
-                        orderable: false,
-                        searchable: false
-                    }
-                ]
-            });
-            $('#filter-fakultas').on('change', function() {
-                table.draw();
-            });
-        });
-    </script>
-@endpush
+    <script src="{{ asset('assets/plugins/custom/datatables/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/jszip.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/buttons.colVis.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/print.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.js') }}"></script>
+
+    @include('admin.prodi.script.index')
+
+    @include('admin.prodi.script.create')
+    @include('admin.prodi.script.edit')
+    @include('admin.prodi.script.show')
+@endsection

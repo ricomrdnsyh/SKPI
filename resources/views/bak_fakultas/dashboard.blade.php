@@ -1,123 +1,128 @@
-@extends('layouts.app')
+@extends('layout.main')
 
 @section('title', 'Dashboard BAAK Fakultas')
 
 @section('content')
-    <div class="space-y-6">
-        {{-- Welcome Banner --}}
-        <div class="card overflow-hidden animate-fade-in">
-            <div class="relative px-6 py-6 bg-linear-to-br from-unuja-800 via-unuja-700 to-unuja-900">
-                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 0%, transparent 40%);"></div>
-                <div class="relative">
-                    <h2 class="text-xl font-black text-white tracking-tight">Dashboard BAAK Fakultas</h2>
-                    <p class="text-sm text-white/50 mt-1">Kelola antrian verifikasi dan alur penerbitan SKPI.</p>
-                </div>
-            </div>
-        </div>
-
-        {{-- Stats --}}
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 stagger-children">
-            @php
-                $statCards = [
-                    ['label' => 'Perlu Verifikasi', 'value' => $stats['pending'], 'gradient' => 'from-amber-400 to-orange-500', 'icon' => 'fa-hourglass-half'],
-                    ['label' => 'Sedang Diproses', 'value' => $stats['verifikasi'], 'gradient' => 'from-blue-400 to-indigo-500', 'icon' => 'fa-spinner'],
-                    ['label' => 'Permohonan Cetak', 'value' => $stats['permohonan_cetak_count'], 'gradient' => 'from-emerald-400 to-green-500', 'icon' => 'fa-print'],
-                    ['label' => 'Sudah Tercetak', 'value' => $stats['completed'], 'gradient' => 'from-green-400 to-emerald-600', 'icon' => 'fa-circle-check'],
-                    ['label' => 'Total Verifikasi', 'value' => $stats['sudah_verifikasi'], 'gradient' => 'from-slate-400 to-gray-500', 'icon' => 'fa-chart-bar'],
-                ];
-            @endphp
-            @foreach($statCards as $sc)
-            <div class="stat-card animate-fade-in relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-20 h-20 rounded-full bg-linear-to-br {{ $sc['gradient'] }} opacity-[0.06] -translate-y-4 translate-x-4 group-hover:scale-150 transition-transform duration-500"></div>
-                <div class="relative flex items-start justify-between">
-                    <div>
-                        <p class="stat-label">{{ $sc['label'] }}</p>
-                        <p class="stat-value">{{ $sc['value'] }}</p>
-                    </div>
-                    <div class="w-9 h-9 flex items-center justify-center text-white text-xs shrink-0 rounded-xl shadow-lg bg-linear-to-br {{ $sc['gradient'] }}">
-                        <i class="fa-solid {{ $sc['icon'] }}"></i>
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <div class="d-flex flex-column flex-column-fluid">
+        <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
+            <div id="kt_app_content_container" class="app-container container-fluid">
+                
+                {{-- Welcome Banner --}}
+                <div class="card border-transparent shadow-sm mb-5" style="background: linear-gradient(112.14deg, #10B981 0%, #059669 100%);">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
+                            <div class="d-flex flex-column">
+                                <h2 class="text-white fw-bold fs-2 mb-2">Dashboard BAAK Fakultas</h2>
+                                <div class="text-white opacity-75 fs-6 fw-semibold">Kelola antrian verifikasi dan alur penerbitan SKPI.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            @endforeach
-        </div>
 
-        {{-- Tabs --}}
-        <div class="tab-bar">
-            <button type="button"
-                class="tab-btn active"
-                data-tab="belum">
-                <i class="fa-solid fa-hourglass-half"></i>
-                Belum Verifikasi
-                <span class="px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-800 rounded-full ml-1"
-                    id="count-belum">{{ $stats['pending'] }}</span>
-            </button>
-            <button type="button"
-                class="tab-btn"
-                data-tab="permohonan_cetak">
-                <i class="fa-solid fa-print"></i>
-                Permohonan Cetak
-                <span class="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 text-emerald-800 rounded-full ml-1"
-                    id="count-permohonan-cetak">{{ $stats['permohonan_cetak_count'] }}</span>
-            </button>
-            <button type="button"
-                class="tab-btn"
-                data-tab="sudah">
-                <i class="fa-solid fa-circle-check"></i>
-                Sudah Verifikasi
-                <span class="px-2 py-0.5 text-[10px] font-bold bg-gray-200 text-gray-600 rounded-full ml-1"
-                    id="count-sudah">{{ $stats['sudah_verifikasi'] }}</span>
-            </button>
-        </div>
+                {{-- Stats Grid --}}
+                <div class="row g-5 g-xl-8 mb-8">
+                    @php
+                        $statCards = [
+                            ['label' => 'Perlu Verifikasi', 'value' => $stats['pending'], 'color' => 'warning', 'icon' => 'ki-time'],
+                            ['label' => 'Sedang Diproses', 'value' => $stats['verifikasi'], 'color' => 'info', 'icon' => 'ki-arrows-circle'],
+                            ['label' => 'Permohonan Cetak', 'value' => $stats['permohonan_cetak_count'], 'color' => 'primary', 'icon' => 'ki-printer'],
+                            ['label' => 'Sudah Tercetak', 'value' => $stats['completed'], 'color' => 'success', 'icon' => 'ki-check-circle'],
+                            ['label' => 'Total Verifikasi', 'value' => $stats['sudah_verifikasi'], 'color' => 'dark', 'icon' => 'ki-chart-bar'],
+                        ];
+                    @endphp
+                    @foreach($statCards as $sc)
+                    <div class="col">
+                        <div class="card bg-{{ $sc['color'] }} hoverable card-xl-stretch mb-xl-8">
+                            <div class="card-body">
+                                <i class="ki-duotone {{ $sc['icon'] }} text-white fs-2x ms-n1"><span class="path1"></span><span class="path2"></span></i>
+                                <div class="text-white fw-bold fs-2 mb-2 mt-5">{{ $sc['value'] }}</div>
+                                <div class="fw-semibold text-white">{{ $sc['label'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
 
-        {{-- Filters --}}
-        <div class="filter-bar">
-            <div class="filter-label">
-                <i class="fa-solid fa-filter"></i>
-                <span>Filter</span>
-            </div>
-            <select id="filter-prodi" class="filter-select">
-                <option value="">Semua Prodi</option>
-                @foreach ($prodis as $prodi)
-                    <option value="{{ $prodi }}">{{ $prodi }}</option>
-                @endforeach
-            </select>
-            <select id="filter-status" class="filter-select" style="display: none;">
-                <option value="">Semua Status</option>
-                @foreach ($statuses as $status)
-                    @if ($status !== 'diajukan')
-                        <option value="{{ $status }}">{{ ucwords(str_replace('_', ' ', $status)) }}</option>
-                    @endif
-                @endforeach
-            </select>
-        </div>
+                {{-- Card for Tabs and Table --}}
+                <div class="card shadow-sm border border-dashed border-dark rounded">
+                    <div class="card-header border-0 pt-6">
+                        <div class="card-title">
+                            <div class="d-flex align-items-center position-relative my-1">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bolder fs-3 mb-1">Antrian Pengajuan SKPI</span>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="card-toolbar">
+                            <div class="d-flex justify-content-end gap-3" data-kt-customer-table-toolbar="base">
+                                <select id="filter-prodi" class="form-select form-select-solid form-select form-select-solid-sm form-select form-select-solid-solid w-150px">
+                                    <option value="">Semua Prodi</option>
+                                    @foreach ($prodis as $prodi)
+                                        <option value="{{ $prodi }}">{{ $prodi }}</option>
+                                    @endforeach
+                                </select>
+                                <select id="filter-status" class="form-select form-select-solid form-select form-select-solid-sm form-select form-select-solid-solid w-150px" style="display: none;">
+                                    <option value="">Semua Status</option>
+                                    @foreach ($statuses as $status)
+                                        @if ($status !== 'diajukan')
+                                            <option value="{{ $status }}">{{ ucwords(str_replace('_', ' ', $status)) }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body pt-0">
+                        <ul class="nav nav-tabs nav-line-tabs mb-5 fs-6">
+                            <li class="nav-item">
+                                <a class="nav-link active tab-btn" data-bs-toggle="tab" href="#" data-tab="belum">
+                                    <i class="ki-duotone ki-time fs-2 me-2"><span class="path1"></span><span class="path2"></span></i> Belum Verifikasi
+                                    <span class="badge badge-light-warning ms-2" id="count-belum">{{ $stats['pending'] }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link tab-btn" data-bs-toggle="tab" href="#" data-tab="permohonan_cetak">
+                                    <i class="ki-duotone ki-printer fs-2 me-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i> Permohonan Cetak
+                                    <span class="badge badge-light-primary ms-2" id="count-permohonan-cetak">{{ $stats['permohonan_cetak_count'] }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link tab-btn" data-bs-toggle="tab" href="#" data-tab="sudah">
+                                    <i class="ki-duotone ki-check-circle fs-2 me-2"><span class="path1"></span><span class="path2"></span></i> Sudah Verifikasi
+                                    <span class="badge badge-light-success ms-2" id="count-sudah">{{ $stats['sudah_verifikasi'] }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    
+                        <table id="table-bak-fakultas" class="table align-middle table-row-dashed fs-6 gy-5">
+                            <thead>
+                                <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                                    <th class="min-w-150px">Mahasiswa</th>
+                                    <th class="min-w-150px">Prodi</th>
+                                    <th class="min-w-100px">Tanggal</th>
+                                    <th class="min-w-100px">Verifikasi</th>
+                                    <th class="min-w-100px">Progress</th>
+                                    <th class="min-w-100px">Status</th>
+                                    <th class="text-center min-w-100px">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fw-bold text-gray-800">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-        {{-- Table --}}
-        <div class="card overflow-hidden animate-fade-in" style="animation-delay: 0.15s">
-            <div class="card-header bg-linear-to-r from-unuja-50/80 to-transparent">
-                <i class="fa-solid fa-rotate-left text-unuja-600"></i>
-                <h3 class="font-bold text-gray-900 text-sm">Antrian Pengajuan SKPI</h3>
-            </div>
-            <div class="table-wrapper">
-                <table id="table-bak-fakultas" class="display w-full">
-                    <thead>
-                        <tr>
-                            <th class="th">Mahasiswa</th>
-                            <th class="th">Prodi</th>
-                            <th class="th">Tanggal</th>
-                            <th class="th">Verifikasi</th>
-                            <th class="th">Progress</th>
-                            <th class="th">Status</th>
-                            <th class="th text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                </table>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
-@push('scripts')
+@section('js')
+    <script src="{{ asset('assets/plugins/custom/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             var activeTab = 'belum';
@@ -145,7 +150,7 @@
                     { data: 'verifikasi' },
                     { data: 'progress' },
                     { data: 'status' },
-                    { data: 'aksi', orderable: false, searchable: false }
+                    { data: 'aksi', orderable: false, searchable: false, className: 'text-center' }
                 ]
             });
 
@@ -153,7 +158,8 @@
                 table.draw();
             });
 
-            $('.tab-btn').on('click', function() {
+            $('.tab-btn').on('click', function(e) {
+                e.preventDefault();
                 $('.tab-btn').removeClass('active');
                 $(this).addClass('active');
                 activeTab = $(this).data('tab');
@@ -171,4 +177,4 @@
             });
         });
     </script>
-@endpush
+@endsection

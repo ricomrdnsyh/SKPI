@@ -1,117 +1,91 @@
-@extends('layouts.app')
-
-@section('title', 'Tambah Pengguna')
-
-@section('content')
-    <div class="space-y-6 animate-fade-in max-w-2xl mx-auto">
-        <div>
-            <a href="{{ route('users.index') }}"
-                class="inline-flex items-center gap-2 text-black font-extrabold mb-4 text-sm hover:underline">
-                <i class="fa-solid fa-arrow-left"></i>
-                Kembali ke Daftar
-            </a>
-            <h2 class="page-title">Tambah Akun Pengguna</h2>
-            <p class="page-desc">Daftarkan akun pengguna baru ke dalam sistem.</p>
-        </div>
-
-        @if ($errors->any())
-            <div class="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm">
-                <ul class="list-disc pl-4 space-y-1 font-semibold">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+<div class="modal fade" id="form_create" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Data Pengguna</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        @endif
-
-        <div class="card p-6">
-            <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
+            <form id="form_create_users" action="{{ route('users.store') }}" method="POST">
                 @csrf
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" name="username" id="username" value="{{ old('username') }}" required
-                            class="form-input">
+                <div class="modal-body">
+                    <div class="fv-row mb-6">
+                        <label for="username" class="form-label required fw-bolder text-dark">Username</label>
+                        <input type="text" name="username" id="username" required
+                            class="form-control form-control-sm">
                     </div>
 
-                    <div>
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" id="nama_lengkap" value="{{ old('nama_lengkap') }}"
-                            required class="form-input">
-                    </div>
-                </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="nama_lengkap" class="form-label required fw-bolder text-dark">Nama Lengkap</label>
+                            <input type="text" name="nama_lengkap" id="nama_lengkap" required
+                                class="form-control form-control-sm">
+                        </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="role" class="form-label">Peran (Role)</label>
-                        <select name="role" id="role" required class="form-select">
-                            <option value="admin">Admin</option>
-                            <option value="bak_fakultas">BAK Fakultas</option>
-                        </select>
+                        <div class="fv-row">
+                            <label for="email" class="form-label fw-bolder text-dark">Email</label>
+                            <input type="email" name="email" id="email" class="form-control form-control-sm">
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" name="email" id="email" value="{{ old('email') }}" class="form-input">
-                    </div>
-                </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="role" class="form-label required fw-bolder text-dark">Role</label>
+                            <select name="role" id="role" required class="form-select form-select-sm"
+                                data-control="select2" data-allow-clear="true" data-placeholder="Pilih Role">
+                                <option value="">-- Pilih Role --</option>
+                                <option value="admin">Admin</option>
+                                <option value="bak_fakultas">BAK Fakultas</option>
+                            </select>
+                        </div>
 
-                <div id="fakultas-container" class="hidden">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                            <label for="id_fakultas" class="form-label">Hubungkan Fakultas</label>
-                            <select name="id_fakultas" id="id_fakultas" class="form-select">
+                        <div class="fv-row" id="fakultas-container">
+                            <label for="id_fakultas" class="form-label fw-bolder text-dark">Hubungkan Fakultas</label>
+                            <select name="id_fakultas" id="id_fakultas" class="form-select form-select-sm"
+                                data-control="select2" data-allow-clear="true" data-placeholder="Pilih Fakultas">
                                 <option value="">-- Pilih Fakultas --</option>
                                 @foreach ($fakultas as $f)
-                                    <option value="{{ $f->id_fakultas }}" {{ old('id_fakultas') == $f->id_fakultas ? 'selected' : '' }}>
+                                    <option value="{{ $f->id_fakultas }}">
                                         {{ $f->nama_fakultas }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" id="password" required class="form-input"
-                            placeholder="Minimal 6 karakter">
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="password" class="form-label required fw-bolder text-dark">Password</label>
+                            <input type="password" name="password" id="password" required
+                                class="form-control form-control-sm" placeholder="Minimal 6 karakter">
+                        </div>
+
+                        <div class="fv-row">
+                            <label class="form-label required fw-bolder text-dark">Status Akun</label>
+                            <div class="d-flex align-items-center mt-3">
+                                <div class="form-check form-check-custom form-check-sm me-5">
+                                    <input class="form-check-input" type="radio" value="1" name="aktif"
+                                        id="aktif_1" required checked />
+                                    <label class="form-check-label" for="aktif_1">Aktif</label>
+                                </div>
+                                <div class="form-check form-check-custom form-check-sm">
+                                    <input class="form-check-input" type="radio" value="0" name="aktif"
+                                        id="aktif_0" required />
+                                    <label class="form-check-label" for="aktif_0">Nonaktif</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div>
-                        <label for="aktif" class="form-label">Status Akun</label>
-                        <select name="aktif" id="aktif" required class="form-select">
-                            <option value="1">Aktif</option>
-                            <option value="0">Nonaktif</option>
-                        </select>
-                    </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary w-full py-3 text-sm">
-                    Simpan User
-                </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" data-kt-contacts-type="submit" class="btn btn-sm btn-primary">
+                        <span class="indicator-label">Simpan</span>
+                        <span class="indicator-progress" style="display: none;">
+                            Tunggu sebentar...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
-@endsection
-
-@push('scripts')
-<script>
-$(document).ready(function() {
-    function toggleFields() {
-        var role = $('#role').val();
-        if (role === 'bak_fakultas') {
-            $('#fakultas-container').removeClass('hidden');
-            $('#id_fakultas').prop('required', true);
-        } else {
-            $('#fakultas-container').addClass('hidden');
-            $('#id_fakultas').prop('required', false).val('');
-        }
-    }
-
-    $('#role').on('change', toggleFields);
-    toggleFields();
-});
-</script>
-@endpush
+</div>

@@ -65,6 +65,9 @@ class SistemPenilaianController extends Controller
         if (!$row) abort(404);
         $penilaian = SistemPenilaian::hydrate([(array) $row])->first();
         $penilaian->delete();
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Sistem penilaian berhasil dihapus.']);
+        }
         return redirect()->route('penilaian.index')->with('success', 'Sistem penilaian berhasil dihapus.');
     }
 
@@ -74,14 +77,8 @@ class SistemPenilaianController extends Controller
 
         return DataTables::of($query)
             ->addColumn('action', function ($row) {
-                $editRoute = route('penilaian.edit', $row->id_penilaian);
-                $deleteRoute = route('penilaian.destroy', $row->id_penilaian);
-                return '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>'
-                    . '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin?\')">'
-                    . csrf_field() . method_field('DELETE')
-                    . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                    . '</form></div>';
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_penilaian . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action'])
             ->make(true);

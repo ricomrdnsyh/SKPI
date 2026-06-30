@@ -1,15 +1,20 @@
-@extends('layouts.app')
+@extends('layout.main')
 
 @section('title', $readonly ? 'Detail Tugas Akhir' : 'Ubah Tugas Akhir')
 
 @section('content')
-    <div class="space-y-6 animate-fade-in max-w-2xl mx-auto">
+<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+    <div class="d-flex flex-column flex-column-fluid">
+        <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
+            <div id="kt_app_content_container" class="app-container container-fluid">
+
+    <div class="mx-auto" style="max-width: 800px;">
         <div>
             <a href="{{ route('mahasiswa.dashboard') }}"
-                class="inline-flex items-center gap-2 text-black font-extrabold mb-4 text-sm hover:underline">
+                class="btn btn-sm btn-light btn-active-light-primary mb-4">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
             </a>
-            <h2 class="page-title">{{ $readonly ? 'Detail Tugas Akhir / Skripsi' : 'Ubah Data Tugas Akhir / Skripsi' }}</h2>
+            <h2 class="fw-bolder fs-2 mb-5">{{ $readonly ? 'Detail Tugas Akhir / Skripsi' : 'Ubah Data Tugas Akhir / Skripsi' }}</h2>
             <p class="page-desc">{{ $readonly ? 'Informasi detail data Tugas Akhir.' : 'Masukkan judul skripsi dan nama dosen pembimbing Anda secara lengkap.' }}</p>
         </div>
 
@@ -47,18 +52,18 @@
         @include('partials.overall_progress', ['steps' => $overallSteps])
 
         <div class="card p-6 md:p-8">
-            <form action="{{ route('mahasiswa.tugas_akhir.update') }}" method="POST" class="space-y-6">
+            <form action="{{ route('mahasiswa.tugas_akhir.update') }}" method="POST" class="form mb-6">
                 @csrf
 
                 <div>
-                    <label for="judul" class="form-label">Judul Tugas Akhir / Skripsi</label>
-                    <textarea name="judul" id="judul" rows="4" required class="form-input"
+                    <label for="judul" class="form-label fw-bold fw-bold">Judul Tugas Akhir / Skripsi</label>
+                    <textarea name="judul" id="judul" rows="4" required class="form-control form-control-solid"
                         placeholder="Masukkan judul tugas akhir Anda dengan huruf kapital di awal kata..." {{ $readonly ? 'disabled' : '' }}>{{ old('judul', $mahasiswa->tugasAkhir->judul ?? '') }}</textarea>
                 </div>
 
-                <div class="space-y-4">
-                    <label class="form-label">Dosen Pembimbing</label>
-                    <div id="pembimbing-container" class="space-y-3">
+                <div class="form mb-4">
+                    <label class="form-label fw-bold fw-bold">Dosen Pembimbing</label>
+                    <div id="pembimbing-container" class="form mb-6">
                         @php
                             $pembimbingNames = [];
                             if ($mahasiswa->tugasAkhir) {
@@ -77,7 +82,7 @@
                             <div class="flex items-center gap-3 pembimbing-row animate-fade-in">
                                 <span class="text-xs font-bold text-gray-400 w-8 shrink-0 font-mono">#{{ $index + 1 }}</span>
                                 <div class="flex-1">
-                                    <input type="text" name="pembimbing[]" class="form-input select-pembimbing"
+                                    <input type="text" name="pembimbing[]" class="form-control form-control-solid select-pembimbing"
                                         value="{{ old("pembimbing.{$index}", $currentName) }}"
                                         placeholder="Nama Dosen Pembimbing..."
                                         {{ $index === 0 ? 'required' : '' }} {{ $readonly ? 'disabled' : '' }}>
@@ -103,14 +108,18 @@
                 </div>
 
                 @if(!$readonly)
-                    <button type="submit" class="btn btn-primary w-full font-bold py-3.5">Simpan Perubahan</button>
+                    <button type="submit" class="btn btn-primary w-100 font-bold py-3.5">Simpan Perubahan</button>
                 @endif
             </form>
         </div>
     </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
-@push('scripts')
+@section('js')
 @if(!$readonly)
 <script>
     document.getElementById('btn-add-pembimbing').addEventListener('click', function() {
@@ -124,7 +133,7 @@
         newRow.innerHTML = `
             <span class="text-xs font-bold text-gray-400 w-8 shrink-0 font-mono">#${nextIndex}</span>
             <div class="flex-1">
-                <input type="text" name="pembimbing[]" class="form-input select-pembimbing" placeholder="Nama Dosen Pembimbing...">
+                <input type="text" name="pembimbing[]" class="form-control form-control-solid select-pembimbing" placeholder="Nama Dosen Pembimbing...">
             </div>
             <button type="button" class="btn btn-sm btn-danger btn-remove-pembimbing shrink-0" onclick="this.closest('.pembimbing-row').remove(); renumberPembimbing();">
                 <i class="fa-solid fa-trash"></i>
@@ -169,4 +178,4 @@
     }
 </script>
 @endif
-@endpush
+@endsection

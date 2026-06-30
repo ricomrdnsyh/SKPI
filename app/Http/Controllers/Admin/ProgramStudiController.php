@@ -34,7 +34,9 @@ class ProgramStudiController extends Controller
         }
         $fakultasOptions = $fakultasQuery->pluck('nama_fakultas')->sort()->values();
 
-        return view('admin.prodi.index', compact('jenjangOptions', 'fakultasOptions'));
+        $fakultas = DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get();
+
+        return view('admin.prodi.index', compact('jenjangOptions', 'fakultasOptions', 'fakultas'));
     }
 
     public function create()
@@ -71,7 +73,9 @@ class ProgramStudiController extends Controller
             'email_prodi' => 'nullable|email|max:100',
         ]);
 
-        ProgramStudi::create($request->all());
+        $data = $request->all();
+        $data['id_prodi'] = (string) \Illuminate\Support\Str::uuid();
+        ProgramStudi::create($data);
 
         Cache::forget('master:program_studi');
         Cache::forget('master:prodi_options');
@@ -141,6 +145,9 @@ class ProgramStudiController extends Controller
         $prodi->delete();
         Cache::forget('master:program_studi');
         Cache::forget('master:prodi_options');
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data program studi berhasil dihapus.']);
+        }
         return redirect()->route('prodi.index')->with('success', 'Data program studi berhasil dihapus.');
     }
 
@@ -164,23 +171,12 @@ class ProgramStudiController extends Controller
             ->addColumn('jenjang', fn($p) => $p->jenjang . ($p->gelar ? ' - ' . $p->gelar : ''))
             ->addColumn('akreditasi', fn($p) => ($p->sk_akreditasi ?? '-') . ($p->masa_berlaku_akreditasi ? ' s.d ' . Carbon::parse($p->masa_berlaku_akreditasi)->isoFormat('D MMM YYYY') : ''))
             ->addColumn('fakultas', fn($p) => $p->fakultas_nama ?? '-')
+            ->addColumn('status', fn($p) => '<span class="badge ' . ($p->status === 'aktif' || $p->status === 'active' ? 'badge-success' : 'badge-danger') . '">' . ucfirst($p->status === 'active' ? 'Aktif' : $p->status) . '</span>')
             ->addColumn('action', function ($row) {
-                $editRoute = route('prodi.edit', $row->id_prodi);
-                $deleteRoute = route('prodi.destroy', $row->id_prodi);
-                $html = '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>';
-                
-                if (Auth::user()->role === 'admin') {
-                    $html .= '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin?\')">'
-                        . csrf_field() . method_field('DELETE')
-                        . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                        . '</form>';
-                }
-                
-                $html .= '</div>';
-                return $html;
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_prodi . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'status'])
             ->make(true);
     }
 }

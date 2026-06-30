@@ -22,7 +22,24 @@ class MahasiswaCrudController extends Controller
         $allowedFakultas = $this->getAllowedFakultasIds();
         $fakultasList = $allowedFakultas === null ? DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get() : DB::table('fakultas')->whereIn('id_fakultas', $allowedFakultas)->get();
 
-        return view('admin.mahasiswa.index', compact('fakultasList', 'prodiList'));
+        if ($allowedProdis === null) {
+            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
+            $kurikulums = DB::table('kurikulum')
+                ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
+                ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
+                ->orderBy('tahun', 'desc')
+                ->get();
+        } else {
+            $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
+            $kurikulums = DB::table('kurikulum')
+                ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
+                ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
+                ->whereIn('kurikulum.id_prodi', $allowedProdis)
+                ->orderBy('tahun', 'desc')
+                ->get();
+        }
+
+        return view('admin.mahasiswa.index', compact('fakultasList', 'prodiList', 'prodi', 'kurikulums'));
     }
 
     public function create()
@@ -163,6 +180,9 @@ class MahasiswaCrudController extends Controller
         }
 
         $mahasiswa->delete();
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data mahasiswa berhasil dihapus.']);
+        }
         return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil dihapus.');
     }
 
@@ -188,16 +208,10 @@ class MahasiswaCrudController extends Controller
 
         return DataTables::of($query)
             ->addColumn('prodi', fn($m) => $m->prodi_nama ?? '-')
-            ->addColumn('status', fn($m) => '<span class="badge badge-emerald">' . ($m->status ?? 'Aktif') . '</span>')
+            ->addColumn('status', fn($m) => '<span class="badge badge-success">' . ($m->status ?? 'Aktif') . '</span>')
             ->addColumn('action', function ($row) {
-                $editRoute = route('mahasiswa.edit', $row->id_mahasiswa);
-                $deleteRoute = route('mahasiswa.destroy', $row->id_mahasiswa);
-                return '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>'
-                    . '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin?\')">'
-                    . csrf_field() . method_field('DELETE')
-                    . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                    . '</form></div>';
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_mahasiswa . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action', 'status'])
             ->make(true);

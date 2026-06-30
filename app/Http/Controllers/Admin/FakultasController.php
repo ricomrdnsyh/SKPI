@@ -34,17 +34,38 @@ class FakultasController extends Controller
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Akses ditolak.');
         }
-        $request->validate([
+
+        $messages = [
+            'nama_fakultas.required' => 'Nama fakultas wajib diisi.',
+            'kode_fakultas.max' => 'Kode fakultas maksimal 10 karakter.',
+            'no_telepon.max' => 'Nomor telepon maksimal 15 karakter.',
+            'status.required' => 'Status wajib dipilih.',
+            'status.in' => 'Status tidak valid.'
+        ];
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'nama_fakultas' => 'required|string|max:255',
             'kode_fakultas' => 'nullable|string|max:10',
             'dekan' => 'nullable|string|max:100',
             'nidn_dekan' => 'nullable|string|max:50',
-        ]);
+            'no_telepon' => 'nullable|string|max:15',
+            'status' => 'required|in:aktif,nonaktif',
+        ], $messages);
 
-        $data = $request->only(['nama_fakultas', 'kode_fakultas', 'dekan', 'nidn_dekan']);
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $data = $request->only(['nama_fakultas', 'kode_fakultas', 'dekan', 'nidn_dekan', 'no_telepon', 'status']);
         Fakultas::create($data);
 
         Cache::forget('master:fakultas');
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data fakultas berhasil ditambahkan.']);
+        }
         return redirect()->route('fakultas.index')->with('success', 'Data fakultas berhasil ditambahkan.');
     }
 
@@ -72,23 +93,46 @@ class FakultasController extends Controller
         if (!$row) abort(404);
         $fakultas = Fakultas::hydrate([(array) $row])->first();
 
-        $request->validate([
+        $messages = [
+            'nama_fakultas.required' => 'Nama fakultas wajib diisi.',
+            'kode_fakultas.max' => 'Kode fakultas maksimal 10 karakter.',
+            'no_telepon.max' => 'Nomor telepon maksimal 15 karakter.',
+            'status.required' => 'Status wajib dipilih.',
+            'status.in' => 'Status tidak valid.'
+        ];
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'nama_fakultas' => 'required|string|max:255',
             'kode_fakultas' => 'nullable|string|max:10',
             'dekan' => 'nullable|string|max:100',
             'nidn_dekan' => 'nullable|string|max:50',
-        ]);
+            'no_telepon' => 'nullable|string|max:15',
+            'status' => 'required|in:aktif,nonaktif',
+        ], $messages);
 
-        $data = $request->only(['nama_fakultas', 'kode_fakultas', 'dekan', 'nidn_dekan']);
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $data = $request->only(['nama_fakultas', 'kode_fakultas', 'dekan', 'nidn_dekan', 'no_telepon', 'status']);
         $fakultas->update($data);
 
         Cache::forget('master:fakultas');
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data fakultas berhasil diperbarui.']);
+        }
         return redirect()->route('fakultas.index')->with('success', 'Data fakultas berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         if (Auth::user()->role !== 'admin') {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+            }
             abort(403, 'Akses ditolak.');
         }
         $row = DB::table('fakultas')->where('id_fakultas', $id)->first();
@@ -96,6 +140,9 @@ class FakultasController extends Controller
         $fakultas = Fakultas::hydrate([(array) $row])->first();
         $fakultas->delete();
         Cache::forget('master:fakultas');
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data fakultas berhasil dihapus.']);
+        }
         return redirect()->route('fakultas.index')->with('success', 'Data fakultas berhasil dihapus.');
     }
 
@@ -110,23 +157,12 @@ class FakultasController extends Controller
 
         return DataTables::of($query)
             ->addColumn('kode', fn($f) => $f->kode_fakultas ?? '-')
+            ->addColumn('status', fn($f) => '<span class="badge ' . ($f->status === 'aktif' ? 'badge-success' : 'badge-danger') . '">' . ucfirst($f->status) . '</span>')
             ->addColumn('action', function ($row) {
-                $editRoute = route('fakultas.edit', $row->id_fakultas);
-                $deleteRoute = route('fakultas.destroy', $row->id_fakultas);
-                $html = '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>';
-                
-                if (Auth::user()->role === 'admin') {
-                    $html .= '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin?\')">'
-                        . csrf_field() . method_field('DELETE')
-                        . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                        . '</form>';
-                }
-                
-                $html .= '</div>';
-                return $html;
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_fakultas . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'status'])
             ->make(true);
     }
 }

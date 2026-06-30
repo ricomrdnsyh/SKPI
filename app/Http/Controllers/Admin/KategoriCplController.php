@@ -66,10 +66,16 @@ class KategoriCplController extends Controller
 
         $hasCpl = DB::table('cpl_prodi')->where('id_kategori', $id)->exists();
         if ($hasCpl) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Kategori CPL tidak dapat dihapus karena masih digunakan oleh beberapa CPL Prodi.'], 400);
+            }
             return redirect()->route('kategori-cpl.index')->with('error', 'Kategori CPL tidak dapat dihapus karena masih digunakan oleh beberapa CPL Prodi.');
         }
 
         $kategori->delete();
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Kategori CPL berhasil dihapus.']);
+        }
         return redirect()->route('kategori-cpl.index')->with('success', 'Kategori CPL berhasil dihapus.');
     }
 
@@ -79,14 +85,8 @@ class KategoriCplController extends Controller
 
         return DataTables::of($query)
             ->addColumn('action', function ($row) {
-                $editRoute = route('kategori-cpl.edit', $row->id_kategori);
-                $deleteRoute = route('kategori-cpl.destroy', $row->id_kategori);
-                return '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>'
-                    . '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin ingin menghapus kategori ini?\')">'
-                    . csrf_field() . method_field('DELETE')
-                    . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                    . '</form></div>';
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_kategori . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action'])
             ->make(true);

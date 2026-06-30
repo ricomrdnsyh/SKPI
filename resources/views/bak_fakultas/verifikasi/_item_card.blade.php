@@ -40,7 +40,7 @@
                 </form>
                 <form action="{{ route('bak_fakultas.tugas_akhir.reject', $itemId) }}" method="POST" class="flex gap-2 flex-1">
                     @csrf
-                    <input type="text" name="keterangan" required class="form-input flex-1 text-xs" placeholder="Alasan tolak...">
+                    <input type="text" name="keterangan" required class="form-control form-control-solid flex-1 text-xs" placeholder="Alasan tolak...">
                     <button type="submit" class="btn btn-danger btn-xs">Reject</button>
                 </form>
             @else
@@ -50,7 +50,7 @@
                 </form>
                 <form action="{{ route('bak_fakultas.data.reject', ['type' => $itemType, 'id' => $itemId]) }}" method="POST" class="flex gap-2 flex-1">
                     @csrf
-                    <input type="text" name="keterangan" required class="form-input flex-1 text-xs" placeholder="Alasan tolak...">
+                    <input type="text" name="keterangan" required class="form-control form-control-solid flex-1 text-xs" placeholder="Alasan tolak...">
                     <button type="submit" class="btn btn-danger btn-xs">Reject</button>
                 </form>
             @endif

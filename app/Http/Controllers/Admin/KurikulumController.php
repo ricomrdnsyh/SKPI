@@ -18,7 +18,13 @@ class KurikulumController extends Controller
     {
         $allowedProdis = $this->getAllowedProdiIds();
         $prodiList = $this->getProdiOptions($allowedProdis);
-        return view('admin.kurikulum.index', compact('prodiList'));
+        if ($allowedProdis === null) {
+            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
+        } else {
+            $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
+        }
+
+        return view('admin.kurikulum.index', compact('prodiList', 'prodi'));
     }
 
     public function create()
@@ -141,6 +147,9 @@ class KurikulumController extends Controller
         }
 
         $kurikulum->delete();
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data kurikulum berhasil dihapus.']);
+        }
         return redirect()->route('kurikulum.index')->with('success', 'Data kurikulum berhasil dihapus.');
     }
 
@@ -164,14 +173,8 @@ class KurikulumController extends Controller
         return DataTables::of($query)
             ->addColumn('prodi', fn($k) => $k->prodi_nama ?? '-')
             ->addColumn('action', function ($row) {
-                $editRoute = route('kurikulum.edit', $row->id_kurikulum);
-                $deleteRoute = route('kurikulum.destroy', $row->id_kurikulum);
-                return '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>'
-                    . '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin?\')">'
-                    . csrf_field() . method_field('DELETE')
-                    . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                    . '</form></div>';
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_kurikulum . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action'])
             ->make(true);

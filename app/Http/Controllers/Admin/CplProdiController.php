@@ -33,8 +33,28 @@ class CplProdiController extends Controller
                 ->get();
         }
 
-        return view('admin.cpl.index', compact('prodiList', 'kurikulumList'));
+        $user = Auth::user();
+        if ($allowedProdis === null) {
+            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
+            $kurikulums = DB::table('kurikulum')
+                ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
+                ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
+                ->orderBy('tahun', 'desc')
+                ->get();
+        } else {
+            $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
+            $kurikulums = DB::table('kurikulum')
+                ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
+                ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
+                ->whereIn('kurikulum.id_prodi', $allowedProdis)
+                ->orderBy('tahun', 'desc')
+                ->get();
+        }
+        $kategori = DB::table('kategori_cpl')->select('id_kategori', 'kode_kategori', 'nama_kategori', 'urutan')->orderBy('urutan')->get();
+
+        return view('admin.cpl.index', compact('prodiList', 'kurikulumList', 'prodi', 'kurikulums', 'kategori'));
     }
+
 
     public function create()
     {
@@ -159,6 +179,9 @@ class CplProdiController extends Controller
         }
 
         $cpl->delete();
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data CPL Prodi berhasil dihapus.']);
+        }
         return redirect()->route('cpl.index')->with('success', 'Data CPL Prodi berhasil dihapus.');
     }
 
@@ -195,14 +218,8 @@ class CplProdiController extends Controller
             ->addColumn('kategori', fn($c) => $c->kategori_nama ?? '-')
             ->addColumn('deskripsi', fn($c) => Str::limit($c->deskripsi_cpl, 50))
             ->addColumn('action', function ($row) {
-                $editRoute = route('cpl.edit', $row->id_cpl);
-                $deleteRoute = route('cpl.destroy', $row->id_cpl);
-                return '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>'
-                    . '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin?\')">'
-                    . csrf_field() . method_field('DELETE')
-                    . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                    . '</form></div>';
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_cpl . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action'])
             ->make(true);

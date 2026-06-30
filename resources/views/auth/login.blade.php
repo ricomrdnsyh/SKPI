@@ -1,141 +1,211 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Login SKPI Universitas Nurul Jadid">
-    <title>Masuk - SKPI UNUJA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Login - SKPI UNUJA</title>
+    <link rel="shortcut icon" href="{{ asset('assets/media/logos/unuja.png') }}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+    <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <style>
-        body { font-family: 'Outfit', sans-serif; }
-        .login-bg {
-            background: linear-gradient(135deg, #0d1b38 0%, #1a3266 40%, #0d1b38 100%);
+        body.bg-grid {
+            background-color: #f1f4f8;
+            background-image:
+                linear-gradient(to right, rgba(206, 206, 206, 0.31) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(206, 206, 206, 0.31) 1px, transparent 1px);
+            background-size: 25px 25px;
+            position: relative;
+        }
+
+        .auth-wrapper {
+            min-height: 100vh;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 2.5rem 2.25rem;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+            border: 1px solid rgba(148, 163, 184, 0.5);
             position: relative;
             overflow: hidden;
         }
-        .login-bg::before {
-            content: '';
+
+        .auth-card::before {
+            content: "";
             position: absolute;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: rgba(78, 114, 189, 0.15);
-            filter: blur(120px);
-            top: -20%;
-            left: -10%;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(59, 130, 246, 0.02));
+            opacity: 0.9;
+            pointer-events: none;
         }
-        .login-bg::after {
-            content: '';
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            background: rgba(107, 138, 201, 0.1);
-            filter: blur(100px);
-            bottom: -10%;
-            right: -5%;
+
+        .auth-card-inner {
+            position: relative;
+            z-index: 1;
         }
-        .login-card {
-            animation: slideUp 0.5s ease-out both;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+
+        .auth-title {
+            font-weight: 600;
+            letter-spacing: 0.02em;
         }
-        .brand-glow {
-            box-shadow: 0 8px 32px rgba(58, 90, 158, 0.3);
+
+        .auth-subtitle {
+            font-size: 0.95rem;
         }
-        .input-icon { transition: all 0.2s ease; }
-        .input-group:focus-within .input-icon { color: #4e72bd; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .animate-float { animation: float 4s ease-in-out infinite; }
-        .bg-dots {
-            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 24px 24px;
+
+        .auth-card .form-control {
+            border-radius: 0.75rem;
+        }
+
+        .auth-card .input-group .form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .auth-card .input-group-text {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .auth-footer-text {
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 576px) {
+            .auth-card {
+                padding: 2rem 1.5rem;
+            }
         }
     </style>
 </head>
-<body class="login-bg bg-dots min-h-screen flex items-center justify-center p-4 md:p-6">
 
-    <div class="login-card relative bg-white/97 w-full max-w-sm px-8 py-10 rounded-3xl shadow-2xl shadow-black/20 border border-white/20">
-        {{-- Brand --}}
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 flex items-center justify-center text-white text-2xl font-black mx-auto mb-5 bg-linear-to-br from-unuja-500 to-unuja-800 rounded-2xl brand-glow animate-float">U</div>
-            <h1 class="text-xl font-black text-gray-900 tracking-tight">SKPI UNUJA</h1>
-            <p class="text-sm text-gray-400 font-medium mt-1.5">Masuk ke sistem informasi SKPI</p>
-        </div>
-
-        {{-- Error messages --}}
-        @if(session('error'))
-            <div class="bg-red-50 border border-red-200/60 p-3.5 mb-5 rounded-2xl flex items-start gap-2.5 text-sm text-red-700 font-medium animate-slide-down">
-                <i class="fa-solid fa-circle-xmark mt-0.5 shrink-0"></i>
-                <span>{{ session('error') }}</span>
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="bg-red-50 border border-red-200/60 p-3.5 mb-5 rounded-2xl text-sm text-red-700 font-medium animate-slide-down">
-                <div class="flex items-start gap-2.5">
-                    <i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i>
-                    <ul class="m-0 ps-4 space-y-0.5">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+<body id="kt_body" class="bg-body bg-grid">
+    <div class="d-flex flex-column flex-root auth-wrapper">
+        <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+            <a href="{{ route('login') }}"
+                class="mb-8 d-flex align-items-center justify-content-center text-decoration-none">
+                <img alt="Logo" src="{{ asset('assets/media/logos/unuja.png') }}" class="h-60px me-3" />
+                <span class="text-dark fw-bold fs-1">SKPI UNUJA</span>
+            </a>
+            <div class="w-lg-500px mx-auto auth-card">
+                <div class="auth-card-inner">
+                    <form id="login_form" class="form w-100" action="{{ route('login') }}" method="POST">
+                        @csrf
+                        <div class="text-center mb-8">
+                            <h1 class="text-dark mb-2 auth-title">Selamat Datang Kembali</h1>
+                            <p class="text-muted auth-subtitle">Sistem Informasi SKPI Universitas Nurul Jadid</p>
+                        </div>
+                        <div class="fv-row mb-3">
+                            <label class="form-label fs-6 fw-bolder text-dark">Username / NIM</label>
+                            <input class="form-control form-control-sm bg-white" type="text" name="username"
+                                value="{{ old('username') }}" required autofocus />
+                        </div>
+                        <div class="fv-row mb-5">
+                            <div class="d-flex flex-stack mb-2">
+                                <label class="form-label fw-bolder text-dark fs-6 mb-0">Password</label>
+                            </div>
+                            <div class="input-group">
+                                <input class="form-control form-control-sm bg-white" type="password" id="password"
+                                    name="password" autocomplete="off" required />
+                                <span class="input-group-text bg-white" id="togglePassword" style="cursor: pointer;">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-primary btn-md w-100 mb-3">
+                                Sign In
+                            </button>
+                            <div class="text-muted auth-footer-text">
+                                &copy; {{ date('Y') }} SKPI UNUJA &mdash; Universitas Nurul Jadid
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        @endif
-
-        {{-- Form --}}
-        <form action="{{ route('login') }}" method="POST" data-validate>
-            @csrf
-            <div class="mb-4">
-                <label for="username" class="form-label">Username / NIM</label>
-                <div class="input-group relative">
-                    <span class="input-icon absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"><i class="fa-regular fa-user"></i></span>
-                    <input type="text" name="username" id="username" value="{{ old('username') }}" placeholder="Username atau NIM" required autocomplete="username" autofocus
-                        class="form-input form-input-with-icon-left">
-                </div>
-            </div>
-            <div class="mb-6">
-                <label for="password" class="form-label">Password</label>
-                <div class="input-group relative">
-                    <span class="input-icon absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"><i class="fa-solid fa-lock"></i></span>
-                    <input type="password" name="password" id="password" placeholder="Masukkan password" required autocomplete="current-password"
-                        class="form-input form-input-with-icon-both">
-                    <button type="button" id="toggle-password" tabindex="-1"
-                        class="absolute right-0 top-0 h-11 w-11 flex items-center justify-center text-gray-400 cursor-pointer border-0 bg-transparent text-sm hover:text-gray-600 transition">
-                        <i class="fa-regular fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary w-full h-12 text-sm font-bold cursor-pointer mt-1 shadow-lg shadow-unuja-600/25 hover:shadow-xl hover:shadow-unuja-600/30 transition-all duration-200">
-                <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk
-            </button>
-        </form>
-
-        <div class="text-center text-[10px] text-gray-400 font-medium mt-8 pt-6 border-t border-gray-100">
-            &copy; {{ date('Y') }} SKPI UNUJA &mdash; Universitas Nurul Jadid
         </div>
     </div>
+    <script>
+        var hostUrl = "assets/";
+    </script>
+    <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
 
     <script>
-        document.getElementById('toggle-password')?.addEventListener('click', function() {
-            const input = document.getElementById('password');
-            const icon = this.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+        const form = document.getElementById('login_form');
+        form.addEventListener('submit', function(event) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Mohon tunggu...',
+                text: 'Permintaan anda sedang diproses',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+    </script>
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                text: "{{ session('error') }}",
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                    confirmButton: "btn btn-danger"
+                }
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                html: "{!! implode('<br>', $errors->all()) !!}",
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                    confirmButton: "btn btn-danger"
+                }
+            });
+        </script>
+    @endif
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                text: "{{ session('success') }}",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                    confirmButton: "btn btn-primary"
+                }
+            });
+        </script>
+    @endif
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#password');
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ?
+                '<i class="fas fa-eye"></i>' :
+                '<i class="fas fa-eye-slash"></i>';
         });
     </script>
 </body>
+
 </html>

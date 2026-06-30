@@ -17,15 +17,15 @@
         </div>
     @endif
 
-    <form action="{{ route('bak_fakultas.verifikasi.checklist', $pengajuan->id_pengajuan) }}" method="POST" class="space-y-5">
+    <form action="{{ route('bak_fakultas.verifikasi.checklist', $pengajuan->id_pengajuan) }}" method="POST" class="form mb-6">
         @csrf
 
         @php $cl = $pengajuan->checklist; @endphp
 
-        <div class="space-y-4">
+        <div class="form mb-6">
             <div>
-                <label for="hasil_verifikasi" class="form-label">Hasil Verifikasi</label>
-                <select name="hasil_verifikasi" id="hasil_verifikasi" required class="form-select">
+                <label for="hasil_verifikasi" class="form-label fw-bold">Hasil Verifikasi</label>
+                <select name="hasil_verifikasi" id="hasil_verifikasi" required class="form-select form-select-solid">
                     <option value="perlu_revisi" {{ $cl && $cl->hasil_verifikasi === 'perlu_revisi' ? 'selected' : '' }}>
                         Perlu Revisi (Balikkan ke Mahasiswa)
                     </option>
@@ -38,13 +38,13 @@
                 </select>
             </div>
             <div>
-                <label for="catatan" class="form-label">Catatan Verifikasi</label>
-                <textarea name="catatan" id="catatan" rows="3" class="form-input text-sm"
+                <label for="catatan" class="form-label fw-bold">Catatan Verifikasi</label>
+                <textarea name="catatan" id="catatan" rows="3" class="form-control form-control-solid text-sm"
                     placeholder="Tulis alasan revisi/catatan tambahan...">{{ $cl->catatan ?? '' }}</textarea>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-full font-bold py-3 text-sm">
+        <button type="submit" class="btn btn-primary w-100 font-bold py-3 text-sm">
             <i class="fa-solid fa-check-circle"></i> Simpan Verifikasi
         </button>
     </form>

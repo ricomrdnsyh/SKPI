@@ -37,7 +37,7 @@
                     </form>
                     <form action="{{ route('bak_fakultas.pengajuan_cetak.reject', $pengajuan->id_pengajuan) }}" method="POST" class="flex gap-2">
                         @csrf
-                        <input type="text" name="keterangan" required class="form-input text-xs w-44" placeholder="Alasan tolak...">
+                        <input type="text" name="keterangan" required class="form-control form-control-solid text-xs w-44" placeholder="Alasan tolak...">
                         <button type="submit" class="btn btn-danger btn-sm">
                             <i class="fa-solid fa-xmark mr-1"></i> Tolak
                         </button>
@@ -51,15 +51,15 @@
         <div class="card p-6 animate-scale-in" style="border-color: #22c55e;">
             <h4 class="section-accent mb-3"><i class="fa-solid fa-print text-emerald-600"></i> Proses & Terbitkan SKPI</h4>
             <p class="text-xs text-gray-600 font-medium mb-4">Mahasiswa telah mengajukan permohonan cetak. Masukkan nomor ijazah nasional dan status profesi (opsional) untuk menerbitkan SKPI.</p>
-            <form action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST" class="space-y-4">
+            <form action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST" class="form mb-6">
                 @csrf
                 <div>
-                    <label for="nim_ijazah" class="form-label">Nomor Ijazah Nasional (NIM Ijazah)</label>
-                    <input type="text" name="nim_ijazah" id="nim_ijazah" class="form-input text-sm" value="{{ old('nim_ijazah', $mahasiswa->nim ?? '') }}" required>
+                    <label for="nim_ijazah" class="form-label fw-bold">Nomor Ijazah Nasional (NIM Ijazah)</label>
+                    <input type="text" name="nim_ijazah" id="nim_ijazah" class="form-control form-control-solid text-sm" value="{{ old('nim_ijazah', $mahasiswa->nim ?? '') }}" required>
                 </div>
                 <div>
-                    <label for="status_profesi" class="form-label">Status Profesi (Opsional)</label>
-                    <input type="text" name="status_profesi" id="status_profesi" class="form-input text-sm" value="{{ old('status_profesi', 'Belum ada keanggotaan profesi') }}">
+                    <label for="status_profesi" class="form-label fw-bold">Status Profesi (Opsional)</label>
+                    <input type="text" name="status_profesi" id="status_profesi" class="form-control form-control-solid text-sm" value="{{ old('status_profesi', 'Belum ada keanggotaan profesi') }}">
                 </div>
                 <button type="submit" class="btn btn-success w-full py-3 text-sm font-bold">
                     <i class="fa-solid fa-certificate mr-1"></i> Terbitkan & Cetak SKPI
@@ -73,7 +73,7 @@
             <h4 class="section-accent mb-3"><i class="fa-solid fa-print text-emerald-600"></i> Cetak Ulang / Batalkan SKPI</h4>
             <p class="text-xs text-gray-600 font-medium mb-4">SKPI sudah diterbitkan. Klik tombol di bawah untuk mencetak ulang dokumen PDF.</p>
             
-            <div class="space-y-4">
+            <div class="form mb-6">
                 <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}?nim_ijazah={{ urlencode($mahasiswa->skpi->nim_ijazah ?? '') }}" target="_blank"
                     class="btn btn-success w-full inline-flex justify-center text-sm font-bold">
                     <i class="fa-solid fa-download mr-1"></i> Cetak Ulang PDF
@@ -87,10 +87,10 @@
                     </h5>
                     <p class="text-[10px] text-red-600 font-medium mb-3">Jika dibatalkan, status akan dikembalikan ke Draft agar mahasiswa dapat menambah/mengubah data. Dokumen SKPI yang sudah diterbitkan akan dihapus.</p>
                     
-                    <form action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}" method="POST" class="space-y-3" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan cetak SKPI ini?')">
+                    <form action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}" method="POST" class="form mb-6" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan cetak SKPI ini?')">
                         @csrf
                         <div>
-                            <textarea name="catatan" required class="form-input text-sm w-full h-20" placeholder="Alasan pembatalan cetak (wajib diisi)..."></textarea>
+                            <textarea name="catatan" required class="form-control form-control-solid text-sm w-full h-20" placeholder="Alasan pembatalan cetak (wajib diisi)..."></textarea>
                         </div>
                         <button type="submit" class="btn btn-danger w-full py-2.5 text-sm font-bold">
                             <i class="fa-solid fa-trash-can mr-1"></i> Batalkan & Kembalikan ke Draft

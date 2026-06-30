@@ -15,6 +15,7 @@ class Fakultas extends Model
         'kode_fakultas',
         'dekan',
         'nidn_dekan',
+        'no_telepon',
         'status'
     ];
 }

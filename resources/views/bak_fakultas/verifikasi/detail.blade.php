@@ -17,7 +17,7 @@
         $role = Auth::user()->role;
     @endphp
 
-    <div class="space-y-8">
+    <div class="form mb-6">
         {{-- Header --}}
         <div class="animate-fade-in">
             <a href="{{ $backRoute }}"
@@ -26,7 +26,7 @@
             </a>
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="page-title">Data Mahasiswa & Status Modul</h2>
+                    <h2 class="fw-bolder fs-2 mb-5">Data Mahasiswa & Status Modul</h2>
                     <p class="page-desc">
                         Pemohon: <span class="font-bold text-gray-900">{{ $mahasiswa->nama_lengkap }}</span>
                         (NIM: {{ $mahasiswa->nim }})
@@ -57,7 +57,7 @@
         {{-- Module status overview --}}
         <div class="card p-6 animate-fade-in" style="animation-delay: 0.1s">
             <h3 class="section-accent mb-4"><i class="fa-solid fa-list-check"></i> Status Persetujuan Modul</h3>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div class="row row-cols-2 row-cols-md-5 g-6 mb-6">
                 @php
                     $modStatus = function($items) {
                         if ($items->where('status', 'rejected')->isNotEmpty()) return 'ditolak';
@@ -103,12 +103,12 @@
         @endif
 
         {{-- Main content --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="space-y-8">
+        <div class="row row-cols-1 row-cols-lg-2 g-6 mb-6">
+            <div class="form mb-6">
                 @include('bak_fakultas.verifikasi._identity_card')
             </div>
 
-            <div class="space-y-8">
+            <div class="form mb-6">
                 @include('bak_fakultas.verifikasi._validation_data')
                 @include('bak_fakultas.verifikasi._prodi_academic_data')
             </div>

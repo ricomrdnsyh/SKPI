@@ -3,7 +3,7 @@
         <i class="fa-solid fa-address-card"></i>
         Identitas Pemohon
     </h3>
-    <div class="space-y-0">
+    <div class="form mb-6">
         @php
             $fields = [
                 ['label' => 'Nama Lengkap', 'value' => $mahasiswa->nama_lengkap],

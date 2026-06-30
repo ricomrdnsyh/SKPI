@@ -15,10 +15,17 @@ class UserController extends Controller
 {
     public function index()
     {
+
+
         $roleOptions = DB::table('users')->select('role')->distinct()->pluck('role')->sort()->values();
         $statusOptions = ['Aktif', 'Nonaktif'];
         $prodiList = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
-        return view('admin.users.index', compact('roleOptions', 'statusOptions', 'prodiList'));
+        $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
+        $fakultas = DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get();
+
+
+
+        return view('admin.users.index', compact('roleOptions', 'statusOptions', 'prodiList', 'prodi', 'fakultas'));
     }
 
     public function create()
@@ -30,7 +37,19 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $messages = [
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username sudah terpakai.',
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
+            'role.required' => 'Role wajib dipilih.',
+            'id_fakultas.required_if' => 'Fakultas wajib dipilih jika role BAK Fakultas.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'email.email' => 'Format email tidak valid.',
+            'aktif.required' => 'Status akun wajib dipilih.'
+        ];
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'username' => 'required|string|max:100|unique:users,username',
             'nama_lengkap' => 'required|string|max:255',
             'role' => 'required|in:admin,bak_fakultas',
@@ -38,7 +57,14 @@ class UserController extends Controller
             'email' => 'nullable|email|max:100',
             'password' => 'required|string|min:6',
             'aktif' => 'required|boolean',
-        ]);
+        ], $messages);
+
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $id_prodi = null;
         if ($request->role === 'bak_fakultas' && $request->filled('id_fakultas')) {
@@ -62,6 +88,9 @@ class UserController extends Controller
         $user = User::create($data);
 
         $this->clearUserCache();
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'User berhasil ditambahkan.']);
+        }
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
@@ -90,7 +119,18 @@ class UserController extends Controller
         if (!$userRow) abort(404);
         $user = User::hydrate([(array) $userRow])->first();
 
-        $request->validate([
+        $messages = [
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username sudah terpakai.',
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
+            'role.required' => 'Role wajib dipilih.',
+            'id_fakultas.required_if' => 'Fakultas wajib dipilih jika role BAK Fakultas.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'email.email' => 'Format email tidak valid.',
+            'aktif.required' => 'Status akun wajib dipilih.'
+        ];
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'username' => 'required|string|max:100|unique:users,username,' . $id . ',id_user',
             'nama_lengkap' => 'required|string|max:255',
             'role' => 'required|in:admin,bak_fakultas',
@@ -98,7 +138,14 @@ class UserController extends Controller
             'email' => 'nullable|email|max:100',
             'password' => 'nullable|string|min:6',
             'aktif' => 'required|boolean',
-        ]);
+        ], $messages);
+
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $data = [
             'username' => $request->username,
@@ -122,6 +169,9 @@ class UserController extends Controller
         $user->update($data);
 
         $this->clearUserCache();
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'User berhasil diperbarui.']);
+        }
         return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
     }
 
@@ -133,12 +183,18 @@ class UserController extends Controller
 
         // Prevent deleting oneself
         if ($user->id_user === Auth::user()->id_user) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Anda tidak dapat menghapus akun Anda sendiri.'], 403);
+            }
             return redirect()->route('users.index')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
         $user->delete();
 
         $this->clearUserCache();
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'User berhasil dihapus.']);
+        }
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 
@@ -147,7 +203,7 @@ class UserController extends Controller
         $query = DB::table('users')
             ->leftJoin('program_studi', 'users.id_prodi', '=', 'program_studi.id_prodi')
             ->leftJoin('fakultas', 'program_studi.id_fakultas', '=', 'fakultas.id_fakultas')
-            ->select('users.*', 'program_studi.nama_prodi as prodi_nama', 'fakultas.nama_fakultas as fakultas_nama');
+            ->select('users.*', 'program_studi.nama_prodi as prodi_nama', 'fakultas.nama_fakultas as fakultas_nama', 'fakultas.id_fakultas');
 
         if ($request->filled('role')) {
             $query->where('users.role', $request->role);
@@ -159,7 +215,7 @@ class UserController extends Controller
         return DataTables::of($query)
             ->addColumn('role', function ($u) {
                 $roleLabel = ucfirst(str_replace('_', ' ', $u->role));
-                return '<span class="badge badge-' . ($u->role === 'admin' ? 'emerald' : 'blue') . '">' . $roleLabel . '</span>';
+                return '<span class="badge badge-' . ($u->role === 'admin' ? 'success' : 'primary') . '">' . $roleLabel . '</span>';
             })
             ->addColumn('hubungan', function ($u) {
                 if ($u->role === 'bak_fakultas') {
@@ -170,16 +226,10 @@ class UserController extends Controller
                 }
                 return '-';
             })
-            ->addColumn('status', fn($u) => '<span class="badge ' . ($u->aktif ? 'badge-emerald' : 'badge-rose') . '">' . ($u->aktif ? 'Aktif' : 'Nonaktif') . '</span>')
+            ->addColumn('status', fn($u) => '<span class="badge ' . ($u->aktif ? 'badge-success' : 'badge-danger') . '">' . ($u->aktif ? 'Aktif' : 'Nonaktif') . '</span>')
             ->addColumn('action', function ($row) {
-                $editRoute = route('users.edit', $row->id_user);
-                $deleteRoute = route('users.destroy', $row->id_user);
-                return '<div class="flex justify-start gap-1">'
-                    . '<a href="' . $editRoute . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>'
-                    . '<form method="POST" action="' . $deleteRoute . '" onsubmit="return confirm(\'Yakin?\')">'
-                    . csrf_field() . method_field('DELETE')
-                    . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button>'
-                    . '</form></div>';
+                $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_user . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action', 'role', 'status'])
             ->make(true);

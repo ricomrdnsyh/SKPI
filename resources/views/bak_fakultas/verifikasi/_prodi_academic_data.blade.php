@@ -3,7 +3,7 @@
         <i class="fa-solid fa-graduation-cap"></i>
         Data Akademik
     </h3>
-    <div class="space-y-0">
+    <div class="form mb-6">
         @php
             $acadFields = [
                 ['label' => 'Program Studi', 'value' => $mahasiswa->programStudi->nama_prodi],
