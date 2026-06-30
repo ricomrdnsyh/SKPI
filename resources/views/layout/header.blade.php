@@ -30,9 +30,13 @@
     $currentUser = auth()->user();
     $roleName = 'Pengguna';
     if ($currentUser) {
-        if ($currentUser->role == 'admin') $roleName = 'Administrator';
-        elseif ($currentUser->role == 'bak_fakultas') $roleName = 'BAK Fakultas';
-        elseif ($currentUser->role == 'mahasiswa') $roleName = 'Mahasiswa';
+        if ($currentUser->role == 'admin') {
+            $roleName = 'Administrator';
+        } elseif ($currentUser->role == 'bak_fakultas') {
+            $roleName = 'Fakultas';
+        } elseif ($currentUser->role == 'mahasiswa') {
+            $roleName = 'Mahasiswa';
+        }
     }
 @endphp
 
@@ -51,7 +55,7 @@
         </div>
         <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
             <a href="#" class="d-lg-none app-mobile-logo">
-                <img alt="Logo SKPI" src="{{ asset('assets/media/logos/unuja.png') }}" />
+                <img alt="Logo SKPI" src="{{ asset('assets/media/logos/skpi-dark.png') }}" class="h-35px" />
             </a>
         </div>
         <div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1" id="kt_app_header_wrapper">
@@ -158,15 +162,19 @@
                                     <img alt="Logo" src="{{ asset('assets/media/avatars/profile.png') }}" />
                                 </div>
                                 <div class="d-flex flex-column">
-                                    <div class="fw-bold d-flex align-items-center fs-5">{{ $currentUser?->nama ?? 'User' }}
+                                    <div class="fw-bold d-flex align-items-center fs-5">
+                                        {{ $currentUser?->nama ?? 'User' }}
                                     </div>
-                                    <span class="fw-semibold text-muted text-hover-primary fs-7">{{ $roleName }}</span>
+                                    <span
+                                        class="fw-semibold text-muted text-hover-primary fs-7">{{ $roleName }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="separator my-2"></div>
                         <div class="menu-item px-5">
-                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="menu-link px-5 w-100 text-start border-0 bg-transparent">
+                            <a href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                class="menu-link px-5 w-100 text-start border-0 bg-transparent">
                                 Logout
                             </a>
                         </div>

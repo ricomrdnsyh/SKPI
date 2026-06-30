@@ -1,5 +1,5 @@
 @extends('layout.main')
-@section('title', 'Master Mahasiswa')
+@section('title', 'Mahasiswa')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/dataTables.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.css') }}">
