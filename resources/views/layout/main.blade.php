@@ -77,6 +77,48 @@
     </script>
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('change', function(e) {
+                if (e.target && e.target.type === 'file') {
+                    let file = e.target.files[0];
+                    if (!file) {
+                        e.target.classList.remove('is-invalid');
+                        let nextEl = e.target.nextElementSibling;
+                        if (nextEl && nextEl.classList.contains('invalid-feedback')) {
+                            nextEl.remove();
+                        }
+                        return;
+                    }
+
+                    let validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+                    let maxSize = 2 * 1024 * 1024; // 2MB
+
+                    let nextEl = e.target.nextElementSibling;
+                    if (nextEl && nextEl.classList.contains('invalid-feedback')) {
+                        nextEl.remove();
+                    }
+                    e.target.classList.remove('is-invalid');
+
+                    let errorMessage = '';
+                    if (!validTypes.includes(file.type)) {
+                        errorMessage = 'Format file tidak sesuai (hanya PDF, JPG, PNG).';
+                    } else if (file.size > maxSize) {
+                        errorMessage = 'Ukuran file terlalu besar (maksimal 2MB).';
+                    }
+
+                    if (errorMessage) {
+                        e.target.value = '';
+                        e.target.classList.add('is-invalid');
+                        let errorDiv = document.createElement('div');
+                        errorDiv.className = 'invalid-feedback d-block fw-bold mt-2';
+                        errorDiv.innerText = errorMessage;
+                        e.target.parentNode.insertBefore(errorDiv, e.target.nextSibling);
+                    }
+                }
+            });
+        });
+    </script>
     @yield('js')
 </body>
 

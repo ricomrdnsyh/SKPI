@@ -1,5 +1,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        $('#tanggal_terbit').flatpickr({
+            dateFormat: "Y-m-d",
+            allowInput: true
+        });
         const formCreate = document.getElementById('form_create_sertifikat');
         if (!formCreate) return;
         
@@ -43,3 +47,5 @@
         }
     });
 </script>
+
+

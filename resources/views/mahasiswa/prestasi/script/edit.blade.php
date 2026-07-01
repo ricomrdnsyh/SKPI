@@ -7,7 +7,9 @@
         for (let key in data) {
             let input = form.querySelector('[name="' + key + '"]');
             if (input) {
-                if (input.type === 'checkbox' || input.type === 'radio') {
+                if (input.type === 'file') {
+                    // skip file inputs
+                } else if (input.type === 'checkbox' || input.type === 'radio') {
                     // Handle checkbox/radio if needed
                     if(input.value == data[key]) input.checked = true;
                 } else {
@@ -67,3 +69,4 @@
         }
     });
 </script>
+

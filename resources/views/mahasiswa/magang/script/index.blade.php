@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function() {
         let table = $('#table-magang').DataTable({
-            processing: true,
+            processing: false,
             serverSide: true,
             responsive: {
                 details: {
@@ -48,13 +48,18 @@
                 }
             ],
             ajax: {
-                url: '{{ route('magang.datatable') }}',
+                url: '{{ route('mahasiswa.magang.datatable') }}',
                 data: function(d) {}
             },
             columns: [
                 { data: null, defaultContent: '', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false },
-                
+                { data: 'mitra' },
+                { data: 'posisi' },
+                { data: 'tanggal_mulai' },
+                { data: 'tanggal_selesai' },
+                { data: 'bukti', orderable: false, searchable: false },
+                { data: 'status', orderable: false, searchable: false }
             ],
             drawCallback: function() {
                 $('#table-magang [data-bs-toggle="tooltip"]').tooltip();
@@ -79,7 +84,7 @@
             cancelButtonText: "Batal",
             customClass: {
                 confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-light'
+                cancelButton: 'btn btn-secondary'
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -138,3 +143,5 @@
         });
     </script>
 @endif
+
+

@@ -3,179 +3,154 @@
 @section('title', $readonly ? 'Detail Tugas Akhir' : 'Ubah Tugas Akhir')
 
 @section('content')
-<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-    <div class="d-flex flex-column flex-column-fluid">
-        <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
-            <div id="kt_app_content_container" class="app-container container-fluid">
+    <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+        <div class="d-flex flex-column flex-column-fluid">
+            <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
+                <div id="kt_app_content_container" class="app-container container-fluid">
 
-    <div class="mx-auto" style="max-width: 800px;">
-        <div>
-            <a href="{{ route('mahasiswa.dashboard') }}"
-                class="btn btn-sm btn-light btn-active-light-primary mb-4">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
-            </a>
-            <h2 class="fw-bolder fs-2 mb-5">{{ $readonly ? 'Detail Tugas Akhir / Skripsi' : 'Ubah Data Tugas Akhir / Skripsi' }}</h2>
-            <p class="page-desc">{{ $readonly ? 'Informasi detail data Tugas Akhir.' : 'Masukkan judul skripsi dan nama dosen pembimbing Anda secara lengkap.' }}</p>
-        </div>
-
-        @if($isLocked)
-            <div class="p-4 rounded-xl font-bold text-sm bg-amber-50 text-amber-800 border border-gray-200 shadow-sm">
-                <i class="fa-solid fa-lock mr-1"></i> Data tidak dapat diubah karena pengajuan SKPI sedang diproses.
-            </div>
-        @endif
-
-        @if(($mahasiswa->tugasAkhir->status ?? '') === 'approved')
-            <div class="p-4 rounded-xl font-bold text-sm bg-emerald-50 text-emerald-700 border border-gray-200 shadow-sm">
-                <i class="fa-solid fa-check-circle mr-1"></i> Data yang telah disetujui tidak dapat diubah.
-            </div>
-        @endif
-
-        @if(($mahasiswa->tugasAkhir->status ?? '') === 'rejected')
-            <div class="p-4 rounded-xl bg-red-100 text-red-800 font-bold text-sm border border-gray-200 shadow-sm">
-                <span><i class="fa-solid fa-circle-exclamation mr-1"></i> Alasan ditolak:</span>
-                {{ $mahasiswa->tugasAkhir->keterangan ?: '(Tidak ada catatan)' }}
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="p-4 rounded-xl bg-red-100 text-red-800 font-bold text-sm border border-gray-200 shadow-sm">
-                <ul class="list-disc pl-4 space-y-1">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @include('partials.item_progress', ['steps' => $itemSteps, 'itemName' => 'Tugas Akhir'])
-
-        @include('partials.overall_progress', ['steps' => $overallSteps])
-
-        <div class="card p-6 md:p-8">
-            <form action="{{ route('mahasiswa.tugas_akhir.update') }}" method="POST" class="form mb-6">
-                @csrf
-
-                <div>
-                    <label for="judul" class="form-label fw-bold fw-bold">Judul Tugas Akhir / Skripsi</label>
-                    <textarea name="judul" id="judul" rows="4" required class="form-control form-control-solid"
-                        placeholder="Masukkan judul tugas akhir Anda dengan huruf kapital di awal kata..." {{ $readonly ? 'disabled' : '' }}>{{ old('judul', $mahasiswa->tugasAkhir->judul ?? '') }}</textarea>
-                </div>
-
-                <div class="form mb-4">
-                    <label class="form-label fw-bold fw-bold">Dosen Pembimbing</label>
-                    <div id="pembimbing-container" class="form mb-6">
-                        @php
-                            $pembimbingNames = [];
-                            if ($mahasiswa->tugasAkhir) {
-                                $pembimbingNames = collect($mahasiswa->tugasAkhir->pembimbingTugasAkhir)
-                                    ->pluck('nama_dosen')
-                                    ->toArray();
-                            }
-                            if (empty($pembimbingNames)) {
-                                $pembimbingNames = [null, null];
-                            } elseif (count($pembimbingNames) == 1) {
-                                $pembimbingNames[] = null;
-                            }
-                        @endphp
-
-                        @foreach($pembimbingNames as $index => $currentName)
-                            <div class="flex items-center gap-3 pembimbing-row animate-fade-in">
-                                <span class="text-xs font-bold text-gray-400 w-8 shrink-0 font-mono">#{{ $index + 1 }}</span>
-                                <div class="flex-1">
-                                    <input type="text" name="pembimbing[]" class="form-control form-control-solid select-pembimbing"
-                                        value="{{ old("pembimbing.{$index}", $currentName) }}"
-                                        placeholder="Nama Dosen Pembimbing..."
-                                        {{ $index === 0 ? 'required' : '' }} {{ $readonly ? 'disabled' : '' }}>
-                                </div>
-                                @if($index >= 2 && !$readonly)
-                                    <button type="button" class="btn btn-sm btn-danger btn-remove-pembimbing shrink-0" onclick="this.closest('.pembimbing-row').remove(); renumberPembimbing();">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                @else
-                                    <div class="w-10 shrink-0"></div>
-                                @endif
+                    <div class="card shadow-sm border border-dashed border-dark rounded">
+                        <div class="card-header border-0 pt-6">
+                            <div class="card-title">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bolder fs-3 mb-1">
+                                        <i class="fa-solid fa-graduation-cap text-primary me-2"></i>
+                                        {{ $readonly ? 'Detail Tugas Akhir / Skripsi' : 'Ubah Data Tugas Akhir / Skripsi' }}
+                                    </span>
+                                </h3>
                             </div>
-                        @endforeach
+                        </div>
+
+                        <div class="separator my-2"></div>
+
+                        <div class="card-body pt-5">
+
+                            <div
+                                class="alert bg-light-primary border border-dashed border-primary d-flex align-items-center p-5 mb-8">
+                                <i class="fa-solid fa-circle-info fs-2hx text-primary me-4"></i>
+                                <div class="d-flex flex-column">
+                                    <h4 class="mb-1 text-primary">Informasi Pengisian</h4>
+                                    <span class="text-dark">Mohon perhatikan pedoman penulisan berikut:
+                                        <ul class="mb-0 mt-2">
+                                            <li><strong>Judul Tugas Akhir / Skripsi</strong> harus ditulis dengan awalan huruf kapital pada setiap awal kata (Title Case).</li>
+                                            <li><strong>Nama Dosen Pembimbing</strong> harus ditulis secara lengkap dan benar beserta gelar akademiknya.</li>
+                                        </ul>
+                                    </span>
+                                </div>
+                            </div>
+
+                            @if ($isLocked)
+                                <div class="alert alert-warning d-flex align-items-center p-5 mb-8">
+                                    <i class="fa-solid fa-lock fs-2hx text-warning me-4"></i>
+                                    <div class="d-flex flex-column">
+                                        <h4 class="mb-1 text-warning">Perhatian</h4>
+                                        <span>Data tidak dapat diubah karena pengajuan SKPI sedang diproses.</span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (($mahasiswa->tugasAkhir->status ?? '') === 'approved')
+                                <div class="alert alert-success d-flex align-items-center p-5 mb-8">
+                                    <i class="fa-solid fa-check-circle fs-2hx text-success me-4"></i>
+                                    <div class="d-flex flex-column">
+                                        <h4 class="mb-1 text-success">Disetujui</h4>
+                                        <span>Data yang telah disetujui tidak dapat diubah.</span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (($mahasiswa->tugasAkhir->status ?? '') === 'rejected')
+                                <div class="alert alert-danger d-flex align-items-center p-5 mb-8">
+                                    <i class="fa-solid fa-circle-exclamation fs-2hx text-danger me-4"></i>
+                                    <div class="d-flex flex-column">
+                                        <h4 class="mb-1 text-danger">Ditolak</h4>
+                                        <span>Alasan ditolak:
+                                            {{ $mahasiswa->tugasAkhir->keterangan ?: '(Tidak ada catatan)' }}</span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($errors->any())
+                                <div class="alert alert-danger p-5 mb-8">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <form id="kt_tugas_akhir_form" action="{{ route('mahasiswa.tugas_akhir.update') }}" method="POST" class="form mb-0">
+                                @csrf
+
+                                <div class="fv-row mb-8">
+                                    <label for="judul" class="form-label required fw-bold fs-6">Judul Tugas Akhir /
+                                        Skripsi</label>
+                                    <textarea name="judul" id="judul" rows="3" required class="form-control" {{ $readonly ? 'disabled' : '' }}>{{ old('judul', $mahasiswa->tugasAkhir->judul ?? '') }}</textarea>
+                                </div>
+
+                                @php
+                                    $pembimbingNames = [];
+                                    if ($mahasiswa->tugasAkhir) {
+                                        $pembimbingNames = collect($mahasiswa->tugasAkhir->pembimbingTugasAkhir)
+                                            ->pluck('nama_dosen')
+                                            ->toArray();
+                                    }
+                                @endphp
+
+                                <div class="row g-8 mb-8">
+                                    <div class="col-md-6 fv-row">
+                                        <label class="form-label required fw-bold fs-6">Dosen Pembimbing 1 (Utama)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-user-tie"></i></span>
+                                            <input type="text" name="pembimbing[0]" class="form-control"
+                                                value="{{ old('pembimbing.0', $pembimbingNames[0] ?? '') }}" required
+                                                {{ $readonly ? 'disabled' : '' }}>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 fv-row">
+                                        <label class="form-label fw-bold fs-6">Dosen Pembimbing 2 (Pendamping)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fa-solid fa-user-group"></i></span>
+                                            <input type="text" name="pembimbing[1]" class="form-control"
+                                                value="{{ old('pembimbing.1', $pembimbingNames[1] ?? '') }}"
+                                                {{ $readonly ? 'disabled' : '' }}>
+                                        </div>
+                                        <div class="form-text mt-2 text-muted">Opsional, biarkan kosong jika tidak ada
+                                            pembimbing pendamping.</div>
+                                    </div>
+                                </div>
+
+                                @if (!$readonly)
+                                    <div class="separator my-10"></div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" id="kt_tugas_akhir_submit" class="btn btn-primary fw-bold px-8">
+                                            <span class="indicator-label">
+                                                <i class="fa-solid fa-save me-2"></i> Simpan Perubahan
+                                            </span>
+                                            <span class="indicator-progress">
+                                                Menyimpan... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                @endif
+                            </form>
+                        </div>
                     </div>
 
-                    @if(!$readonly)
-                        <div class="flex justify-end mt-2">
-                            <button type="button" id="btn-add-pembimbing" class="btn btn-primary btn-sm">
-                                <i class="fa-solid fa-plus"></i> Tambah Dosen Pembimbing
-                            </button>
-                        </div>
-                    @endif
                 </div>
-
-                @if(!$readonly)
-                    <button type="submit" class="btn btn-primary w-100 font-bold py-3.5">Simpan Perubahan</button>
-                @endif
-            </form>
-        </div>
-    </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @section('js')
-@if(!$readonly)
+@if (!$readonly)
 <script>
-    document.getElementById('btn-add-pembimbing').addEventListener('click', function() {
-        const container = document.getElementById('pembimbing-container');
-        const rows = container.getElementsByClassName('pembimbing-row');
-        const nextIndex = rows.length + 1;
-
-        const newRow = document.createElement('div');
-        newRow.className = 'flex items-center gap-3 pembimbing-row animate-fade-in';
-        
-        newRow.innerHTML = `
-            <span class="text-xs font-bold text-gray-400 w-8 shrink-0 font-mono">#${nextIndex}</span>
-            <div class="flex-1">
-                <input type="text" name="pembimbing[]" class="form-control form-control-solid select-pembimbing" placeholder="Nama Dosen Pembimbing...">
-            </div>
-            <button type="button" class="btn btn-sm btn-danger btn-remove-pembimbing shrink-0" onclick="this.closest('.pembimbing-row').remove(); renumberPembimbing();">
-                <i class="fa-solid fa-trash"></i>
-            </button>
-        `;
-        container.appendChild(newRow);
+    document.getElementById('kt_tugas_akhir_form').addEventListener('submit', function() {
+        var btn = document.getElementById('kt_tugas_akhir_submit');
+        btn.setAttribute('data-kt-indicator', 'on');
+        btn.disabled = true;
     });
-
-    function renumberPembimbing() {
-        const container = document.getElementById('pembimbing-container');
-        const rows = container.getElementsByClassName('pembimbing-row');
-        for (let i = 0; i < rows.length; i++) {
-            const label = rows[i].querySelector('span');
-            label.textContent = `#${i + 1}`;
-            
-            const existingBtn = rows[i].querySelector('.btn-remove-pembimbing');
-            const placeholder = rows[i].querySelector('.w-10');
-            
-            if (i < 2) {
-                if (existingBtn) {
-                    const div = document.createElement('div');
-                    div.className = 'w-10 shrink-0';
-                    existingBtn.replaceWith(div);
-                }
-                const select = rows[i].querySelector('input');
-                if (i === 0) {
-                    select.setAttribute('required', 'required');
-                } else {
-                    select.removeAttribute('required');
-                }
-            } else {
-                if (placeholder) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'btn btn-sm btn-danger btn-remove-pembimbing shrink-0';
-                    btn.onclick = function() { this.closest('.pembimbing-row').remove(); renumberPembimbing(); };
-                    btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
-                    placeholder.replaceWith(btn);
-                }
-            }
-        }
-    }
 </script>
 @endif
 @endsection

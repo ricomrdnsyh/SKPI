@@ -53,6 +53,8 @@ class MagangController extends Controller
         MagangMahasiswa::create($data);
         $this->autoResubmitIfNeeded();
 
+        if (request()->ajax()) { return response()->json(["success" => true, "message" => "Data magang berhasil ditambahkan."]); }
+
         return redirect()->route('mahasiswa.magang.index')->with('success', 'Data magang berhasil ditambahkan.');
     }
 
@@ -106,6 +108,8 @@ class MagangController extends Controller
         $magang->update($data);
         $this->autoResubmitIfNeeded();
 
+        if (request()->ajax()) { return response()->json(["success" => true, "message" => "Data magang berhasil diperbarui."]); }
+
         return redirect()->route('mahasiswa.magang.index')->with('success', 'Data magang berhasil diperbarui.');
     }
 
@@ -125,6 +129,8 @@ class MagangController extends Controller
         }
 
         $magang->delete();
+
+        if (request()->ajax()) { return response()->json(["success" => true, "message" => "Data magang berhasil dihapus."]); }
 
         return redirect()->route('mahasiswa.magang.index')->with('success', 'Data magang berhasil dihapus.');
     }
@@ -147,7 +153,7 @@ class MagangController extends Controller
             ->addColumn('status', fn($row) => DataTableHelper::statusBadgeWithReason($row->status, $row->keterangan, ['pending' => 'warning', 'approved' => 'success', 'rejected' => 'danger']))
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_magang . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a> ' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_magang . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action', 'bukti', 'status'])
             ->make(true);
@@ -175,3 +181,10 @@ class MagangController extends Controller
         return $pengajuan && in_array($pengajuan->status, ['dicetak']);
     }
 }
+
+
+
+
+
+
+

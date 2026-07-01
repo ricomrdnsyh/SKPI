@@ -1,5 +1,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        $('#tanggal_mulai').flatpickr({
+            dateFormat: "Y-m-d",
+            allowInput: true
+        });
+        $('#tanggal_selesai').flatpickr({
+            dateFormat: "Y-m-d",
+            allowInput: true
+        });
         const formCreate = document.getElementById('form_create_magang');
         if (!formCreate) return;
         

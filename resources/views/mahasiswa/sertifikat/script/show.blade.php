@@ -1,7 +1,7 @@
 <script>
-    function editModal(element) {
+    function showModal(element) {
         let data = JSON.parse($(element).attr('data-row'));
-        let form = document.getElementById('form_edit_magang');
+        let form = document.getElementById('form_show_sertifikat');
         
         // Auto-populate inputs based on data keys
         for (let key in data) {
@@ -22,45 +22,32 @@
         $(form).find('select').trigger('change.select2');
 
         // Set form action
-        form.action = '/mahasiswa/magang/' + data.id_magang;
+                let statusInput = document.getElementById('show_status');
+        if (statusInput) statusInput.value = data.status ? data.status.toUpperCase() : '-';
+        
+        let ketInput = document.getElementById('show_keterangan');
+        if (ketInput) ketInput.value = data.keterangan ? data.keterangan : '-';
 
-        $('#form_edit').modal('show');
+        let fileContainer = document.getElementById('show_file_bukti_container');
+        if (fileContainer) {
+            if (data.file_bukti) {
+                let fileUrl = '/storage/' + data.file_bukti;
+                fileContainer.innerHTML = '<a href="' + fileUrl + '" target="_blank" class="btn btn-sm btn-light-primary"><i class="fas fa-file-alt"></i> Lihat File Bukti</a>';
+            } else {
+                fileContainer.innerHTML = '<span class="text-muted"><i>Tidak ada file bukti</i></span>';
+            }
+        }
+
+        $('#form_show').modal('show');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        $('#edit_tanggal_mulai').flatpickr({
-            dateFormat: "Y-m-d",
-            allowInput: true
-        });
-        $('#edit_tanggal_selesai').flatpickr({
-            dateFormat: "Y-m-d",
-            allowInput: true
-        });
-        const formEdit = document.getElementById('form_edit_magang');
+        const formEdit = document.getElementById('form_show_sertifikat');
         if (!formEdit) return;
         
-        let submitButtonEdit = formEdit.querySelector('[type="submit"]');
-        if (!submitButtonEdit) {
-             const ind = formEdit.querySelector('.indicator-label');
-             if(ind) submitButtonEdit = ind.closest('button');
-        }
+        
 
-        formEdit.addEventListener('submit', function(e) {
-            if (!formEdit.checkValidity()) {
-                e.preventDefault();
-                e.stopPropagation();
-                formEdit.classList.add('was-validated');
-                return;
-            }
-
-            if (submitButtonEdit) {
-                submitButtonEdit.disabled = true;
-                const label = submitButtonEdit.querySelector('.indicator-label');
-                const progress = submitButtonEdit.querySelector('.indicator-progress');
-                if(label) label.style.display = 'none';
-                if(progress) progress.style.display = 'inline-block';
-            }
-        });
+        
 
         const modalEl = document.getElementById('form_edit');
         if (modalEl) {
@@ -77,4 +64,10 @@
         }
     });
 </script>
+
+
+
+
+
+
 

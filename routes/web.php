@@ -89,12 +89,14 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('kurikulum/data', [KurikulumController::class, 'datatable'])->name('kurikulum.datatable');
         Route::get('fakultas/data', [FakultasController::class, 'datatable'])->name('fakultas.datatable');
         Route::get('prodi/data', [ProgramStudiController::class, 'datatable'])->name('prodi.datatable');
+        Route::get('kategori-cpl/data', [KategoriCplController::class, 'datatable'])->name('kategori-cpl.datatable');
         
         Route::resource('mahasiswa', MahasiswaCrudController::class);
         Route::resource('cpl', CplProdiController::class);
         Route::resource('kurikulum', KurikulumController::class);
         Route::resource('fakultas', FakultasController::class);
         Route::resource('prodi', ProgramStudiController::class);
+        Route::resource('kategori-cpl', KategoriCplController::class);
     });
 
     // Admin only routes
@@ -102,9 +104,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('/dashboard', [MasterDataController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('penilaian/data', [SistemPenilaianController::class, 'datatable'])->name('penilaian.datatable');
         Route::get('users/data', [UserController::class, 'datatable'])->name('users.datatable');
-        Route::get('kategori-cpl/data', [KategoriCplController::class, 'datatable'])->name('kategori-cpl.datatable');
         Route::resource('penilaian', SistemPenilaianController::class);
         Route::resource('users', UserController::class);
-        Route::resource('kategori-cpl', KategoriCplController::class);
     });
 });

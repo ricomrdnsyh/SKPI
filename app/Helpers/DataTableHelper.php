@@ -53,7 +53,7 @@ class DataTableHelper
     public static function buktiLink(?string $filePath): string
     {
         if (!$filePath) return '-';
-        return '<a href="' . asset('storage/' . $filePath) . '" target="_blank" class="btn btn-xs btn-outline"><i class="fa-solid fa-file"></i></a>';
+        return '<a href="' . asset('storage/' . $filePath) . '" target="_blank" class="btn btn-sm btn-light-primary px-3 py-2"><i class="fas fa-file-alt me-1"></i> File</a>';
     }
 
     public static function actionButtons(array $actions): string

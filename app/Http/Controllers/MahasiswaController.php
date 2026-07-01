@@ -125,7 +125,7 @@ class MahasiswaController extends Controller
 
             $steps = $this->progressService->getSteps($mahasiswa, $pengajuan);
 
-            return view('mahasiswa.dashboard', compact('mahasiswa', 'prestasi', 'organisasi', 'sertifikat', 'magang', 'pengajuan', 'steps'))->render();
+            return view('mahasiswa.dashboard.index', compact('mahasiswa', 'prestasi', 'organisasi', 'sertifikat', 'magang', 'pengajuan', 'steps'))->render();
         });
     }
 
@@ -147,7 +147,7 @@ class MahasiswaController extends Controller
             ->first();
 
         $isRejected = $taRaw && $taRaw->status === 'rejected';
-        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
+        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['diajukan', 'verifikasi', 'dicetak']);
         $isApproved = $taRaw && $taRaw->status === 'approved';
         $readonly = $isLocked || $isApproved;
 
@@ -251,7 +251,7 @@ class MahasiswaController extends Controller
             ->first();
 
         $isRejected = $taRaw && $taRaw->status === 'rejected';
-        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
+        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['diajukan', 'verifikasi', 'dicetak']);
         $isApproved = $taRaw && $taRaw->status === 'approved';
 
         if ($isLocked) {

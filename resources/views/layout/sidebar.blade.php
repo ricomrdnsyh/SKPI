@@ -228,6 +228,12 @@
                 <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="kt_app_sidebar_menu"
                     data-kt-menu="true" data-kt-menu-expand="false">
 
+                    <div class="menu-item pt-5">
+                        <div class="menu-content pb-2">
+                            <span class="menu-section text-muted text-uppercase fs-8 ls-1">Main</span>
+                        </div>
+                    </div>
+
                     <div class="menu-item">
                         <a class="menu-link {{ Request::is('dashboard') || Request::is('*/dashboard') ? 'active' : '' }}"
                             href="{{ route('dashboard') }}">
@@ -284,28 +290,17 @@
                     @if ($role === 'bak_fakultas')
                         <div class="menu-item pt-5">
                             <div class="menu-content pb-2">
-                                <span class="menu-section text-muted text-uppercase fs-8 ls-1">Layanan Akademik</span>
+                                <span class="menu-section text-muted text-uppercase fs-8 ls-1">Master</span>
                             </div>
                         </div>
                         <div class="menu-item">
-                            <a class="menu-link {{ Request::is('bak-fakultas*') ? 'active' : '' }}"
-                                href="{{ route('bak_fakultas.dashboard') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-list-check fs-4"></i></span>
-                                <span class="menu-title">Antrian SKPI</span>
+                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
+                                href="{{ route('kurikulum.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
+                                <span class="menu-title">Kurikulum</span>
                             </a>
                         </div>
-                        <div class="menu-item pt-5">
-                            <div class="menu-content pb-2">
-                                <span class="menu-section text-muted text-uppercase fs-8 ls-1">Data Akademik</span>
-                            </div>
-                        </div>
-                        <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/mahasiswa*') ? 'active' : '' }}"
-                                href="{{ route('mahasiswa.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-user-graduate fs-4"></i></span>
-                                <span class="menu-title">Mahasiswa</span>
-                            </a>
-                        </div>
+
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/fakultas*') ? 'active' : '' }}"
                                 href="{{ route('fakultas.index') }}">
@@ -321,6 +316,13 @@
                             </a>
                         </div>
                         <div class="menu-item">
+                            <a class="menu-link {{ Request::is('akademik/kategori-cpl*') ? 'active' : '' }}"
+                                href="{{ route('kategori-cpl.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-tags fs-4"></i></span>
+                                <span class="menu-title">Kategori CPL</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/cpl*') ? 'active' : '' }}"
                                 href="{{ route('cpl.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-book-open fs-4"></i></span>
@@ -328,20 +330,15 @@
                             </a>
                         </div>
                         <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
-                                href="{{ route('kurikulum.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
-                                <span class="menu-title">Kurikulum</span>
+                            <a class="menu-link {{ Request::is('akademik/mahasiswa*') ? 'active' : '' }}"
+                                href="{{ route('mahasiswa.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-user-graduate fs-4"></i></span>
+                                <span class="menu-title">Mahasiswa</span>
                             </a>
                         </div>
                     @endif
 
                     @if ($role === 'admin')
-                        <div class="menu-item pt-5">
-                            <div class="menu-content pb-2">
-                                <span class="menu-section text-muted text-uppercase fs-8 ls-1">Manajemen Sistem</span>
-                            </div>
-                        </div>
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('admin/users*') ? 'active' : '' }}"
                                 href="{{ route('users.index') }}">
@@ -349,6 +346,18 @@
                                 <span class="menu-title">Pengguna</span>
                             </a>
                         </div>
+                        <div class="menu-item pt-5">
+                            <div class="menu-content pb-2">
+                                <span class="menu-section text-muted text-uppercase fs-8 ls-1">Master</span>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
+                                href="{{ route('kurikulum.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
+                                <span class="menu-title">Kurikulum</span>
+                            </a>
+                        </div>
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/fakultas*') ? 'active' : '' }}"
                                 href="{{ route('fakultas.index') }}">
@@ -360,21 +369,21 @@
                             <a class="menu-link {{ Request::is('akademik/prodi*') ? 'active' : '' }}"
                                 href="{{ route('prodi.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-graduation-cap fs-4"></i></span>
-                                <span class="menu-title">Prodi</span>
+                                <span class="menu-title">Program Studi</span>
                             </a>
                         </div>
                         <div class="menu-item">
-                            <a class="menu-link {{ Request::is('admin/kategori-cpl*') ? 'active' : '' }}"
+                            <a class="menu-link {{ Request::is('admin/penilaian*') ? 'active' : '' }}"
+                                href="{{ route('penilaian.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-chart-simple fs-4"></i></span>
+                                <span class="menu-title">Sistem Penilaian</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('akademik/kategori-cpl*') ? 'active' : '' }}"
                                 href="{{ route('kategori-cpl.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-tags fs-4"></i></span>
                                 <span class="menu-title">Kategori CPL</span>
-                            </a>
-                        </div>
-                        <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/mahasiswa*') ? 'active' : '' }}"
-                                href="{{ route('mahasiswa.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-user-graduate fs-4"></i></span>
-                                <span class="menu-title">Mahasiswa</span>
                             </a>
                         </div>
                         <div class="menu-item">
@@ -385,17 +394,10 @@
                             </a>
                         </div>
                         <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
-                                href="{{ route('kurikulum.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
-                                <span class="menu-title">Kurikulum</span>
-                            </a>
-                        </div>
-                        <div class="menu-item">
-                            <a class="menu-link {{ Request::is('admin/penilaian*') ? 'active' : '' }}"
-                                href="{{ route('penilaian.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-chart-simple fs-4"></i></span>
-                                <span class="menu-title">Sistem Penilaian</span>
+                            <a class="menu-link {{ Request::is('akademik/mahasiswa*') ? 'active' : '' }}"
+                                href="{{ route('mahasiswa.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-user-graduate fs-4"></i></span>
+                                <span class="menu-title">Mahasiswa</span>
                             </a>
                         </div>
                     @endif

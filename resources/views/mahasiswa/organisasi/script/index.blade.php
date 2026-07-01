@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function() {
         let table = $('#table-organisasi').DataTable({
-            processing: true,
+            processing: false,
             serverSide: true,
             responsive: {
                 details: {
@@ -48,13 +48,19 @@
                 }
             ],
             ajax: {
-                url: '{{ route('organisasi.datatable') }}',
+                url: '{{ route('mahasiswa.organisasi.datatable') }}',
                 data: function(d) {}
             },
             columns: [
                 { data: null, defaultContent: '', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false },
-                
+                { data: 'nama_organisasi' },
+                { data: 'tingkat' },
+                { data: 'jabatan' },
+                { data: 'tahun_mulai' },
+                { data: 'tahun_selesai' },
+                { data: 'bukti', orderable: false, searchable: false },
+                { data: 'status', orderable: false, searchable: false }
             ],
             drawCallback: function() {
                 $('#table-organisasi [data-bs-toggle="tooltip"]').tooltip();
@@ -79,7 +85,7 @@
             cancelButtonText: "Batal",
             customClass: {
                 confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-light'
+                cancelButton: 'btn btn-secondary'
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -138,3 +144,5 @@
         });
     </script>
 @endif
+
+

@@ -1,7 +1,7 @@
 <script>
     $(document).ready(function() {
         let table = $('#table-cpl').DataTable({
-            processing: true,
+            processing: false,
             serverSide: true,
             responsive: {
                 details: {
@@ -50,44 +50,52 @@
             ajax: {
                 url: '{{ route('cpl.datatable') }}',
                 data: function(d) {
-                        d.id_prodi = $('#filter-prodi').val();
-                        d.id_kurikulum = $('#filter-kurikulum').val();
-                    }
+                    d.id_prodi = $('#filter-prodi').val();
+                    d.id_kurikulum = $('#filter-kurikulum').val();
+                }
             },
-            columns: [
-                { data: null, defaultContent: '', orderable: false, searchable: false },
-                { data: 'action', orderable: false, searchable: false },
+            columns: [{
+                    data: null,
+                    defaultContent: '',
+                    orderable: false,
+                    searchable: false
+                },
                 {
-                        data: 'prodi'
-                    },
+                    data: 'action',
+                    orderable: false,
+                    searchable: false
+                },
                 {
-                        data: 'kurikulum'
-                    },
+                    data: 'prodi'
+                },
                 {
-                        data: 'kategori'
-                    },
+                    data: 'kurikulum'
+                },
                 {
-                        data: 'kode_cpl'
-                    },
+                    data: 'kategori'
+                },
                 {
-                        data: 'deskripsi'
-                    },
+                    data: 'kode_cpl'
+                },
                 {
-                        data: 'urutan'
-                    }
+                    data: 'deskripsi'
+                },
+                {
+                    data: 'urutan'
+                }
             ],
             drawCallback: function() {
                 $('#table-cpl [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-        
+
         table.on('draw', function() {
             $('#table-cpl [data-bs-toggle="tooltip"]').tooltip();
         });
 
         $('#filter-prodi, #filter-kurikulum').on('change', function() {
-                table.ajax.reload(null, false);
-            });
+            table.ajax.reload(null, false);
+        });
     });
 </script>
 <script>
@@ -117,7 +125,9 @@
                             icon: 'info',
                             text: 'Sedang memproses...',
                             allowOutsideClick: false,
-                            didOpen: () => { Swal.showLoading() }
+                            didOpen: () => {
+                                Swal.showLoading()
+                            }
                         });
                     },
                     success: function(response) {
@@ -126,7 +136,9 @@
                             icon: "success",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, got it!",
-                            customClass: { confirmButton: "btn btn-primary" }
+                            customClass: {
+                                confirmButton: "btn btn-primary"
+                            }
                         });
                         $('#table-cpl').DataTable().ajax.reload(null, false);
                     },
@@ -145,18 +157,22 @@
             icon: "success",
             buttonsStyling: false,
             confirmButtonText: "Ok, got it!",
-            customClass: { confirmButton: "btn btn-primary" }
+            customClass: {
+                confirmButton: "btn btn-primary"
+            }
         });
     </script>
 @endif
-@if ($message = Session::get('failed') || $message = Session::get('error'))
+@if ($message = Session::get('failed') || ($message = Session::get('error')))
     <script>
         Swal.fire({
             text: "{{ Session::get('failed') ?? Session::get('error') }}",
             icon: "error",
             buttonsStyling: false,
             confirmButtonText: "Ok, got it!",
-            customClass: { confirmButton: "btn btn-danger" }
+            customClass: {
+                confirmButton: "btn btn-danger"
+            }
         });
     </script>
 @endif
