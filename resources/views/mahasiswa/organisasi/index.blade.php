@@ -134,6 +134,7 @@
                                         <th class="min-w-100px">Tahun Selesai</th>
                                         <th class="min-w-100px">Bukti</th>
                                         <th class="min-w-100px">Status</th>
+                                        <th class="min-w-150px">Catatan</th>
 
                                     </tr>
                                 </thead>

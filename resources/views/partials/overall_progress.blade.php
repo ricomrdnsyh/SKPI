@@ -1,34 +1,98 @@
 @props(['steps'])
 
-<div class="card p-6 animate-fade-in" style="animation-delay: 0.05s">
-    <div class="section-accent mb-5">
-        <i class="fa-solid fa-route"></i>
-        <h3 class="text-sm font-bold text-gray-900">Progress Penerbitan SKPI</h3>
+<div class="card border border-dashed border-dark mb-6">
+    <div class="card-header border-0 pt-6 d-flex justify-content-between align-items-center flex-wrap gap-4">
+        <h3 class="card-title align-items-start flex-column m-0">
+            <span class="card-label fw-bolder fs-3 mb-1"><i class="ki-duotone ki-route fs-2 me-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i> Pengajuan Cetak SKPI dan statusnya</span>
+        </h3>
+        
+        @if(isset($pengajuan) && isset($statusClass))
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                @if ($pengajuan->status !== 'draft')
+                    <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}" target="_blank" class="btn btn-success btn-sm fw-bold">
+                        <i class="ki-duotone ki-file-down fs-2"><span class="path1"></span><span class="path2"></span></i> Preview SKPI (PDF)
+                    </a>
+                @endif
+                <span class="badge {{ $statusClass }} fs-6 fw-bolder px-4 py-2 text-uppercase">
+                    Status: {{ $pengajuan->status }}
+                </span>
+            </div>
+        @endif
     </div>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-6 mb-6">
-        @foreach($steps as $stepNum => $step)
-            @php
-                $isDone = $step['status'] === 'sudah';
-                $isRejected = $step['status'] === 'ditolak';
-                $isRevisi = $step['status'] === 'revisi';
-                $numClass = $isDone ? 'bg-emerald-500 text-white' : ($isRejected ? 'bg-red-500 text-white' : ($isRevisi ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-500'));
-                $statusClass = $isDone ? 'bg-emerald-100 text-emerald-700' : ($isRejected ? 'bg-red-100 text-red-700' : ($isRevisi ? 'bg-amber-100 text-amber-700' : 'bg-gray-200 text-gray-500'));
-            @endphp
-            <div class="relative p-4 bg-white rounded-2xl border border-gray-200/80 shadow-sm transition-all duration-200 hover:shadow-md {{ $isDone ? 'bg-emerald-50/30' : '' }}">
-                <div class="absolute top-3 right-3 w-5 h-5 font-bold text-[9px] flex items-center justify-center rounded-lg {{ $numClass }}">
-                    {{ $stepNum }}
-                </div>
-                <p class="font-bold text-xs text-gray-900 pr-6">{{ $step['name'] }}</p>
-                <p class="text-[10px] text-gray-500 mt-1.5 leading-relaxed">{{ $step['desc'] }}</p>
-                <div class="mt-3 pt-3 flex items-center justify-between border-t border-gray-200/60">
-                    <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full {{ $statusClass }}">
-                        {{ $step['status'] === 'sudah' ? 'Selesai' : ($step['status'] === 'ditolak' ? 'Ditolak' : ($step['status'] === 'revisi' ? 'Revisi' : ucfirst($step['status']))) }}
-                    </span>
-                    @if($step['date'])
-                        <span class="text-[9px] text-gray-400 font-medium">{{ \Carbon\Carbon::parse($step['date'])->format('d/m/y') }}</span>
+    <div class="card-body pt-5">
+        <div class="row g-5">
+            @foreach ($steps as $stepNum => $step)
+                @php
+                    // Logika warna dasar card berdasarkan status (abu-abu jika menunggu)
+                    $stepColor =
+                        $step['status'] === 'sudah'
+                            ? 'success'
+                            : ($step['status'] === 'ditolak'
+                                ? 'danger'
+                                : ($step['status'] === 'revisi'
+                                    ? 'warning'
+                                    : 'secondary'));
+
+                    // Variasi warna cerah untuk teks, angka, dan badge jika masih 'Menunggu'
+                    $themeColors = [
+                        1 => 'primary',
+                        2 => 'info',
+                        3 => 'primary',
+                        4 => 'info',
+                        5 => 'primary',
+                    ];
+                    // Gunakan warna status asli jika sudah selesai/ditolak/revisi,
+                    // tapi gunakan warna tema cerah jika masih 'Menunggu' (secondary)
+                    $themeColor =
+                        $stepColor === 'secondary'
+                            ? $themeColors[$stepNum] ?? 'primary'
+                            : $stepColor;
+
+                    // Logika teks dan badge status
+                    if ($step['status'] === 'sudah') {
+                        $badgeClass = 'badge-success';
+                        $stepText = 'Selesai';
+                    } elseif ($step['status'] === 'ditolak') {
+                        $badgeClass = 'badge-danger';
+                        $stepText = 'Ditolak';
+                    } elseif ($step['status'] === 'revisi') {
+                        $badgeClass = 'badge-warning text-gray-800';
+                        $stepText = 'Revisi';
+                    } else {
+                        $badgeClass = 'badge-light-warning';
+                        $stepText = 'Menunggu';
+                    }
+
+                    // Khusus warna teks di dalam lingkaran agar jelas saat background warning (kuning)
+                    $circleTextColor = $themeColor === 'warning' ? 'text-gray-800' : 'text-white';
+                @endphp
+                <div class="col-md-6 col-lg position-relative">
+                    <div class="border border-dashed border-{{ $stepColor }} bg-light-{{ $stepColor }} rounded p-5 h-100 hover-elevate-up transition-all d-flex flex-column">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="symbol symbol-40px me-3">
+                                <div class="symbol-label bg-{{ $themeColor }} {{ $circleTextColor }} fw-bolder fs-5 shadow-sm">
+                                    {{ $stepNum }}
+                                </div>
+                            </div>
+                            <div class="fs-6 fw-bolder text-{{ $themeColor }}">{{ $step['name'] }}
+                            </div>
+                        </div>
+                        <div class="fs-8 text-gray-700 mb-5">{{ $step['desc'] }}</div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-4 border-top border-{{ $themeColor }}">
+                            <span class="badge {{ $badgeClass }} fs-8 px-3 py-2 fw-bolder text-uppercase">{{ $stepText }}</span>
+                            @if ($step['date'])
+                                <span class="text-muted fs-8 fw-bold"><i class="fas fa-clock me-1 text-{{ $themeColor }}"></i>{{ \Carbon\Carbon::parse($step['date'])->format('d/m/y') }}</span>
+                            @endif
+                        </div>
+                    </div>
+                    @if (!$loop->last)
+                        <div class="position-absolute top-50 start-100 translate-middle d-none d-lg-flex align-items-center justify-content-center bg-white rounded-circle shadow" style="z-index: 5; width: 32px; height: 32px;">
+                            <i class="fas fa-chevron-right fs-6 text-gray-500"></i>
+                        </div>
                     @endif
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 </div>

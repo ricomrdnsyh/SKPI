@@ -59,7 +59,8 @@
                 { data: 'tanggal_mulai' },
                 { data: 'tanggal_selesai' },
                 { data: 'bukti', orderable: false, searchable: false },
-                { data: 'status', orderable: false, searchable: false }
+                { data: 'status', orderable: false, searchable: false },
+                { data: 'catatan', orderable: false, searchable: false }
             ],
             drawCallback: function() {
                 $('#table-magang [data-bs-toggle="tooltip"]').tooltip();

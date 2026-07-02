@@ -60,7 +60,8 @@
                 { data: 'tahun_mulai' },
                 { data: 'tahun_selesai' },
                 { data: 'bukti', orderable: false, searchable: false },
-                { data: 'status', orderable: false, searchable: false }
+                { data: 'status', orderable: false, searchable: false },
+                { data: 'catatan', orderable: false, searchable: false }
             ],
             drawCallback: function() {
                 $('#table-organisasi [data-bs-toggle="tooltip"]').tooltip();

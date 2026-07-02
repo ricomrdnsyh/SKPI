@@ -60,7 +60,8 @@
                 { data: 'penyelenggara' },
                 { data: 'tahun' },
                 { data: 'bukti', orderable: false, searchable: false },
-                { data: 'status', orderable: false, searchable: false }
+                { data: 'status', orderable: false, searchable: false },
+                { data: 'catatan', orderable: false, searchable: false }
             ],
             drawCallback: function() {
                 $('#table-prestasi [data-bs-toggle="tooltip"]').tooltip();

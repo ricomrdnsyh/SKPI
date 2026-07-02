@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layout.main')
 
 @section('title', 'Detail Verifikasi SKPI')
 
@@ -6,117 +6,164 @@
     @php
         $backRoute = route('bak_fakultas.dashboard');
         $statusColors = [
-            'dicetak' => 'bg-emerald-100 text-emerald-800',
-            'verifikasi' => 'bg-blue-100 text-blue-800',
-            'diajukan' => 'bg-amber-100 text-amber-800',
-            'ditolak' => 'bg-red-100 text-red-800',
-            'draft' => 'bg-gray-100 text-gray-800',
+            'dicetak' => 'badge-light-success',
+            'verifikasi' => 'badge-light-primary',
+            'diajukan' => 'badge-light-warning',
+            'ditolak' => 'badge-light-danger',
+            'draft' => 'badge-light-secondary',
         ];
-        $statusClass = $statusColors[$pengajuan->status] ?? 'bg-gray-100 text-gray-800';
+        $statusClass = $statusColors[$pengajuan->status] ?? 'badge-light-secondary';
         $steps = $mahasiswa->getSkpiProgressSteps($pengajuan);
         $role = Auth::user()->role;
     @endphp
 
-    <div class="form mb-6">
-        {{-- Header --}}
-        <div class="animate-fade-in">
-            <a href="{{ $backRoute }}"
-                class="inline-flex items-center gap-2 text-gray-600 font-semibold mb-4 text-sm hover:text-gray-900 transition">
-                <i class="fa-solid fa-arrow-left"></i> Kembali
-            </a>
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="fw-bolder fs-2 mb-5">Data Mahasiswa & Status Modul</h2>
-                    <p class="page-desc">
-                        Pemohon: <span class="font-bold text-gray-900">{{ $mahasiswa->nama_lengkap }}</span>
-                        (NIM: {{ $mahasiswa->nim }})
-                    </p>
+    <div class="d-flex flex-column flex-column-fluid">
+        <div class="app-content flex-column-fluid mt-7">
+            <div class="app-container container-fluid">
+                
+                {{-- Header --}}
+                <div class="mb-5 d-none">
+                    {{-- Intentionally empty or hidden header if needed later --}}
                 </div>
-                <div class="flex items-center gap-3 flex-wrap">
-                    @if ($pengajuan->status !== 'draft')
-                        <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}" target="_blank"
-                            class="btn btn-success btn-sm">
-                            <i class="fa-solid fa-file-pdf"></i> Preview SKPI (PDF)
-                        </a>
-                    @endif
-                    <span class="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl {{ $statusClass }}">
-                        Status: {{ $pengajuan->status }}
-                    </span>
+
+                {{-- Progress Timeline --}}
+                <div class="mb-6">
+                    @include('partials.overall_progress', [
+                        'steps' => $steps,
+                        'pengajuan' => $pengajuan,
+                        'statusClass' => $statusClass
+                    ])
                 </div>
-            </div>
-        </div>
 
-        {{-- Progress Timeline --}}
-        @include('partials.overall_progress', ['steps' => $steps])
-
-        {{-- Action cards --}}
-        @if (Auth::user()->role === 'bak_fakultas')
-            @include('bak_fakultas.verifikasi._action_cards')
-        @endif
-
-        {{-- Module status overview --}}
-        <div class="card p-6 animate-fade-in" style="animation-delay: 0.1s">
-            <h3 class="section-accent mb-4"><i class="fa-solid fa-list-check"></i> Status Persetujuan Modul</h3>
-            <div class="row row-cols-2 row-cols-md-5 g-6 mb-6">
-                @php
-                    $modStatus = function($items) {
-                        if ($items->where('status', 'rejected')->isNotEmpty()) return 'ditolak';
-                        if ($items->where('status', 'pending')->isNotEmpty()) return 'diproses';
-                        if ($items->where('status', 'approved')->count() === $items->count() && $items->count() > 0) return 'approved';
-                        return 'belum';
-                    };
-                    $taMod = $mahasiswa->tugasAkhir ? collect([$mahasiswa->tugasAkhir]) : collect();
-                    $mods = [
-                        ['label' => 'Prestasi', 'status' => $modStatus($prestasi)],
-                        ['label' => 'Organisasi', 'status' => $modStatus($organisasi)],
-                        ['label' => 'Sertifikat', 'status' => $modStatus($sertifikat)],
-                        ['label' => 'Magang', 'status' => $modStatus($magang)],
-                        ['label' => 'Tugas Akhir', 'status' => $modStatus($taMod)],
-                    ];
-                @endphp
-                @foreach($mods as $m)
-                    @php
-                        $c = match($m['status']) {
-                            'approved' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
-                            'ditolak' => 'bg-red-100 text-red-800 border-red-200',
-                            'belum' => 'bg-gray-50 text-gray-500 border-gray-200',
-                            default => 'bg-amber-100 text-amber-800 border-amber-200',
-                        };
-                        $i = match($m['status']) {
-                            'approved' => 'fa-check-circle',
-                            'ditolak' => 'fa-times-circle',
-                            'belum' => 'fa-circle',
-                            default => 'fa-clock',
-                        };
-                    @endphp
-                    <div class="p-3.5 {{ $c }} text-center rounded-2xl border">
-                        <p class="font-bold text-xs">{{ $m['label'] }}</p>
-                        <p class="text-[9px] font-bold uppercase tracking-wider mt-1"><i class="fa-solid {{ $i }} mr-0.5"></i> {{ $m['status'] }}</p>
+                {{-- Action cards --}}
+                @if (Auth::user()->role === 'bak_fakultas')
+                    <div class="mb-6">
+                        @include('bak_fakultas.verifikasi._action_cards')
                     </div>
-                @endforeach
+                @endif
+
+                {{-- Module status overview --}}
+                <div class="card border border-dashed border-dark mb-6">
+                    <div class="card-header border-0 pt-6">
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bolder fs-3 mb-1"><i class="ki-duotone ki-check-square fs-2 me-2 text-primary"><span class="path1"></span><span class="path2"></span></i> Status Persetujuan Modul</span>
+                        </h3>
+                    </div>
+                    <div class="card-body pt-5">
+                        @if (!empty($hasPendingItems) && $pengajuan->status === 'diajukan' && !$pengajuan->diverifikasi_oleh)
+                            <div class="alert bg-light-warning border border-warning border-dashed d-flex flex-column flex-sm-row p-5 mb-7">
+                                <i class="ki-duotone ki-information-5 fs-2hx text-warning me-4 mb-5 mb-sm-0"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                <div class="d-flex flex-column pe-0 pe-sm-10">
+                                    <h5 class="mb-1 text-warning">Verifikasi Item Belum Selesai</h5>
+                                    <span>Anda harus memverifikasi (approve/reject) semua item Prestasi, Organisasi, Sertifikat, Magang, dan Tugas Akhir terlebih dahulu sebelum dapat menyetujui pengajuan cetak SKPI.</span>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="row g-5">
+                            @php
+                                $modStatus = function($items) {
+                                    if ($items->where('status', 'rejected')->isNotEmpty()) return 'ditolak';
+                                    if ($items->where('status', 'pending')->isNotEmpty()) return 'diproses';
+                                    if ($items->where('status', 'approved')->count() === $items->count() && $items->count() > 0) return 'approved';
+                                    return 'belum';
+                                };
+                                $taMod = $mahasiswa->tugasAkhir ? collect([$mahasiswa->tugasAkhir]) : collect();
+                                $mods = [
+                                    ['label' => 'Prestasi', 'status' => $modStatus($prestasi)],
+                                    ['label' => 'Organisasi', 'status' => $modStatus($organisasi)],
+                                    ['label' => 'Sertifikat', 'status' => $modStatus($sertifikat)],
+                                    ['label' => 'Magang', 'status' => $modStatus($magang)],
+                                    ['label' => 'Tugas Akhir', 'status' => $modStatus($taMod)],
+                                ];
+                            @endphp
+                            @foreach($mods as $m)
+                                @php
+                                    $c = match($m['status']) {
+                                        'approved' => 'bg-light-success text-success border-success',
+                                        'ditolak' => 'bg-light-danger text-danger border-danger',
+                                        'belum' => 'bg-light text-gray-500 border-gray-200',
+                                        default => 'bg-light-warning text-warning border-warning',
+                                    };
+                                    $i = match($m['status']) {
+                                        'approved' => 'ki-check-circle',
+                                        'ditolak' => 'ki-cross-circle',
+                                        'belum' => 'ki-information-5',
+                                        default => 'ki-time',
+                                    };
+                                @endphp
+                                <div class="col-6 col-md">
+                                    <div class="border border-dashed rounded p-4 text-center {{ $c }}">
+                                        <div class="fs-6 fw-bolder mb-1 text-gray-800">{{ $m['label'] }}</div>
+                                        <div class="fs-7 fw-bold text-uppercase mt-2">
+                                            <i class="ki-duotone {{ $i }} fs-4 me-1 {{ str_replace('bg-light-', 'text-', explode(' ', $c)[0]) }}"><span class="path1"></span><span class="path2"></span></i>
+                                            {{ $m['status'] }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Academic Data --}}
+                <div class="mb-6">
+                    @include('bak_fakultas.verifikasi._prodi_academic_data')
+                </div>
+
+                {{-- Main content: Merged Profile & Validation --}}
+                <div class="row g-6 mb-6">
+                    <div class="col-lg-5 col-xl-4">
+                        <div class="card border border-dashed border-dark mb-6">
+                            @include('bak_fakultas.verifikasi._identity_card')
+                        </div>
+                        
+                        {{-- Timeline --}}
+                        @if ($history->isNotEmpty())
+                            <div class="card border border-dashed border-dark">
+                                @include('bak_fakultas.verifikasi._timeline')
+                            </div>
+                        @endif
+                    </div>
+                    <div class="col-lg-7 col-xl-8">
+                        <div class="card border border-dashed border-dark h-100">
+                            @include('bak_fakultas.verifikasi._validation_data')
+                            
+                            {{-- Checklist form for BAK --}}
+                            @if (Auth::user()->role === 'bak_fakultas' && $pengajuan->status === 'diajukan')
+                                @include('bak_fakultas.verifikasi._checklist_form')
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
-
-        {{-- Checklist form for BAK --}}
-        @if (Auth::user()->role === 'bak_fakultas' && $pengajuan->status === 'diajukan')
-            @include('bak_fakultas.verifikasi._checklist_form')
-        @endif
-
-        {{-- Main content --}}
-        <div class="row row-cols-1 row-cols-lg-2 g-6 mb-6">
-            <div class="form mb-6">
-                @include('bak_fakultas.verifikasi._identity_card')
-            </div>
-
-            <div class="form mb-6">
-                @include('bak_fakultas.verifikasi._validation_data')
-                @include('bak_fakultas.verifikasi._prodi_academic_data')
-            </div>
-        </div>
-
-        {{-- Timeline --}}
-        @if ($history->isNotEmpty())
-            @include('bak_fakultas.verifikasi._timeline')
-        @endif
     </div>
+@endsection
+
+@section('js')
+<script>
+    function confirmSetujui() {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan menyetujui pengajuan SKPI ini untuk dilanjutkan ke proses pencetakan.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Setujui SKPI',
+            cancelButtonText: 'Batal',
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.getElementById('formSetujui');
+                const btn = form.querySelector('button[type="button"]');
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memproses...';
+                btn.disabled = true;
+                form.submit();
+            }
+        });
+    }
+</script>
 @endsection

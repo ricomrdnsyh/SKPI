@@ -7,93 +7,121 @@
         $isResubmission = $pengajuanCycleCount > 0;
     @endphp
 
-    @if($isResubmission && $pengajuan->status === 'diajukan' && !$pengajuan->diverifikasi_oleh)
-        <div class="card p-5 animate-scale-in" style="border-color: #8b5cf6; background: linear-gradient(135deg, #f5f3ff, #ede9fe);">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="px-2.5 py-1 bg-violet-600 text-white text-[10px] font-bold rounded-lg">
-                    <i class="fa-solid fa-rotate mr-1"></i> Pengajuan Ulang (Siklus ke-{{ $pengajuanCycleCount + 1 }})
-                </span>
+    @if ($isResubmission && $pengajuan->status === 'diajukan' && !$pengajuan->diverifikasi_oleh)
+        <div
+            class="alert alert-dismissible bg-light-primary border border-primary d-flex flex-column flex-sm-row p-5 mb-5">
+            <i class="ki-duotone ki-arrows-circle fs-2hx text-primary me-4 mb-5 mb-sm-0"><span class="path1"></span><span
+                    class="path2"></span></i>
+            <div class="d-flex flex-column pe-0 pe-sm-10">
+                <h5 class="mb-1 text-primary">Pengajuan Ulang (Siklus ke-{{ $pengajuanCycleCount + 1 }})</h5>
+                <span>Mahasiswa telah memperbaiki data dan mengajukan ulang. Semua item perlu diverifikasi ulang.</span>
             </div>
-            <p class="text-xs text-violet-800 font-medium">Mahasiswa telah memperbaiki data dan mengajukan ulang. Semua item perlu diverifikasi ulang.</p>
         </div>
     @endif
 
     @if ($pengajuan->status === 'diajukan' && !$pengajuan->diverifikasi_oleh)
-        @if (!empty($hasPendingItems))
-            <div class="card p-6 animate-scale-in" style="border-color: #f59e0b;">
-                <h4 class="section-accent mb-3"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Verifikasi Item Belum Selesai</h4>
-                <p class="text-xs text-gray-600 font-medium">Anda harus memverifikasi (approve/reject) semua item Prestasi, Organisasi, Sertifikat, Magang, dan Tugas Akhir terlebih dahulu sebelum dapat menyetujui pengajuan cetak SKPI.</p>
-            </div>
-        @else
-            <div class="card p-6 animate-scale-in" style="border-color: #3b82f6;">
-                <h4 class="section-accent mb-3"><i class="fa-solid fa-check-circle text-blue-600"></i> Verifikasi Pengajuan Cetak</h4>
-                <p class="text-xs text-gray-600 font-medium mb-4">Semua item telah diverifikasi. Setujui atau tolak pengajuan cetak SKPI ini.</p>
-                <div class="flex gap-3">
-                    <form action="{{ route('bak_fakultas.pengajuan_cetak.approve', $pengajuan->id_pengajuan) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-success btn-sm">
-                            <i class="fa-solid fa-check mr-1"></i> Setujui
-                        </button>
-                    </form>
-                    <form action="{{ route('bak_fakultas.pengajuan_cetak.reject', $pengajuan->id_pengajuan) }}" method="POST" class="flex gap-2">
-                        @csrf
-                        <input type="text" name="keterangan" required class="form-control form-control-solid text-xs w-44" placeholder="Alasan tolak...">
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="fa-solid fa-xmark mr-1"></i> Tolak
-                        </button>
-                    </form>
+        @if (empty($hasPendingItems))
+            <div class="card border border-primary border-dashed mb-5">
+                <div class="card-body p-6">
+                    <h4 class="mb-3 text-primary"><i class="ki-duotone ki-check-circle fs-2 text-primary me-2"><span
+                                class="path1"></span><span class="path2"></span></i> Verifikasi Pengajuan Cetak</h4>
+                    <p class="text-muted fs-6 mb-5">Semua item telah diverifikasi. Setujui atau tolak pengajuan cetak
+                        SKPI ini.</p>
+                    <div class="d-flex gap-3">
+                        <form action="{{ route('bak_fakultas.pengajuan_cetak.approve', $pengajuan->id_pengajuan) }}"
+                            method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success btn-sm fw-bold">
+                                <i class="ki-duotone ki-check fs-2"><span class="path1"></span><span
+                                        class="path2"></span></i> Setujui
+                            </button>
+                        </form>
+                        <form action="{{ route('bak_fakultas.pengajuan_cetak.reject', $pengajuan->id_pengajuan) }}"
+                            method="POST" class="d-flex gap-2">
+                            @csrf
+                            <input type="text" name="keterangan" required
+                                class="form-control form-control-solid form-control-sm w-200px"
+                                placeholder="Alasan tolak...">
+                            <button type="submit" class="btn btn-danger btn-sm fw-bold">
+                                <i class="ki-duotone ki-cross fs-2"><span class="path1"></span><span
+                                        class="path2"></span></i> Tolak
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         @endif
     @endif
 
     @if ($pengajuan->status === 'verifikasi' && $pengajuan->permohonan_cetak && !$pengajuan->skpi)
-        <div class="card p-6 animate-scale-in" style="border-color: #22c55e;">
-            <h4 class="section-accent mb-3"><i class="fa-solid fa-print text-emerald-600"></i> Proses & Terbitkan SKPI</h4>
-            <p class="text-xs text-gray-600 font-medium mb-4">Mahasiswa telah mengajukan permohonan cetak. Masukkan nomor ijazah nasional dan status profesi (opsional) untuk menerbitkan SKPI.</p>
-            <form action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST" class="form mb-6">
-                @csrf
-                <div>
-                    <label for="nim_ijazah" class="form-label fw-bold">Nomor Ijazah Nasional (NIM Ijazah)</label>
-                    <input type="text" name="nim_ijazah" id="nim_ijazah" class="form-control form-control-solid text-sm" value="{{ old('nim_ijazah', $mahasiswa->nim ?? '') }}" required>
-                </div>
-                <div>
-                    <label for="status_profesi" class="form-label fw-bold">Status Profesi (Opsional)</label>
-                    <input type="text" name="status_profesi" id="status_profesi" class="form-control form-control-solid text-sm" value="{{ old('status_profesi', 'Belum ada keanggotaan profesi') }}">
-                </div>
-                <button type="submit" class="btn btn-success w-full py-3 text-sm font-bold">
-                    <i class="fa-solid fa-certificate mr-1"></i> Terbitkan & Cetak SKPI
-                </button>
-            </form>
+        <div class="card border border-success border-dashed mb-5">
+            <div class="card-body p-6">
+                <h4 class="mb-3 text-success"><i class="ki-duotone ki-printer fs-2 text-success me-2"><span
+                            class="path1"></span><span class="path2"></span><span class="path3"></span><span
+                            class="path4"></span><span class="path5"></span></i> Proses & Terbitkan SKPI</h4>
+                <p class="text-muted fs-6 mb-5">Mahasiswa telah mengajukan permohonan cetak. Masukkan nomor ijazah
+                    nasional dan status profesi (opsional) untuk menerbitkan SKPI.</p>
+                <form action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST">
+                    @csrf
+                    <div class="row mb-5">
+                        <div class="col-md-6 mb-5 mb-md-0">
+                            <label for="nim_ijazah" class="required form-label fw-bold">Nomor Ijazah Nasional (NIM
+                                Ijazah)</label>
+                            <input type="text" name="nim_ijazah" id="nim_ijazah"
+                                class="form-control form-control-solid"
+                                value="{{ old('nim_ijazah', $mahasiswa->nim ?? '') }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="status_profesi" class="form-label fw-bold">Status Profesi (Opsional)</label>
+                            <input type="text" name="status_profesi" id="status_profesi"
+                                class="form-control form-control-solid"
+                                value="{{ old('status_profesi', 'Belum ada keanggotaan profesi') }}">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 fw-bolder">
+                        <i class="ki-duotone ki-badge fs-2"><span class="path1"></span><span
+                                class="path2"></span><span class="path3"></span><span class="path4"></span><span
+                                class="path5"></span></i> Terbitkan & Cetak SKPI
+                    </button>
+                </form>
+            </div>
         </div>
     @endif
 
     @if ($pengajuan->status === 'dicetak')
-        <div class="card p-6 animate-scale-in" style="border-color: #22c55e;">
-            <h4 class="section-accent mb-3"><i class="fa-solid fa-print text-emerald-600"></i> Cetak Ulang / Batalkan SKPI</h4>
-            <p class="text-xs text-gray-600 font-medium mb-4">SKPI sudah diterbitkan. Klik tombol di bawah untuk mencetak ulang dokumen PDF.</p>
-            
-            <div class="form mb-6">
-                <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}?nim_ijazah={{ urlencode($mahasiswa->skpi->nim_ijazah ?? '') }}" target="_blank"
-                    class="btn btn-success w-full inline-flex justify-center text-sm font-bold">
-                    <i class="fa-solid fa-download mr-1"></i> Cetak Ulang PDF
+        <div class="card border border-success border-dashed mb-5">
+            <div class="card-body p-6">
+                <h4 class="mb-3 text-success"><i class="ki-duotone ki-printer fs-2 text-success me-2"><span
+                            class="path1"></span><span class="path2"></span><span class="path3"></span><span
+                            class="path4"></span><span class="path5"></span></i> Cetak Ulang / Batalkan SKPI</h4>
+                <p class="text-muted fs-6 mb-5">SKPI sudah diterbitkan. Klik tombol di bawah untuk mencetak ulang
+                    dokumen PDF.</p>
+
+                <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}?nim_ijazah={{ urlencode($mahasiswa->skpi->nim_ijazah ?? '') }}"
+                    target="_blank" class="btn btn-success w-100 fw-bolder mb-6">
+                    <i class="ki-duotone ki-file-down fs-2"><span class="path1"></span><span class="path2"></span></i>
+                    Cetak Ulang PDF
                 </a>
 
-                <hr class="border-gray-200">
+                <div class="separator separator-dashed mb-6"></div>
 
-                <div class="bg-red-50 p-5 rounded-2xl border border-red-200/60">
-                    <h5 class="text-xs font-bold text-red-800 flex items-center gap-1.5 mb-2">
-                        <i class="fa-solid fa-ban"></i> Batalkan Cetak SKPI
-                    </h5>
-                    <p class="text-[10px] text-red-600 font-medium mb-3">Jika dibatalkan, status akan dikembalikan ke Draft agar mahasiswa dapat menambah/mengubah data. Dokumen SKPI yang sudah diterbitkan akan dihapus.</p>
-                    
-                    <form action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}" method="POST" class="form mb-6" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan cetak SKPI ini?')">
+                <div class="alert bg-light-danger border border-danger d-flex flex-column p-5">
+                    <h5 class="mb-2 text-danger"><i class="ki-duotone ki-shield-cross fs-2 text-danger me-2"><span
+                                class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                        Batalkan Cetak SKPI</h5>
+                    <p class="text-danger fw-semibold fs-7 mb-4">Jika dibatalkan, status akan dikembalikan ke Draft agar
+                        mahasiswa dapat menambah/mengubah data. Dokumen SKPI yang sudah diterbitkan akan dihapus.</p>
+
+                    <form action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}"
+                        method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan cetak SKPI ini?')">
                         @csrf
-                        <div>
-                            <textarea name="catatan" required class="form-control form-control-solid text-sm w-full h-20" placeholder="Alasan pembatalan cetak (wajib diisi)..."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-danger w-full py-2.5 text-sm font-bold">
-                            <i class="fa-solid fa-trash-can mr-1"></i> Batalkan & Kembalikan ke Draft
+                        <textarea name="catatan" required class="form-control form-control-solid mb-4" rows="3"
+                            placeholder="Alasan pembatalan cetak (wajib diisi)..."></textarea>
+                        <button type="submit" class="btn btn-danger w-100 fw-bolder">
+                            <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span
+                                    class="path2"></span><span class="path3"></span><span
+                                    class="path4"></span><span class="path5"></span></i> Batalkan & Kembalikan ke
+                            Draft
                         </button>
                     </form>
                 </div>
@@ -102,28 +130,38 @@
     @endif
 
     @if ($pengajuan->status === 'draft')
-        <div class="card p-6 animate-scale-in" style="border-color: #f59e0b;">
-            <h4 class="section-accent mb-3"><i class="fa-solid fa-pen-to-square text-amber-600"></i> Menunggu Revisi Mahasiswa</h4>
-            <p class="text-xs text-gray-600 font-medium">Pengajuan ditandai perlu revisi. Menunggu mahasiswa memperbaiki data dan mengajukan ulang.</p>
-            @if($pengajuan->catatan_bak)
-                <div class="p-3.5 bg-amber-50 text-amber-800 text-xs font-medium mt-3 rounded-xl border border-amber-200/60">
-                    <p class="font-bold mb-0.5"><i class="fa-solid fa-message mr-1"></i> Catatan:</p>
-                    <p>{{ $pengajuan->catatan_bak }}</p>
-                </div>
-            @endif
+        <div
+            class="alert alert-dismissible bg-light-warning border border-warning d-flex flex-column flex-sm-row p-5 mb-5">
+            <i class="ki-duotone ki-message-edit fs-2hx text-warning me-4 mb-5 mb-sm-0"><span
+                    class="path1"></span><span class="path2"></span></i>
+            <div class="d-flex flex-column pe-0 pe-sm-10">
+                <h5 class="mb-1 text-warning">Menunggu Revisi Mahasiswa</h5>
+                <span>Pengajuan ditandai perlu revisi. Menunggu mahasiswa memperbaiki data dan mengajukan ulang.</span>
+                @if ($pengajuan->catatan_bak)
+                    <div class="bg-warning bg-opacity-10 rounded border border-warning border-opacity-50 p-3 mt-3">
+                        <div class="fw-bolder text-warning mb-1">Catatan:</div>
+                        <div class="text-gray-800">{{ $pengajuan->catatan_bak }}</div>
+                    </div>
+                @endif
+            </div>
         </div>
     @endif
 
     @if ($pengajuan->status === 'ditolak')
-        <div class="card p-6 animate-scale-in" style="border-color: #ef4444;">
-            <h4 class="section-accent mb-3"><i class="fa-solid fa-circle-xmark text-red-600"></i> Pengajuan Ditolak</h4>
-            <p class="text-xs text-gray-600 font-medium">Pengajuan cetak SKPI ini telah ditolak. Menunggu mahasiswa mengajukan ulang.</p>
-            @if($pengajuan->catatan_bak)
-                <div class="p-3.5 bg-red-50 text-red-800 text-xs font-medium mt-3 rounded-xl border border-red-200/60">
-                    <p class="font-bold mb-0.5"><i class="fa-solid fa-message mr-1"></i> Alasan:</p>
-                    <p>{{ $pengajuan->catatan_bak }}</p>
-                </div>
-            @endif
+        <div
+            class="alert alert-dismissible bg-light-danger border border-danger d-flex flex-column flex-sm-row p-5 mb-5">
+            <i class="ki-duotone ki-cross-circle fs-2hx text-danger me-4 mb-5 mb-sm-0"><span
+                    class="path1"></span><span class="path2"></span></i>
+            <div class="d-flex flex-column pe-0 pe-sm-10">
+                <h5 class="mb-1 text-danger">Pengajuan Ditolak</h5>
+                <span>Pengajuan cetak SKPI ini telah ditolak. Menunggu mahasiswa mengajukan ulang.</span>
+                @if ($pengajuan->catatan_bak)
+                    <div class="bg-danger bg-opacity-10 rounded border border-danger border-opacity-50 p-3 mt-3">
+                        <div class="fw-bolder text-danger mb-1">Alasan:</div>
+                        <div class="text-gray-800">{{ $pengajuan->catatan_bak }}</div>
+                    </div>
+                @endif
+            </div>
         </div>
     @endif
 @endif

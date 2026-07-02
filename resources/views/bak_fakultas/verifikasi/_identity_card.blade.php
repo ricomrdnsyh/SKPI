@@ -1,25 +1,30 @@
-<div class="card p-6 animate-fade-in" style="animation-delay: 0.15s">
-    <h3 class="section-accent mb-4">
-        <i class="fa-solid fa-address-card"></i>
-        Identitas Pemohon
+<div class="card-header border-0 pt-6">
+    <h3 class="card-title align-items-start flex-column">
+        <span class="card-label fw-bolder fs-3 mb-1"><i class="ki-duotone ki-profile-user fs-2 me-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i> Identitas Pemohon</span>
     </h3>
-    <div class="form mb-6">
-        @php
-            $fields = [
-                ['label' => 'Nama Lengkap', 'value' => $mahasiswa->nama_lengkap],
-                ['label' => 'NIM', 'value' => $mahasiswa->nim],
-                ['label' => 'NIM Ijazah', 'value' => $mahasiswa->skpi->nim_ijazah ?? null, 'empty' => '<span class="inline-flex items-center gap-1 text-amber-700 font-semibold text-[10px] bg-amber-100 px-2 py-0.5 rounded-lg"><i class="fa-solid fa-clock-rotate-left"></i> Diinput saat penandatanganan</span>'],
-                ['label' => 'Program Studi', 'value' => $mahasiswa->programStudi->nama_prodi],
-                ['label' => 'Tempat, Tanggal Lahir', 'value' => $mahasiswa->tempat_lahir . ', ' . $mahasiswa->tanggal_lahir],
-            ];
-        @endphp
-        @foreach($fields as $f)
-            <div class="flex items-start py-3 border-b border-gray-100 last:border-0">
-                <span class="text-xs font-semibold text-gray-500 w-1/3 shrink-0">{{ $f['label'] }}</span>
-                <span class="text-sm font-bold text-gray-900">
-                    {!! $f['value'] ?? ($f['empty'] ?? '<span class="text-gray-400 font-normal">-</span>') !!}
-                </span>
-            </div>
-        @endforeach
+</div>
+<div class="card-body pt-5">
+    <div class="table-responsive">
+        <table class="table table-row-dashed table-row-gray-300 gy-4 align-middle">
+            <tbody>
+                @php
+                    $fields = [
+                        ['label' => 'Nama Lengkap', 'value' => $mahasiswa->nama_lengkap],
+                        ['label' => 'NIM', 'value' => $mahasiswa->nim],
+                        ['label' => 'NIM Ijazah', 'value' => $mahasiswa->skpi->nim_ijazah ?? null, 'empty' => '<span class="badge badge-light-warning fw-bold text-uppercase fs-8"><i class="ki-duotone ki-time fs-7 me-1"><span class="path1"></span><span class="path2"></span></i> Diinput saat penerbitan</span>'],
+                        ['label' => 'Program Studi', 'value' => $mahasiswa->programStudi->nama_prodi],
+                        ['label' => 'Tempat, Tanggal Lahir', 'value' => $mahasiswa->tempat_lahir . ', ' . $mahasiswa->tanggal_lahir],
+                    ];
+                @endphp
+                @foreach($fields as $f)
+                    <tr>
+                        <td class="text-muted fw-semibold w-250px">{{ $f['label'] }}</td>
+                        <td class="fw-bolder text-gray-800">
+                            {!! $f['value'] ?? ($f['empty'] ?? '<span class="text-gray-400 fw-normal">-</span>') !!}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>

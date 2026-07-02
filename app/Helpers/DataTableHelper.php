@@ -58,16 +58,16 @@ class DataTableHelper
 
     public static function actionButtons(array $actions): string
     {
-        $html = '<div class="flex justify-center gap-1">';
+        $html = '<div class="d-flex justify-content-center gap-2">';
         foreach ($actions as $action) {
             if ($action['type'] === 'edit') {
-                $html .= '<a href="' . $action['url'] . '" class="btn-edit"><i class="fa-solid fa-pen-to-square"></i></a>';
+                $html .= '<a href="' . $action['url'] . '" class="btn btn-sm btn-light btn-active-light-warning" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
             } elseif ($action['type'] === 'delete') {
-                $html .= '<form method="POST" action="' . $action['url'] . '" onsubmit="return confirm(\'Yakin?\')">'
+                $html .= '<form method="POST" action="' . $action['url'] . '" onsubmit="return confirm(\'Yakin ingin menghapus?\')" class="d-inline">'
                     . csrf_field() . method_field('DELETE')
-                    . '<button type="submit" class="btn-destroy"><i class="fa-solid fa-trash-can"></i></button></form>';
+                    . '<button type="submit" class="btn btn-sm btn-light btn-active-light-danger border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fa-solid fa-trash-can"></i></button></form>';
             } elseif ($action['type'] === 'detail' || $action['type'] === 'view') {
-                $html .= '<a href="' . $action['url'] . '" class="btn-detail" title="Detail"><i class="fa-solid fa-eye"></i></a>';
+                $html .= '<a href="' . $action['url'] . '" class="btn btn-sm btn-light btn-active-light-info" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fa-solid fa-eye"></i></a>';
             } elseif ($action['type'] === 'custom') {
                 $html .= $action['html'];
             }

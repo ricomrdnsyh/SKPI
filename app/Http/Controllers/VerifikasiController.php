@@ -118,14 +118,14 @@ class VerifikasiController extends Controller
             'pending' => $pendingCount,
             'verifikasi' => $statusCounts->get('verifikasi', 0),
             'completed' => $statusCounts->get('dicetak', 0),
-            'sudah_verifikasi' => $statusCounts->except('diajukan')->sum(),
+            'sudah_verifikasi' => $statusCounts->only(['verifikasi', 'dicetak', 'ditolak'])->sum(),
             'permohonan_cetak_count' => $permohonanCetakCount,
         ];
 
         $statuses = $this->getStatusesCached();
         $prodis = $this->getProdiListCached($allowedProdis);
 
-        return view('bak_fakultas.dashboard', compact('stats', 'statuses', 'prodis'));
+        return view('bak_fakultas.dashboard.index', compact('stats', 'statuses', 'prodis'));
     }
 
     private function getStatusesCached(): \Illuminate\Support\Collection

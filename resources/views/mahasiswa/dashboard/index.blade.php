@@ -466,7 +466,8 @@
                                 <div class="card-body pt-5 d-flex flex-column">
                                     @if ($pengajuan)
                                         <div class="mb-5 d-flex flex-column h-100">
-                                            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-gray-200 pb-4">
+                                            <div
+                                                class="d-flex justify-content-between align-items-center mb-4 border-bottom border-gray-200 pb-4">
                                                 <div class="fw-bolder text-gray-800">Status Saat Ini</div>
                                                 @php
                                                     $pStatus = $pengajuan->status;
@@ -485,17 +486,30 @@
 
                                             <div class="text-center mt-6 mb-auto">
                                                 @if ($pStatus === 'dicetak')
-                                                    <i class="ki-duotone ki-check-circle fs-5x text-success mb-4"><span class="path1"></span><span class="path2"></span></i>
+                                                    <i class="ki-duotone ki-check-circle fs-5x text-success mb-4"><span
+                                                            class="path1"></span><span class="path2"></span></i>
                                                     <div class="fs-5 fw-bold text-gray-800 mb-2">SKPI Telah Terbit!</div>
-                                                    <div class="fs-7 text-muted">Selamat! Dokumen SKPI Anda telah dicetak dan diterbitkan secara resmi.</div>
+                                                    <div class="fs-7 text-muted">Selamat! Dokumen SKPI Anda telah dicetak
+                                                        dan diterbitkan secara resmi.</div>
                                                 @elseif ($pStatus === 'ditolak' || $pStatus === 'draft')
-                                                    <i class="ki-duotone ki-cross-circle fs-5x text-danger mb-4"><span class="path1"></span><span class="path2"></span></i>
+                                                    <i class="ki-duotone ki-cross-circle fs-5x text-danger mb-4"><span
+                                                            class="path1"></span><span class="path2"></span></i>
                                                     <div class="fs-5 fw-bold text-gray-800 mb-2">Perlu Perbaikan</div>
-                                                    <div class="fs-7 text-muted">Silakan periksa catatan revisi di bawah ini dan lakukan perbaikan.</div>
+                                                    <div class="fs-7 text-muted">
+                                                        @if ($pengajuan->keterangan)
+                                                            Silakan periksa catatan revisi di bawah ini dan lakukan
+                                                            perbaikan.
+                                                        @else
+                                                            Silakan periksa catatan revisi pada masing-masing data yang
+                                                            ditolak di menu Kelengkapan Berkas.
+                                                        @endif
+                                                    </div>
                                                 @else
-                                                    <i class="ki-duotone ki-time fs-5x text-primary mb-4"><span class="path1"></span><span class="path2"></span></i>
+                                                    <i class="ki-duotone ki-time fs-5x text-primary mb-4"><span
+                                                            class="path1"></span><span class="path2"></span></i>
                                                     <div class="fs-5 fw-bold text-gray-800 mb-2">Sedang Diproses</div>
-                                                    <div class="fs-7 text-muted">Pengajuan SKPI Anda sedang dalam tahap verifikasi. Silakan pantau progress timeline.</div>
+                                                    <div class="fs-7 text-muted">Pengajuan SKPI Anda sedang dalam tahap
+                                                        verifikasi. Silakan pantau progress timeline.</div>
                                                 @endif
                                             </div>
 
@@ -509,6 +523,30 @@
                                                         <span class="fw-bolder text-danger fs-7">Catatan / Revisi</span>
                                                     </div>
                                                     <div class="text-danger fs-8">{{ $pengajuan->keterangan }}</div>
+                                                </div>
+                                            @endif
+
+                                            @if ($pStatus === 'ditolak' || $pStatus === 'draft')
+                                                <div class="mt-auto pt-6">
+                                                    <form action="{{ route('mahasiswa.pengajuan.submit') }}"
+                                                        method="POST"
+                                                        onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="btn btn-warning w-100 fw-bold d-flex align-items-center justify-content-center">
+                                                            <span class="indicator-label">
+                                                                <span class="d-flex align-items-center"><i
+                                                                        class="ki-duotone ki-send fs-3 me-2"><span
+                                                                            class="path1"></span><span
+                                                                            class="path2"></span></i> Ajukan Kembali
+                                                                    SKPI</span>
+                                                            </span>
+                                                            <span class="indicator-progress">
+                                                                <span class="d-flex align-items-center">Mengajukan... <span
+                                                                        class="spinner-border spinner-border-sm ms-2"></span></span>
+                                                            </span>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             @endif
                                         </div>
@@ -537,12 +575,22 @@
                                                             Anda dapat mengajukan SKPI sekarang!</span>
                                                     </div>
                                                     <form action="{{ route('mahasiswa.pengajuan.submit') }}"
-                                                        method="POST">
+                                                        method="POST"
+                                                        onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-primary w-100">
-                                                            <i class="ki-duotone ki-send fs-3"><span
-                                                                    class="path1"></span><span class="path2"></span></i>
-                                                            Ajukan SKPI Sekarang
+                                                        <button type="submit"
+                                                            class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                            <span class="indicator-label">
+                                                                <span class="d-flex align-items-center"><i
+                                                                        class="ki-duotone ki-send fs-3 me-2"><span
+                                                                            class="path1"></span><span
+                                                                            class="path2"></span></i> Ajukan SKPI
+                                                                    Sekarang</span>
+                                                            </span>
+                                                            <span class="indicator-progress">
+                                                                <span class="d-flex align-items-center">Mengajukan... <span
+                                                                        class="spinner-border spinner-border-sm ms-2"></span></span>
+                                                            </span>
                                                         </button>
                                                     </form>
                                                 @else
@@ -572,4 +620,33 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('js')
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                text: "{{ session('success') }}",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                    confirmButton: "btn btn-primary"
+                }
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                text: "{{ session('error') }}",
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, got it!",
+                customClass: {
+                    confirmButton: "btn btn-danger"
+                }
+            });
+        </script>
+    @endif
 @endsection
