@@ -1,4 +1,4 @@
-<div class="card shadow-sm border border-dashed border-dark mb-6">
+<div class="card border border-dashed mb-6">
     <div class="card-header border-0 pt-6">
         <h3 class="card-title align-items-start flex-column">
             <span class="card-label fw-bolder fs-3 mb-1"><i class="ki-duotone ki-book-open fs-2 me-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i> Data Akademik</span>

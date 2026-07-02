@@ -59,17 +59,17 @@ class VerifikasiService
         $mahasiswaId = $pengajuan->id_mahasiswa;
 
         $prestasi = DB::table('prestasi_mahasiswa')->where('id_mahasiswa', $mahasiswaId)
-            ->select(['id_prestasi', 'id_mahasiswa', 'nama_prestasi', 'status', 'approved_by', 'approved_at', 'keterangan'])
+            ->select(['id_prestasi', 'id_mahasiswa', 'nama_prestasi', 'status', 'approved_by', 'approved_at', 'created_at', 'keterangan'])
             ->get();
         $organisasi = DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $mahasiswaId)
-            ->select(['id_organisasi_mhs', 'id_mahasiswa', 'nama_organisasi', 'status', 'approved_by', 'approved_at', 'keterangan'])
+            ->select(['id_organisasi_mhs', 'id_mahasiswa', 'nama_organisasi', 'status', 'approved_by', 'approved_at', 'created_at', 'keterangan'])
             ->get();
         $sertifikat = DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $mahasiswaId)
-            ->select(['id_sertifikat', 'id_mahasiswa', 'nama_sertifikat', 'status', 'approved_by', 'approved_at', 'keterangan'])
+            ->select(['id_sertifikat', 'id_mahasiswa', 'nama_sertifikat', 'status', 'approved_by', 'approved_at', 'created_at', 'keterangan'])
             ->get();
         $magang = DB::table('magang_mahasiswa')
             ->where('magang_mahasiswa.id_mahasiswa', $mahasiswaId)
-            ->select('magang_mahasiswa.id_magang', 'magang_mahasiswa.posisi', 'magang_mahasiswa.status', 'magang_mahasiswa.approved_by', 'magang_mahasiswa.approved_at', 'magang_mahasiswa.keterangan', 'magang_mahasiswa.tempat_magang')
+            ->select('magang_mahasiswa.id_magang', 'magang_mahasiswa.posisi', 'magang_mahasiswa.status', 'magang_mahasiswa.approved_by', 'magang_mahasiswa.approved_at', 'magang_mahasiswa.created_at', 'magang_mahasiswa.keterangan', 'magang_mahasiswa.tempat_magang')
             ->get()
             ->map(function ($item) {
                 $item->tempatMagang = (object) [

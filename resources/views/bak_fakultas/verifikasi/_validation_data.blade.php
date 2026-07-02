@@ -10,17 +10,12 @@
     $filteredSertifikat = $filterGrupA($sertifikat);
     $filteredMagang = $filterGrupA($magang);
 @endphp
-<div class="card-header border-0 pt-6">
-    <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bolder fs-3 mb-1"><i class="ki-duotone ki-check-square fs-2 me-2 text-primary"><span class="path1"></span><span class="path2"></span></i> Validasi Data Mahasiswa</span>
-        <span class="text-muted fw-semibold fs-7 mt-2">Tinjau dan validasi berkas bukti dukung yang diunggah oleh mahasiswa.</span>
-    </h3>
-</div>
+
 <div class="card-body pt-5">
     {{-- Prestasi --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="ki-duotone ki-medal fs-2 me-2 text-warning"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i> Prestasi
+            <i class="fa-solid fa-trophy fs-3 me-2 text-warning"></i> Prestasi
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -37,7 +32,7 @@
                 ])
             @empty
                 <div class="text-center py-5">
-                    <i class="ki-duotone ki-medal fs-3x text-gray-300 mb-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+                    <i class="fa-solid fa-trophy fs-3x text-gray-300 mb-2"></i>
                     <div class="text-muted fs-7 fw-semibold">Belum ada data prestasi.</div>
                 </div>
             @endforelse
@@ -47,7 +42,7 @@
     {{-- Organisasi --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="ki-duotone ki-people fs-2 me-2 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i> Organisasi
+            <i class="fa-solid fa-users-rectangle fs-3 me-2 text-success"></i> Organisasi
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -64,7 +59,7 @@
                 ])
             @empty
                 <div class="text-center py-5">
-                    <i class="ki-duotone ki-people fs-3x text-gray-300 mb-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+                    <i class="fa-solid fa-users-rectangle fs-3x text-gray-300 mb-2"></i>
                     <div class="text-muted fs-7 fw-semibold">Belum ada data organisasi.</div>
                 </div>
             @endforelse
@@ -74,7 +69,7 @@
     {{-- Sertifikat --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="ki-duotone ki-scroll fs-2 me-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i> Sertifikat
+            <i class="fa-solid fa-file-signature fs-3 me-2 text-primary"></i> Sertifikat
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -91,7 +86,7 @@
                 ])
             @empty
                 <div class="text-center py-5">
-                    <i class="ki-duotone ki-scroll fs-3x text-gray-300 mb-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                    <i class="fa-solid fa-file-signature fs-3x text-gray-300 mb-2"></i>
                     <div class="text-muted fs-7 fw-semibold">Belum ada data sertifikat.</div>
                 </div>
             @endforelse
@@ -101,7 +96,7 @@
     {{-- Magang --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="ki-duotone ki-briefcase fs-2 me-2 text-gray-600"><span class="path1"></span><span class="path2"></span></i> Magang / KP
+            <i class="fa-solid fa-briefcase fs-3 me-2 text-gray-600"></i> Magang / KP
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -118,7 +113,7 @@
                 ])
             @empty
                 <div class="text-center py-5">
-                    <i class="ki-duotone ki-briefcase fs-3x text-gray-300 mb-2"><span class="path1"></span><span class="path2"></span></i>
+                    <i class="fa-solid fa-briefcase fs-3x text-gray-300 mb-2"></i>
                     <div class="text-muted fs-7 fw-semibold">Belum ada data magang.</div>
                 </div>
             @endforelse
@@ -128,7 +123,7 @@
     {{-- Tugas Akhir --}}
     <div class="mb-0">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="ki-duotone ki-book-open fs-2 me-2 text-info"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i> Tugas Akhir / Skripsi
+            <i class="fa-solid fa-graduation-cap fs-3 me-2 text-info"></i> Tugas Akhir / Skripsi
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         

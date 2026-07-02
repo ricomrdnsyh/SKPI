@@ -15,155 +15,282 @@
         $statusClass = $statusColors[$pengajuan->status] ?? 'badge-light-secondary';
         $steps = $mahasiswa->getSkpiProgressSteps($pengajuan);
         $role = Auth::user()->role;
+
+        $modStatus = function ($items) {
+            if ($items->where('status', 'rejected')->isNotEmpty()) {
+                return 'ditolak';
+            }
+            if ($items->where('status', 'pending')->isNotEmpty()) {
+                return 'diproses';
+            }
+            if ($items->where('status', 'approved')->count() === $items->count() && $items->count() > 0) {
+                return 'approved';
+            }
+            return 'belum';
+        };
+        $taMod = $mahasiswa->tugasAkhir ? collect([$mahasiswa->tugasAkhir]) : collect();
+        $mods = [
+            ['label' => 'Prestasi', 'status' => $modStatus($prestasi)],
+            ['label' => 'Organisasi', 'status' => $modStatus($organisasi)],
+            ['label' => 'Sertifikat', 'status' => $modStatus($sertifikat)],
+            ['label' => 'Magang', 'status' => $modStatus($magang)],
+            ['label' => 'Tugas Akhir', 'status' => $modStatus($taMod)],
+        ];
     @endphp
 
     <div class="d-flex flex-column flex-column-fluid">
         <div class="app-content flex-column-fluid mt-7">
             <div class="app-container container-fluid">
-                
-                {{-- Header --}}
-                <div class="mb-5 d-none">
-                    {{-- Intentionally empty or hidden header if needed later --}}
-                </div>
 
-                {{-- Progress Timeline --}}
-                <div class="mb-6">
-                    @include('partials.overall_progress', [
-                        'steps' => $steps,
-                        'pengajuan' => $pengajuan,
-                        'statusClass' => $statusClass
-                    ])
-                </div>
-
-                {{-- Action cards --}}
-                @if (Auth::user()->role === 'bak_fakultas')
-                    <div class="mb-6">
-                        @include('bak_fakultas.verifikasi._action_cards')
-                    </div>
-                @endif
-
-                {{-- Module status overview --}}
-                <div class="card border border-dashed border-dark mb-6">
-                    <div class="card-header border-0 pt-6">
-                        <h3 class="card-title align-items-start flex-column">
-                            <span class="card-label fw-bolder fs-3 mb-1"><i class="ki-duotone ki-check-square fs-2 me-2 text-primary"><span class="path1"></span><span class="path2"></span></i> Status Persetujuan Modul</span>
-                        </h3>
-                    </div>
-                    <div class="card-body pt-5">
-                        @if (!empty($hasPendingItems) && $pengajuan->status === 'diajukan' && !$pengajuan->diverifikasi_oleh)
-                            <div class="alert bg-light-warning border border-warning border-dashed d-flex flex-column flex-sm-row p-5 mb-7">
-                                <i class="ki-duotone ki-information-5 fs-2hx text-warning me-4 mb-5 mb-sm-0"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-                                <div class="d-flex flex-column pe-0 pe-sm-10">
-                                    <h5 class="mb-1 text-warning">Verifikasi Item Belum Selesai</h5>
-                                    <span>Anda harus memverifikasi (approve/reject) semua item Prestasi, Organisasi, Sertifikat, Magang, dan Tugas Akhir terlebih dahulu sebelum dapat menyetujui pengajuan cetak SKPI.</span>
+                {{-- 1. Unified Profile Card --}}
+                <div class="card mb-6 border border-dashed border-primary">
+                    <div class="card-body pt-9 pb-0">
+                        <div class="d-flex flex-wrap flex-sm-nowrap">
+                            <div class="me-7 mb-4">
+                                <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
+                                    <div class="symbol-label bg-light-primary text-primary fs-2hx fw-bolder">
+                                        {{ substr($mahasiswa->nama_lengkap, 0, 1) }}
+                                    </div>
+                                    <div
+                                        class="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-body h-20px w-20px">
+                                    </div>
                                 </div>
                             </div>
-                        @endif
-                        <div class="row g-5">
-                            @php
-                                $modStatus = function($items) {
-                                    if ($items->where('status', 'rejected')->isNotEmpty()) return 'ditolak';
-                                    if ($items->where('status', 'pending')->isNotEmpty()) return 'diproses';
-                                    if ($items->where('status', 'approved')->count() === $items->count() && $items->count() > 0) return 'approved';
-                                    return 'belum';
-                                };
-                                $taMod = $mahasiswa->tugasAkhir ? collect([$mahasiswa->tugasAkhir]) : collect();
-                                $mods = [
-                                    ['label' => 'Prestasi', 'status' => $modStatus($prestasi)],
-                                    ['label' => 'Organisasi', 'status' => $modStatus($organisasi)],
-                                    ['label' => 'Sertifikat', 'status' => $modStatus($sertifikat)],
-                                    ['label' => 'Magang', 'status' => $modStatus($magang)],
-                                    ['label' => 'Tugas Akhir', 'status' => $modStatus($taMod)],
-                                ];
-                            @endphp
-                            @foreach($mods as $m)
-                                @php
-                                    $c = match($m['status']) {
-                                        'approved' => 'bg-light-success text-success border-success',
-                                        'ditolak' => 'bg-light-danger text-danger border-danger',
-                                        'belum' => 'bg-light text-gray-500 border-gray-200',
-                                        default => 'bg-light-warning text-warning border-warning',
-                                    };
-                                    $i = match($m['status']) {
-                                        'approved' => 'ki-check-circle',
-                                        'ditolak' => 'ki-cross-circle',
-                                        'belum' => 'ki-information-5',
-                                        default => 'ki-time',
-                                    };
-                                @endphp
-                                <div class="col-6 col-md">
-                                    <div class="border border-dashed rounded p-4 text-center {{ $c }}">
-                                        <div class="fs-6 fw-bolder mb-1 text-gray-800">{{ $m['label'] }}</div>
-                                        <div class="fs-7 fw-bold text-uppercase mt-2">
-                                            <i class="ki-duotone {{ $i }} fs-4 me-1 {{ str_replace('bg-light-', 'text-', explode(' ', $c)[0]) }}"><span class="path1"></span><span class="path2"></span></i>
-                                            {{ $m['status'] }}
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span
+                                                class="text-gray-900 fs-2 fw-bolder me-1">{{ $mahasiswa->nama_lengkap }}</span>
+                                            <span
+                                                class="badge {{ $statusClass }} ms-2">{{ strtoupper($pengajuan->status) }}</span>
+                                        </div>
+                                        <div class="d-flex flex-wrap fw-bold fs-6 mb-4 pe-2">
+                                            <span class="d-flex align-items-center text-gray-500 me-5 mb-2">
+                                                <i class="ki-duotone ki-profile-circle fs-4 me-1"><span
+                                                        class="path1"></span><span class="path2"></span><span
+                                                        class="path3"></span></i> {{ $mahasiswa->nim }}
+                                            </span>
+                                            <span class="d-flex align-items-center text-gray-500 me-5 mb-2">
+                                                <i class="ki-duotone ki-book-open fs-4 me-1"><span
+                                                        class="path1"></span><span class="path2"></span><span
+                                                        class="path3"></span><span class="path4"></span></i>
+                                                {{ $mahasiswa->programStudi->nama_prodi }}
+                                                ({{ $mahasiswa->programStudi->jenjang }})
+                                            </span>
+                                            <span class="d-flex align-items-center text-gray-500 mb-2">
+                                                <i class="ki-duotone ki-bank fs-4 me-1"><span class="path1"></span><span
+                                                        class="path2"></span></i>
+                                                {{ $mahasiswa->programStudi->fakultas->nama_fakultas ?? '-' }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="d-flex flex-wrap flex-stack mt-2">
+                                    <div class="d-flex flex-column flex-grow-1 pe-8">
+                                        <div class="d-flex flex-wrap">
+                                            <div
+                                                class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="fs-2 fw-bolder">{{ $mahasiswa->ipk ?? '-' }}</div>
+                                                </div>
+                                                <div class="fw-bold fs-6 text-gray-500">IPK</div>
+                                            </div>
+                                            <div
+                                                class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="fs-2 fw-bolder">{{ $mahasiswa->sks_lulus ?? '-' }}</div>
+                                                </div>
+                                                <div class="fw-bold fs-6 text-gray-500">SKS Lulus</div>
+                                            </div>
+                                            <div
+                                                class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="fs-2 fw-bolder">{{ $mahasiswa->predikat_kelulusan ?? '-' }}
+                                                    </div>
+                                                </div>
+                                                <div class="fw-bold fs-6 text-gray-500">Predikat</div>
+                                            </div>
+                                            <div
+                                                class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3 bg-light">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="fs-4 fw-bolder text-gray-800">
+                                                        {{ $mahasiswa->skpi->nim_ijazah ?? 'Belum ada' }}</div>
+                                                </div>
+                                                <div class="fw-bold fs-6 text-gray-500">NIM Ijazah</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
+
+                        <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder mt-5">
+                            <li class="nav-item mt-2">
+                                <a class="nav-link text-active-primary ms-0 me-10 py-5 active" data-bs-toggle="tab"
+                                    href="#tab_validasi">Validasi Berkas</a>
+                            </li>
+                            <li class="nav-item mt-2">
+                                <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab"
+                                    href="#tab_timeline">Timeline & Riwayat</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
-                {{-- Academic Data --}}
-                <div class="mb-6">
-                    @include('bak_fakultas.verifikasi._prodi_academic_data')
-                </div>
+                {{-- Tab Contents --}}
+                <div class="tab-content">
 
-                {{-- Main content: Merged Profile & Validation --}}
-                <div class="row g-6 mb-6">
-                    <div class="col-lg-5 col-xl-4">
-                        <div class="card border border-dashed border-dark mb-6">
-                            @include('bak_fakultas.verifikasi._identity_card')
-                        </div>
+                    {{-- Tab: Validasi Berkas --}}
+                    <div class="tab-pane fade show active" id="tab_validasi" role="tabpanel">
+                        @include('partials.overall_progress', [
+                            'steps' => $steps,
+                            'pengajuan' => $pengajuan,
+                            'statusClass' => $statusClass,
+                        ])
                         
-                        {{-- Timeline --}}
+                        <div class="card border border-dashed border-dark mb-6">
+                            <div class="card-header border-0 pt-6">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bolder fs-3 mb-1 d-flex align-items-center"><i
+                                            class="ki-duotone ki-shield-tick fs-1 me-2 text-primary"><span
+                                                class="path1"></span><span class="path2"></span></i> Status Persetujuan Modul</span>
+                                </h3>
+                            </div>
+                            <div class="card-body pt-5 pb-0">
+                                <div class="row g-5">
+                                    @foreach ($mods as $m)
+                                        @php
+                                            $c = match ($m['status']) {
+                                                'approved' => 'bg-light-success text-success border-success',
+                                                'ditolak' => 'bg-light-danger text-danger border-danger',
+                                                'belum' => 'bg-light text-gray-500 border-gray-200',
+                                                default => 'bg-light-warning text-warning border-warning',
+                                            };
+                                            $i = match ($m['status']) {
+                                                'approved' => 'ki-check-circle',
+                                                'ditolak' => 'ki-cross-circle',
+                                                'belum' => 'ki-information-5',
+                                                default => 'ki-time',
+                                            };
+                                        @endphp
+                                        <div class="col-6 col-md">
+                                            <div class="border border-dashed rounded p-4 text-center {{ $c }}">
+                                                <div class="fs-6 fw-bolder mb-1 text-gray-800">{{ $m['label'] }}</div>
+                                                <div class="fs-7 fw-bold text-uppercase mt-2">
+                                                    <i
+                                                        class="ki-duotone {{ $i }} fs-4 me-1 {{ str_replace('bg-light-', 'text-', explode(' ', $c)[0]) }}"><span
+                                                            class="path1"></span><span class="path2"></span></i>
+                                                    {{ $m['status'] }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div class="separator separator-dashed my-6"></div>
+
+                            @include('bak_fakultas.verifikasi._validation_data')
+
+                            @if (Auth::user()->role === 'bak_fakultas' && $pengajuan->status === 'diajukan')
+                                @include('bak_fakultas.verifikasi._checklist_form')
+                            @endif
+                        </div>
+
+                        @include('bak_fakultas.verifikasi._action_cards')
+                    </div>
+
+                    {{-- Tab: Timeline --}}
+                    <div class="tab-pane fade" id="tab_timeline" role="tabpanel">
+
                         @if ($history->isNotEmpty())
                             <div class="card border border-dashed border-dark">
                                 @include('bak_fakultas.verifikasi._timeline')
                             </div>
                         @endif
                     </div>
-                    <div class="col-lg-7 col-xl-8">
-                        <div class="card border border-dashed border-dark h-100">
-                            @include('bak_fakultas.verifikasi._validation_data')
-                            
-                            {{-- Checklist form for BAK --}}
-                            @if (Auth::user()->role === 'bak_fakultas' && $pengajuan->status === 'diajukan')
-                                @include('bak_fakultas.verifikasi._checklist_form')
-                            @endif
-                        </div>
-                    </div>
+
                 </div>
-                
+
             </div>
         </div>
     </div>
 @endsection
 
 @section('js')
-<script>
-    function confirmSetujui() {
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda akan menyetujui pengajuan SKPI ini untuk dilanjutkan ke proses pencetakan.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Setujui SKPI',
-            cancelButtonText: 'Batal',
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const form = document.getElementById('formSetujui');
-                const btn = form.querySelector('button[type="button"]');
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memproses...';
-                btn.disabled = true;
-                form.submit();
-            }
-        });
-    }
-</script>
+    <script>
+        function confirmReject(formId, inputId) {
+            Swal.fire({
+                title: 'Tolak Berkas',
+                text: 'Tuliskan alasan penolakan berkas ini:',
+                input: 'text',
+                inputPlaceholder: 'Masukkan alasan tolak...',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Tolak Berkas',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-danger',
+                    cancelButton: 'btn btn-secondary'
+                },
+                preConfirm: (reason) => {
+                    if (!reason) {
+                        Swal.showValidationMessage('Alasan penolakan tidak boleh kosong!');
+                    }
+                    return reason;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(inputId).value = result.value;
+                    const form = document.getElementById(formId);
+                    const btn = form.querySelector('button');
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                    btn.disabled = true;
+                    form.submit();
+                }
+            });
+        }
+
+        function confirmSetujui() {
+            @if (!empty($hasPendingItems))
+                @php
+                    $pendingModLabels = collect($mods)->where('status', 'diproses')->pluck('label')->toArray();
+                    $pendingModsString = !empty($pendingModLabels) ? implode(', ', $pendingModLabels) : 'berkas pendukung atau Tugas Akhir';
+                @endphp
+                Swal.fire({
+                    title: 'Verifikasi Belum Selesai',
+                    html: 'Selesaikan verifikasi (setujui/tolak) pada bagian <b>{{ $pendingModsString }}</b> terlebih dahulu.',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok, got it!',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    }
+                });
+                return;
+            @endif
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda akan menyetujui pengajuan SKPI ini untuk dilanjutkan ke proses pencetakan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Setujui SKPI',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('formSetujui');
+                    const btn = form.querySelector('button[type="button"]');
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memproses...';
+                    btn.disabled = true;
+                    form.submit();
+                }
+            });
+        }
+    </script>
 @endsection

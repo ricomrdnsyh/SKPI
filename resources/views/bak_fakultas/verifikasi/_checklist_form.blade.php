@@ -1,13 +1,5 @@
 <div class="border-top border-gray-200 pt-7 px-7 pb-7 mt-5">
-    @if ($hasPendingItems)
-        <div class="alert bg-light-warning border border-warning d-flex flex-column p-5 mb-5">
-            <h5 class="mb-2 text-warning"><i class="ki-duotone ki-information-5 fs-2 text-warning me-2"><span
-                        class="path1"></span><span class="path2"></span><span class="path3"></span></i> Verifikasi
-                Lulus Belum Dapat Diproses</h5>
-            <span class="text-warning fw-semibold">Masih ada berkas pendukung atau Tugas Akhir berstatus pending yang
-                perlu disetujui/ditolak terlebih dahulu.</span>
-        </div>
-    @endif
+
     @if ($hasNoTugasAkhir)
         <div class="alert bg-light-info border border-info d-flex flex-column p-5 mb-5">
             <h5 class="mb-2 text-info"><i class="ki-duotone ki-information fs-2 text-info me-2"><span
@@ -43,8 +35,7 @@
                 class="m-0" id="formSetujui">
                 @csrf
                 <input type="hidden" name="hasil_verifikasi" value="lulus">
-                <button type="button" class="btn btn-success w-100 fw-bolder" onclick="confirmSetujui()"
-                    {{ $hasPendingItems ? 'disabled' : '' }}>
+                <button type="button" class="btn btn-success w-100 fw-bolder" onclick="confirmSetujui()">
                     <i class="ki-duotone ki-check-circle fs-2"><span class="path1"></span><span
                             class="path2"></span></i> Setujui SKPI
                 </button>

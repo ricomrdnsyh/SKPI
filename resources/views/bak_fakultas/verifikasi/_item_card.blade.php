@@ -43,77 +43,57 @@
     {{-- BAAK: Approve/Reject --}}
     @if ($status === 'pending' && Auth::user()->role === 'bak_fakultas')
         <div
-            class="d-flex flex-column flex-sm-row justify-content-end align-items-sm-center gap-3 pt-4 mt-4 border-top border-gray-300">
+            class="d-flex flex-column flex-sm-row justify-content-end align-items-sm-center gap-2 pt-4 mt-4 border-top border-gray-300">
             @if ($isTugasAkhir)
                 <form action="{{ route('bak_fakultas.tugas_akhir.reject', $itemId) }}" method="POST"
-                    class="d-flex flex-column flex-sm-row align-items-sm-center gap-2 m-0"
-                    onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
+                    id="form-reject-ta-{{ $itemId }}" class="m-0">
                     @csrf
-                    <input type="text" name="keterangan" required class="form-control form-control-sm "
-                        style="width: 250px;" placeholder="Tulis alasan tolak...">
-                    <button type="submit"
+                    <input type="hidden" name="keterangan" id="ket-ta-{{ $itemId }}">
+                    <button type="button" onclick="confirmReject('form-reject-ta-{{ $itemId }}', 'ket-ta-{{ $itemId }}')"
                         class="btn btn-danger btn-sm fw-bolder px-4 py-2 shadow-sm d-flex align-items-center justify-content-center"
                         style="min-width: 90px;">
                         <span class="indicator-label">
                             <span class="d-flex align-items-center"><i class="ki-duotone ki-cross fs-2 me-1"><span
                                         class="path1"></span><span class="path2"></span></i> Tolak</span>
                         </span>
-                        <span class="indicator-progress">
-                            <span class="d-flex align-items-center">Menolak... <span
-                                    class="spinner-border spinner-border-sm ms-2"></span></span>
-                        </span>
                     </button>
                 </form>
                 <form action="{{ route('bak_fakultas.tugas_akhir.approve', $itemId) }}" method="POST" class="m-0"
-                    onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
+                    onsubmit="const b=this.querySelector('button');b.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span>';b.disabled=true;">
                     @csrf
                     <button type="submit"
-                        class="btn btn-success btn-sm fw-bolder px-4 py-2 shadow-sm w-100 w-sm-auto d-flex align-items-center justify-content-center"
+                        class="btn btn-success btn-sm fw-bolder px-4 py-2 shadow-sm d-flex align-items-center justify-content-center"
                         style="min-width: 90px;">
                         <span class="indicator-label">
                             <span class="d-flex align-items-center"><i class="ki-duotone ki-check fs-2 me-1"></i>
                                 Setujui</span>
-                        </span>
-                        <span class="indicator-progress">
-                            <span class="d-flex align-items-center">Menyetujui... <span
-                                    class="spinner-border spinner-border-sm ms-2"></span></span>
                         </span>
                     </button>
                 </form>
             @else
                 <form action="{{ route('bak_fakultas.data.reject', ['type' => $itemType, 'id' => $itemId]) }}"
-                    method="POST" class="d-flex flex-column flex-sm-row align-items-sm-center gap-2 m-0"
-                    onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
+                    method="POST" id="form-reject-{{ $itemType }}-{{ $itemId }}" class="m-0">
                     @csrf
-                    <input type="text" name="keterangan" required class="form-control form-control-sm "
-                        style="width: 250px;" placeholder="Tulis alasan tolak...">
-                    <button type="submit"
+                    <input type="hidden" name="keterangan" id="ket-{{ $itemType }}-{{ $itemId }}">
+                    <button type="button" onclick="confirmReject('form-reject-{{ $itemType }}-{{ $itemId }}', 'ket-{{ $itemType }}-{{ $itemId }}')"
                         class="btn btn-danger btn-sm fw-bolder px-4 py-2 shadow-sm d-flex align-items-center justify-content-center"
                         style="min-width: 90px;">
                         <span class="indicator-label">
                             <span class="d-flex align-items-center"><i class="ki-duotone ki-cross fs-2 me-1"><span
                                         class="path1"></span><span class="path2"></span></i> Tolak</span>
                         </span>
-                        <span class="indicator-progress">
-                            <span class="d-flex align-items-center">Menolak... <span
-                                    class="spinner-border spinner-border-sm ms-2"></span></span>
-                        </span>
                     </button>
                 </form>
                 <form action="{{ route('bak_fakultas.data.approve', ['type' => $itemType, 'id' => $itemId]) }}"
                     method="POST" class="m-0"
-                    onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
+                    onsubmit="const b=this.querySelector('button');b.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span>';b.disabled=true;">
                     @csrf
                     <button type="submit"
-                        class="btn btn-success btn-sm fw-bolder px-4 py-2 shadow-sm w-100 w-sm-auto d-flex align-items-center justify-content-center"
+                        class="btn btn-success btn-sm fw-bolder px-4 py-2 shadow-sm d-flex align-items-center justify-content-center"
                         style="min-width: 90px;">
                         <span class="indicator-label">
                             <span class="d-flex align-items-center"><i class="ki-duotone ki-check fs-2 me-1"></i>
                                 Setujui</span>
-                        </span>
-                        <span class="indicator-progress">
-                            <span class="d-flex align-items-center">Menyetujui... <span
-                                    class="spinner-border spinner-border-sm ms-2"></span></span>
                         </span>
                     </button>
                 </form>

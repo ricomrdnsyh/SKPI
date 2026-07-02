@@ -19,39 +19,6 @@
         </div>
     @endif
 
-    @if ($pengajuan->status === 'diajukan' && !$pengajuan->diverifikasi_oleh)
-        @if (empty($hasPendingItems))
-            <div class="card border border-primary border-dashed mb-5">
-                <div class="card-body p-6">
-                    <h4 class="mb-3 text-primary"><i class="ki-duotone ki-check-circle fs-2 text-primary me-2"><span
-                                class="path1"></span><span class="path2"></span></i> Verifikasi Pengajuan Cetak</h4>
-                    <p class="text-muted fs-6 mb-5">Semua item telah diverifikasi. Setujui atau tolak pengajuan cetak
-                        SKPI ini.</p>
-                    <div class="d-flex gap-3">
-                        <form action="{{ route('bak_fakultas.pengajuan_cetak.approve', $pengajuan->id_pengajuan) }}"
-                            method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-success btn-sm fw-bold">
-                                <i class="ki-duotone ki-check fs-2"><span class="path1"></span><span
-                                        class="path2"></span></i> Setujui
-                            </button>
-                        </form>
-                        <form action="{{ route('bak_fakultas.pengajuan_cetak.reject', $pengajuan->id_pengajuan) }}"
-                            method="POST" class="d-flex gap-2">
-                            @csrf
-                            <input type="text" name="keterangan" required
-                                class="form-control form-control-solid form-control-sm w-200px"
-                                placeholder="Alasan tolak...">
-                            <button type="submit" class="btn btn-danger btn-sm fw-bold">
-                                <i class="ki-duotone ki-cross fs-2"><span class="path1"></span><span
-                                        class="path2"></span></i> Tolak
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        @endif
-    @endif
 
     @if ($pengajuan->status === 'verifikasi' && $pengajuan->permohonan_cetak && !$pengajuan->skpi)
         <div class="card border border-success border-dashed mb-5">
