@@ -167,7 +167,7 @@ class SkpiController extends Controller
 
     public function verify(int $id_skpi)
     {
-        return Cache::remember("skpi:verify:{$id_skpi}", 300, function () use ($id_skpi) {
+        $data = Cache::remember("skpi:verify:{$id_skpi}", 300, function () use ($id_skpi) {
             $skpi = DB::table('skpi')
                 ->leftJoin('mahasiswa', 'skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
                 ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
@@ -198,7 +198,7 @@ class SkpiController extends Controller
                 ->first();
 
             if (!$skpi) {
-                return view('skpi.verify_failed', ['message' => 'Dokumen SKPI dengan ID tersebut tidak ditemukan dalam sistem kami.']);
+                return null;
             }
 
             $mahasiswa = (object) [
@@ -277,7 +277,7 @@ class SkpiController extends Controller
                 ];
             }
 
-            return view('skpi.verify', compact(
+            return compact(
                 'skpi',
                 'mahasiswa',
                 'fakultas',
@@ -286,7 +286,13 @@ class SkpiController extends Controller
                 'organisasi',
                 'sertifikat',
                 'magang'
-            ));
+            );
         });
+
+        if (!$data) {
+            return view('skpi.verify_failed', ['message' => 'Dokumen SKPI dengan ID tersebut tidak ditemukan dalam sistem kami.']);
+        }
+
+        return view('skpi.verify', $data);
     }
 }
