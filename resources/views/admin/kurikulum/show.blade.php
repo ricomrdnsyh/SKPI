@@ -15,10 +15,6 @@
                         <label class="fw-bolder text-dark mb-2 fs-6">Nama Kurikulum</label>
                         <input type="text" id="show_nama_kurikulum" class="form-control form-control-sm" disabled />
                     </div>
-                    <div class="fv-row">
-                        <label class="fw-bolder text-dark mb-2 fs-6">Tahun</label>
-                        <input type="text" id="show_tahun" class="form-control form-control-sm" disabled />
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">

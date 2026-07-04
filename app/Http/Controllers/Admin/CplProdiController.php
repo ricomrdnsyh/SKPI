@@ -39,7 +39,6 @@ class CplProdiController extends Controller
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
-                ->orderBy('tahun', 'desc')
                 ->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
@@ -47,7 +46,6 @@ class CplProdiController extends Controller
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
                 ->whereIn('kurikulum.id_prodi', $allowedProdis)
-                ->orderBy('tahun', 'desc')
                 ->get();
         }
         $kategori = DB::table('kategori_cpl')->select('id_kategori', 'kode_kategori', 'nama_kategori', 'urutan')->orderBy('urutan')->get();
@@ -66,7 +64,6 @@ class CplProdiController extends Controller
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
-                ->orderBy('tahun', 'desc')
                 ->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
@@ -74,7 +71,6 @@ class CplProdiController extends Controller
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
                 ->whereIn('kurikulum.id_prodi', $allowedProdis)
-                ->orderBy('tahun', 'desc')
                 ->get();
         }
         $kategori = DB::table('kategori_cpl')->select('id_kategori', 'kode_kategori', 'nama_kategori', 'urutan')->orderBy('urutan')->get();
@@ -121,7 +117,6 @@ class CplProdiController extends Controller
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
-                ->orderBy('tahun', 'desc')
                 ->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
@@ -129,7 +124,6 @@ class CplProdiController extends Controller
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
                 ->whereIn('kurikulum.id_prodi', $allowedProdis)
-                ->orderBy('tahun', 'desc')
                 ->get();
         }
         $kategori = DB::table('kategori_cpl')->select('id_kategori', 'kode_kategori', 'nama_kategori', 'urutan')->orderBy('urutan')->get();

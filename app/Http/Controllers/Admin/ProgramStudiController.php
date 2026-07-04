@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ClientSSO;
+use App\Models\Fakultas;
 
 use App\Http\Controllers\Traits\FilterByProdi;
 
@@ -20,7 +22,7 @@ class ProgramStudiController extends Controller
     public function index()
     {
         $allowedProdis = $this->getAllowedProdiIds();
-        
+
         $jenjangQuery = DB::table('program_studi');
         if ($allowedProdis !== null) {
             $jenjangQuery->whereIn('id_prodi', $allowedProdis);
@@ -174,9 +176,65 @@ class ProgramStudiController extends Controller
             ->addColumn('status', fn($p) => '<span class="badge ' . ($p->status === 'aktif' || $p->status === 'active' ? 'badge-success' : 'badge-danger') . '">' . ucfirst($p->status === 'active' ? 'Aktif' : $p->status) . '</span>')
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_prodi . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_prodi . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action', 'status'])
             ->make(true);
+    }
+
+    public function sync(ClientSSO $clientSSO)
+    {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+        }
+
+        try {
+            $fakultasList = Fakultas::all();
+
+            if ($fakultasList->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'Data Fakultas kosong, silakan sinkronisasi fakultas terlebih dahulu.']);
+            }
+
+            $newCount = 0;
+            $updatedCount = 0;
+            $unchangedCount = 0;
+
+            foreach ($fakultasList as $fakultas) {
+                $data = $clientSSO->getProdiByFakultas($fakultas->id_fakultas);
+
+                if (empty($data)) {
+                    continue;
+                }
+
+                foreach ($data as $item) {
+                    $prodi = ProgramStudi::updateOrCreate(
+                        ['id_prodi' => $item['id_sms']],
+                        [
+                            'id_fakultas' => $item['id_fakultas'] ?? $fakultas->id_fakultas,
+                            'nama_prodi' => $item['prodi'] ?? 'Tanpa Nama',
+                            'kode_prodi' => $item['singkatan'] ?? null,
+                            'jenjang' => null
+                        ]
+                    );
+
+                    if ($prodi->wasRecentlyCreated) {
+                        $newCount++;
+                    } else if ($prodi->wasChanged()) {
+                        $updatedCount++;
+                    } else {
+                        $unchangedCount++;
+                    }
+                }
+            }
+
+            Cache::forget('master:program_studi');
+            Cache::forget('master:prodi_options');
+
+            $message = "Sinkronisasi selesai. Baru: {$newCount}, Diperbarui: {$updatedCount}, Tetap: {$unchangedCount}.";
+
+            return response()->json(['success' => true, 'message' => $message]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal sinkronisasi: ' . $e->getMessage()], 500);
+        }
     }
 }

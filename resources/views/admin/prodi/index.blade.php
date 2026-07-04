@@ -114,7 +114,8 @@
                                 </div>
                             </div>
                             <div class="card-toolbar">
-                                <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                                <div class="d-flex justify-content-end gap-2" data-kt-customer-table-toolbar="base">
+                                    <button type="button" class="btn btn-sm btn-info" id="btn_sync_prodi"><i class="fas fa-sync"></i> Sinkronisasi API</button>
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah Program
                                         Studi</button>
@@ -128,11 +129,11 @@
                                     <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                         <th class="text-center p-0" style="width:28px; min-width:28px;"></th>
                                         <th class="text-center">Actions</th>
+                                        <th class="min-w-125px">Fakultas</th>
                                         <th class="min-w-125px">Program Studi</th>
                                         <th class="min-w-125px">Kode Prodi</th>
                                         <th class="min-w-125px">Jenjang / Gelar</th>
                                         <th class="min-w-125px">Akreditasi (SK)</th>
-                                        <th class="min-w-125px">Fakultas</th>
                                         <th class="min-w-125px">Status</th>
 
                                     </tr>

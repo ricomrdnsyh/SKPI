@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ClientSSO;
 
 use App\Http\Controllers\Traits\FilterByProdi;
 
@@ -160,9 +161,54 @@ class FakultasController extends Controller
             ->addColumn('status', fn($f) => '<span class="badge ' . ($f->status === 'aktif' ? 'badge-success' : 'badge-danger') . '">' . ucfirst($f->status) . '</span>')
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_fakultas . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_fakultas . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action', 'status'])
             ->make(true);
+    }
+
+    public function sync(ClientSSO $clientSSO)
+    {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+        }
+
+        try {
+            $data = $clientSSO->getFakultasFromApi();
+
+            if (empty($data)) {
+                return response()->json(['success' => false, 'message' => 'Data dari API kosong.']);
+            }
+
+            $newCount = 0;
+            $updatedCount = 0;
+            $unchangedCount = 0;
+
+            foreach ($data as $item) {
+                $fakultas = Fakultas::updateOrCreate(
+                    ['id_fakultas' => $item['id_fakultas']],
+                    [
+                        'nama_fakultas' => $item['fakultas'] ?? 'Tanpa Nama',
+                        'kode_fakultas' => $item['singkatan'] ?? null,
+                    ]
+                );
+
+                if ($fakultas->wasRecentlyCreated) {
+                    $newCount++;
+                } else if ($fakultas->wasChanged()) {
+                    $updatedCount++;
+                } else {
+                    $unchangedCount++;
+                }
+            }
+
+            Cache::forget('master:fakultas');
+
+            $message = "Sinkronisasi Selesai. Baru: {$newCount}, Diperbarui: {$updatedCount}, Tetap: {$unchangedCount}.";
+
+            return response()->json(['success' => true, 'message' => $message]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal sinkronisasi: ' . $e->getMessage()], 500);
+        }
     }
 }

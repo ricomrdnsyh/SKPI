@@ -13,11 +13,6 @@ class Kurikulum extends Model
 
     protected $fillable = [
         'id_prodi',
-        'nama_kurikulum',
-        'tahun'
-    ];
-
-    protected $casts = [
-        'tahun' => 'integer',
+        'nama_kurikulum'
     ];
 }

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\ClientSSO;
+use App\Models\ProgramStudi;
 use App\Http\Controllers\Traits\FilterByProdi;
 
 class KurikulumController extends Controller
@@ -53,21 +55,19 @@ class KurikulumController extends Controller
         $request->validate([
             'id_prodi' => 'required|exists:program_studi,id_prodi',
             'nama_kurikulum' => 'required|string|max:255',
-            'tahun' => 'required|integer|min:2000|max:2099',
         ]);
 
         $existing = DB::table('kurikulum')->where('id_prodi', $request->id_prodi)
-            ->where('tahun', $request->tahun)
+            ->where('nama_kurikulum', $request->nama_kurikulum)
             ->first();
 
         if ($existing) {
-            return back()->withInput()->with('error', 'Kurikulum dengan tahun ' . $request->tahun . ' sudah ada untuk prodi ini.');
+            return back()->withInput()->with('error', 'Kurikulum dengan nama ' . $request->nama_kurikulum . ' sudah ada untuk prodi ini.');
         }
 
         Kurikulum::create([
             'id_prodi' => $request->id_prodi,
             'nama_kurikulum' => $request->nama_kurikulum,
-            'tahun' => $request->tahun,
         ]);
 
         return redirect()->route('kurikulum.index')->with('success', 'Data kurikulum berhasil ditambahkan.');
@@ -113,22 +113,20 @@ class KurikulumController extends Controller
         $request->validate([
             'id_prodi' => 'required|exists:program_studi,id_prodi',
             'nama_kurikulum' => 'required|string|max:255',
-            'tahun' => 'required|integer|min:2000|max:2099',
         ]);
 
         $existing = DB::table('kurikulum')->where('id_prodi', $request->id_prodi)
-            ->where('tahun', $request->tahun)
+            ->where('nama_kurikulum', $request->nama_kurikulum)
             ->where('id_kurikulum', '!=', $id)
             ->first();
 
         if ($existing) {
-            return back()->withInput()->with('error', 'Kurikulum dengan tahun ' . $request->tahun . ' sudah ada untuk prodi ini.');
+            return back()->withInput()->with('error', 'Kurikulum dengan nama ' . $request->nama_kurikulum . ' sudah ada untuk prodi ini.');
         }
 
         $kurikulum->update([
             'id_prodi' => $request->id_prodi,
             'nama_kurikulum' => $request->nama_kurikulum,
-            'tahun' => $request->tahun,
         ]);
 
         return redirect()->route('kurikulum.index')->with('success', 'Data kurikulum berhasil diperbarui.');
@@ -178,5 +176,59 @@ class KurikulumController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+    public function sync(ClientSSO $clientSSO)
+    {
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+        }
+
+        try {
+            $prodis = ProgramStudi::all();
+            
+            if ($prodis->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'Data Program Studi kosong, silakan sinkronisasi prodi terlebih dahulu.']);
+            }
+
+            $newCount = 0;
+            $updatedCount = 0;
+            $unchangedCount = 0;
+
+            foreach ($prodis as $prodi) {
+                $data = $clientSSO->getKurikulumFromApi($prodi->id_prodi);
+
+                if (empty($data)) {
+                    continue;
+                }
+
+                foreach ($data as $item) {
+                    $namaKurikulum = $item['nm_kurikulum'] ?? $item['nama_kurikulum'] ?? null;
+
+                    if ($namaKurikulum) {
+                        $kurikulum = Kurikulum::updateOrCreate(
+                            [
+                                'id_prodi' => $prodi->id_prodi,
+                                'nama_kurikulum' => $namaKurikulum,
+                            ]
+                        );
+
+                        if ($kurikulum->wasRecentlyCreated) {
+                            $newCount++;
+                        } else if ($kurikulum->wasChanged()) {
+                            $updatedCount++;
+                        } else {
+                            $unchangedCount++;
+                        }
+                    }
+                }
+            }
+
+            $message = "Sinkronisasi selesai. Baru: {$newCount}, Diperbarui: {$updatedCount}, Tetap: {$unchangedCount}.";
+
+            return response()->json(['success' => true, 'message' => $message]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal sinkronisasi: ' . $e->getMessage()], 500);
+        }
     }
 }

@@ -27,7 +27,6 @@ class MahasiswaCrudController extends Controller
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
-                ->orderBy('tahun', 'desc')
                 ->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
@@ -35,7 +34,6 @@ class MahasiswaCrudController extends Controller
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
                 ->whereIn('kurikulum.id_prodi', $allowedProdis)
-                ->orderBy('tahun', 'desc')
                 ->get();
         }
 
@@ -52,7 +50,6 @@ class MahasiswaCrudController extends Controller
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
-                ->orderBy('tahun', 'desc')
                 ->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
@@ -60,7 +57,6 @@ class MahasiswaCrudController extends Controller
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
                 ->whereIn('kurikulum.id_prodi', $allowedProdis)
-                ->orderBy('tahun', 'desc')
                 ->get();
         }
         return view('admin.mahasiswa.create', compact('prodi', 'kurikulums'));
@@ -114,7 +110,6 @@ class MahasiswaCrudController extends Controller
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
-                ->orderBy('tahun', 'desc')
                 ->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
@@ -122,7 +117,6 @@ class MahasiswaCrudController extends Controller
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
                 ->whereIn('kurikulum.id_prodi', $allowedProdis)
-                ->orderBy('tahun', 'desc')
                 ->get();
         }
         return view('admin.mahasiswa.edit', compact('mahasiswa', 'prodi', 'kurikulums'));

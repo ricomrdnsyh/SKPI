@@ -69,9 +69,6 @@
                 },
                 {
                     data: 'nama_kurikulum'
-                },
-                {
-                    data: 'tahun'
                 }
             ],
             drawCallback: function() {
@@ -85,6 +82,65 @@
 
         $('#filter-prodi').on('change', function() {
             table.ajax.reload(null, false);
+        });
+
+        $('#btn_sync_kurikulum').on('click', function() {
+            Swal.fire({
+                title: "Sinkronisasi Kurikulum?",
+                text: "Proses ini akan mengambil data dari API SSO dan memperbarui database lokal.",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonText: "Ya, Sinkronkan!",
+                cancelButtonText: "Batal",
+                customClass: {
+                    confirmButton: "btn btn-info",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('kurikulum.sync') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        beforeSend: function() {
+                            Swal.fire({
+                                title: 'Menyinkronkan...',
+                                icon: 'info',
+                                text: 'Mohon tunggu sebentar...',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            });
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    text: response.message,
+                                    icon: "success",
+                                    buttonsStyling: false,
+                                    confirmButtonText: "Ok",
+                                    customClass: {
+                                        confirmButton: "btn btn-primary"
+                                    }
+                                });
+                                table.ajax.reload(null, false);
+                            } else {
+                                Swal.fire("Gagal!", response.message, "error");
+                            }
+                        },
+                        error: function(xhr) {
+                            let msg = "Terjadi kesalahan saat menyinkronkan data.";
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                msg = xhr.responseJSON.message;
+                            }
+                            Swal.fire("Error!", msg, "error");
+                        }
+                    });
+                }
+            });
         });
     });
 </script>

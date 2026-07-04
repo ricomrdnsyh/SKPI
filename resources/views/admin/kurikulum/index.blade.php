@@ -114,7 +114,8 @@
                                 </div>
                             </div>
                             <div class="card-toolbar">
-                                <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                                <div class="d-flex justify-content-end gap-2" data-kt-customer-table-toolbar="base">
+                                    <button type="button" class="btn btn-sm btn-info" id="btn_sync_kurikulum"><i class="fas fa-sync"></i> Sinkronisasi API</button>
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah Kurikulum</button>
                                 </div>
@@ -129,7 +130,6 @@
                                         <th class="text-center">Actions</th>
                                         <th class="min-w-125px">Program Studi</th>
                                         <th class="min-w-125px">Nama Kurikulum</th>
-                                        <th class="min-w-125px">Tahun</th>
 
                                     </tr>
                                 </thead>
