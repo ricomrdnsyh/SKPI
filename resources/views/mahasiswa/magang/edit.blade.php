@@ -14,13 +14,11 @@
                             <label for="edit_tempat_magang" class="form-label required fw-bold fs-6">Mitra Industri (Perusahaan)</label>
                             <input type="text" name="tempat_magang" id="edit_tempat_magang" required class="form-control" placeholder="Contoh: PT. Sumber Jaya Makmur">
                         </div>
-
                         <div class="fv-row">
                             <label for="edit_posisi" class="form-label required fw-bold fs-6">Posisi / Jabatan Intern</label>
                             <input type="text" name="posisi" id="edit_posisi" required class="form-control" placeholder="Contoh: Junior Web Developer">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_tanggal_mulai" class="form-label required fw-bold fs-6">Tanggal Mulai</label>
@@ -29,7 +27,6 @@
                                 <input type="text" name="tanggal_mulai" id="edit_tanggal_mulai" required class="form-control" placeholder="Pilih tanggal mulai">
                             </div>
                         </div>
-
                         <div class="fv-row">
                             <label for="edit_tanggal_selesai" class="form-label required fw-bold fs-6">Tanggal Selesai</label>
                             <div class="input-group">
@@ -38,7 +35,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="fv-row mb-5">
                         <label for="edit_file_bukti" class="form-label fw-bold fs-6">Unggah Sertifikat Magang / Nilai Akhir (Opsional)</label>
                         <input type="file" name="file_bukti" id="edit_file_bukti" class="form-control">
@@ -59,4 +55,3 @@
         </div>
     </div>
 </div>
-

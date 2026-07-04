@@ -21,24 +21,6 @@ trait AutoResubmitPengajuan
             return;
         }
 
-        // DB::transaction(function () use ($pengajuan) {
-        //     if (in_array($pengajuan->status, ['ditolak', 'draft', 'verifikasi'])) {
-        //         DB::table('pengajuan_skpi')
-        //             ->where('id_pengajuan', $pengajuan->id_pengajuan)
-        //             ->update([
-        //                 'status' => 'diajukan',
-        //                 'tanggal_pengajuan' => now(),
-        //                 'diverifikasi_oleh' => null,
-        //                 'tanggal_verifikasi' => null,
-        //                 'catatan_bak' => null,
-        //             ]);
-
-        //         DB::table('checklist_verifikasi_skpi')
-        //             ->where('id_pengajuan', $pengajuan->id_pengajuan)
-        //             ->delete();
-        //     }
-        // });
-
         app(CacheService::class)->flushDashboard($id_mahasiswa);
     }
 }

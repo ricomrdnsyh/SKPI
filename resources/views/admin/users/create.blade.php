@@ -13,20 +13,17 @@
                         <input type="text" name="username" id="username" required
                             class="form-control form-control-sm">
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="nama_lengkap" class="form-label required fw-bolder text-dark">Nama Lengkap</label>
                             <input type="text" name="nama_lengkap" id="nama_lengkap" required
                                 class="form-control form-control-sm">
                         </div>
-
                         <div class="fv-row">
                             <label for="email" class="form-label fw-bolder text-dark">Email</label>
                             <input type="email" name="email" id="email" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="role" class="form-label required fw-bolder text-dark">Role</label>
@@ -37,7 +34,6 @@
                                 <option value="bak_fakultas">BAK Fakultas</option>
                             </select>
                         </div>
-
                         <div class="fv-row" id="fakultas-container">
                             <label for="id_fakultas" class="form-label fw-bolder text-dark">Hubungkan Fakultas</label>
                             <select name="id_fakultas" id="id_fakultas" class="form-select form-select-sm"
@@ -50,14 +46,12 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="password" class="form-label required fw-bolder text-dark">Password</label>
                             <input type="password" name="password" id="password" required
                                 class="form-control form-control-sm" placeholder="Minimal 6 karakter">
                         </div>
-
                         <div class="fv-row">
                             <label class="form-label required fw-bolder text-dark">Status Akun</label>
                             <div class="d-flex align-items-center mt-3">

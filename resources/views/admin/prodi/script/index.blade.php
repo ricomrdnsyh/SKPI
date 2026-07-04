@@ -87,15 +87,12 @@
                 $('#table-prodi [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-
         table.on('draw', function() {
             $('#table-prodi [data-bs-toggle="tooltip"]').tooltip();
         });
-
         $('#filter-fakultas').on('change', function() {
             table.ajax.reload(null, false);
         });
-
         $('#btn_sync_prodi').on('click', function() {
             Swal.fire({
                 title: "Sinkronisasi Program Studi?",

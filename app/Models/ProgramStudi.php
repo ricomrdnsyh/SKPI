@@ -33,4 +33,9 @@ class ProgramStudi extends Model
         'email_prodi',
         'status',
     ];
+
+    public function fakultas()
+    {
+        return $this->belongsTo(Fakultas::class, 'id_fakultas', 'id_fakultas');
+    }
 }

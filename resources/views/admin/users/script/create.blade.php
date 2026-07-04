@@ -2,7 +2,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const formCreate = document.getElementById('form_create_users');
         if (!formCreate) return;
-        
         $('#role').on('change', function() {
             if ($(this).val() === 'bak_fakultas') {
                 $('#id_fakultas').prop('disabled', false);
@@ -13,26 +12,21 @@
                 $('#id_fakultas').val(null).trigger('change.select2');
             }
         });
-        
         // Set initial state
         $('#role').trigger('change');
-        
         let submitButtonCreate = formCreate.querySelector('[type="submit"]');
         if (!submitButtonCreate) {
              // Try to find by indicator class if type="submit" is missing
              const ind = formCreate.querySelector('.indicator-label');
              if(ind) submitButtonCreate = ind.closest('button');
         }
-
         formCreate.addEventListener('submit', function(e) {
             e.preventDefault();
-            
             if (!formCreate.checkValidity()) {
                 e.stopPropagation();
                 formCreate.classList.add('was-validated');
                 return;
             }
-
             if (submitButtonCreate) {
                 submitButtonCreate.disabled = true;
                 const label = submitButtonCreate.querySelector('.indicator-label');
@@ -40,10 +34,8 @@
                 if(label) label.style.display = 'none';
                 if(progress) progress.style.display = 'inline-block';
             }
-
             $('.invalid-feedback.d-block').remove();
             $(formCreate).find('.is-invalid').removeClass('is-invalid');
-
             $.ajax({
                 url: formCreate.action,
                 type: formCreate.method,
@@ -72,7 +64,6 @@
                         if(label) label.style.display = 'inline-block';
                         if(progress) progress.style.display = 'none';
                     }
-
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
                         for (let key in errors) {
@@ -92,7 +83,6 @@
                 }
             });
         });
-
         const modalEl = document.getElementById('form_create');
         if (modalEl) {
             modalEl.addEventListener('hidden.bs.modal', function () {

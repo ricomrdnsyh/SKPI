@@ -8,23 +8,19 @@
         .table-row-dashed tr {
             border-bottom: 1px dashed #cccccc !important;
         }
-
         .dataTable thead tr th {
             vertical-align: middle;
             border-bottom: 1px dashed #cccccc !important;
         }
-
         .dataTable th,
         .dataTable td {
             vertical-align: middle !important;
         }
-
         .dataTable td.dt-control:before,
         .dataTable th.dt-control:before {
             display: none !important;
             content: "" !important;
         }
-
         table.dataTable td.dt-control,
         table.dataTable th.dt-control {
             position: relative !important;
@@ -34,7 +30,6 @@
             text-align: center !important;
             vertical-align: middle !important;
         }
-
         table.dataTable.collapsed tbody tr:not(.child) td.dt-control:before,
         table.dataTable.collapsed tbody tr:not(.child) th.dt-control:before {
             display: inline-flex !important;
@@ -55,32 +50,27 @@
             background: #0d6efd !important;
             box-shadow: 0 0 0 2px #ffffff, 0 2px 6px rgba(0, 0, 0, .18) !important;
         }
-
         table.dataTable.collapsed tbody tr.parent:not(.child) td.dt-control:before,
         table.dataTable.collapsed tbody tr.parent:not(.child) th.dt-control:before {
             content: "-" !important;
             background: #dc3545 !important;
         }
-
         table.dataTable.dtr-inline.collapsed>tbody>tr>td.child,
         table.dataTable.dtr-inline.collapsed>tbody>tr>th.child,
         table.dataTable.dtr-inline.collapsed>tbody>tr>td.dataTables_empty {
             cursor: default !important;
         }
-
         table.dataTable.dtr-inline.collapsed>tbody>tr>td.child:before,
         table.dataTable.dtr-inline.collapsed>tbody>tr>th.child:before,
         table.dataTable.dtr-inline.collapsed>tbody>tr>td.dataTables_empty:before {
             display: none !important;
         }
-
         table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control,
         table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control {
             position: relative;
             padding-left: 30px;
             cursor: pointer;
         }
-
         .dt-buttons .btn-export-primary,
         .dt-buttons .btn-export-primary:focus,
         .dt-buttons .btn-export-primary:hover,
@@ -89,17 +79,14 @@
             border-color: #004289 !important;
             color: #fff !important;
         }
-
         .dt-buttons .btn-export-primary:focus {
             box-shadow: none !important;
         }
-
         .dt-buttons .btn-export-primary i {
             color: #fff !important;
         }
     </style>
 @endsection
-
 @section('content')
     <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
         <div class="d-flex flex-column flex-column-fluid">
@@ -131,7 +118,6 @@
                                         <th class="min-w-125px">Kode Kategori</th>
                                         <th class="min-w-125px">Nama Kategori</th>
                                         <th class="min-w-125px">Urutan</th>
-
                                     </tr>
                                 </thead>
                                 <tbody class="fw-bold text-gray-800">
@@ -154,16 +140,13 @@
     <script src="{{ asset('assets/plugins/custom/datatables/dataTables.colReorder.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/dataTables.buttons.min.js') }}"></script>
-
     <script src="{{ asset('assets/plugins/custom/datatables/vfs_fonts.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/jszip.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/print.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.js') }}"></script>
-
     @include('admin.kategori_cpl.script.index')
-
     @include('admin.kategori_cpl.script.create')
     @include('admin.kategori_cpl.script.edit')
     @include('admin.kategori_cpl.script.show')

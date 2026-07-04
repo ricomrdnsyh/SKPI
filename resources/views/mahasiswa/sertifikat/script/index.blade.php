@@ -67,12 +67,9 @@
                 $('#table-sertifikat [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-        
         table.on('draw', function() {
             $('#table-sertifikat [data-bs-toggle="tooltip"]').tooltip();
         });
-
-        
     });
 </script>
 <script>
@@ -145,5 +142,3 @@
         });
     </script>
 @endif
-
-

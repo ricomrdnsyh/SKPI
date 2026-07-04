@@ -14,20 +14,17 @@
                         <input type="text" name="username" id="edit_username" required
                             class="form-control form-control-sm">
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_nama_lengkap" class="form-label required fw-bolder text-dark">Nama Lengkap</label>
                             <input type="text" name="nama_lengkap" id="edit_nama_lengkap" required 
                                 class="form-control form-control-sm">
                         </div>
-
                         <div class="fv-row">
                             <label for="edit_email" class="form-label fw-bolder text-dark">Email</label>
                             <input type="email" name="email" id="edit_email" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_role" class="form-label required fw-bolder text-dark">Peran (Role)</label>
@@ -36,7 +33,6 @@
                                 <option value="bak_fakultas">BAK Fakultas</option>
                             </select>
                         </div>
-
                         <div class="fv-row" id="edit_fakultas-container">
                             <label for="edit_id_fakultas" class="form-label fw-bolder text-dark">Hubungkan Fakultas</label>
                             <select name="id_fakultas" id="edit_id_fakultas" class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Fakultas">
@@ -48,14 +44,12 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_password" class="form-label fw-bolder text-dark">Password (Kosongkan jika tidak diubah)</label>
                             <input type="password" name="password" id="edit_password" class="form-control form-control-sm"
                                 placeholder="Minimal 6 karakter">
                         </div>
-
                         <div class="fv-row">
                             <label class="form-label required fw-bolder text-dark">Status Akun</label>
                             <div class="d-flex align-items-center mt-3">

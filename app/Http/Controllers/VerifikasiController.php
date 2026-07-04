@@ -13,7 +13,6 @@ use App\Http\Requests\RejectItemRequest;
 use App\Helpers\DataTableHelper;
 use App\Services\ApprovalService;
 use App\Services\CacheService;
-use App\Services\DataPreloader;
 use App\Services\SkpiProgressService;
 use App\Services\PengajuanService;
 use App\Services\SkpiService;
@@ -34,8 +33,7 @@ class VerifikasiController extends Controller
         private PengajuanService $pengajuanService,
         private SkpiService $skpiService,
         private ApprovalService $approvalService,
-        private CacheService $cache,
-        private DataPreloader $preloader
+        private CacheService $cache
     ) {}
 
     public function dashboard()
@@ -75,44 +73,12 @@ class VerifikasiController extends Controller
             return $query->count();
         });
 
-        $pendingCountQuery = DB::table('pengajuan_skpi')
+        $pendingCountQuery = PengajuanSkpi::query()
             ->leftJoin('mahasiswa', 'pengajuan_skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa');
         if ($allowedProdis !== null) {
             $pendingCountQuery->whereIn('mahasiswa.id_prodi', $allowedProdis);
         }
-        $pendingCount = $pendingCountQuery->where(function($q) {
-            $q->where('pengajuan_skpi.status', 'diajukan')
-              ->orWhere(function($sub) {
-                  $sub->where('pengajuan_skpi.status', '<>', 'dicetak')
-                      ->where(function($or) {
-                          $or->whereExists(function($p) {
-                              $p->select(DB::raw(1))->from('prestasi_mahasiswa')
-                                ->whereColumn('prestasi_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                ->where('prestasi_mahasiswa.status', 'pending');
-                          })
-                          ->orWhereExists(function($o) {
-                              $o->select(DB::raw(1))->from('organisasi_mahasiswa')
-                                ->whereColumn('organisasi_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                ->where('organisasi_mahasiswa.status', 'pending');
-                          })
-                          ->orWhereExists(function($s) {
-                              $s->select(DB::raw(1))->from('sertifikat_mahasiswa')
-                                ->whereColumn('sertifikat_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                ->where('sertifikat_mahasiswa.status', 'pending');
-                          })
-                          ->orWhereExists(function($m) {
-                              $m->select(DB::raw(1))->from('magang_mahasiswa')
-                                ->whereColumn('magang_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                ->where('magang_mahasiswa.status', 'pending');
-                          })
-                          ->orWhereExists(function($t) {
-                              $t->select(DB::raw(1))->from('tugas_akhir')
-                                ->whereColumn('tugas_akhir.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                ->where('tugas_akhir.status', 'pending');
-                          });
-                      });
-              });
-        })->count();
+        $pendingCount = $pendingCountQuery->hasPendingItems()->count();
 
         $stats = [
             'pending' => $pendingCount,
@@ -156,94 +122,53 @@ class VerifikasiController extends Controller
         if (!$pengajuanRow) abort(404);
         $pengajuan = PengajuanSkpi::hydrate([(array) $pengajuanRow])->first();
 
-        $mahasiswaRow = DB::table('mahasiswa')
-            ->select(['id_mahasiswa', 'id_prodi', 'id_kurikulum', 'nim', 'nama_lengkap', 'ipk', 'tahun_masuk', 'tahun_lulus', 'tanggal_lulus', 'status', 'foto', 'email', 'tempat_lahir', 'tanggal_lahir', 'nomor_telepon'])
-            ->where('id_mahasiswa', $pengajuan->id_mahasiswa)->first();
-        $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
+        $mahasiswa = Mahasiswa::with([
+            'programStudi',
+            'prestasi',
+            'organisasi',
+            'sertifikat',
+            'magang',
+            'tugasAkhir.pembimbing',
+            'skpi'
+        ])->find($pengajuan->id_mahasiswa);
 
         if (!$mahasiswa) {
             abort(404, 'Mahasiswa tidak ditemukan.');
         }
 
-        $prodi = $this->preloader->getProdi($mahasiswa->id_prodi);
+        $prodi = $mahasiswa->programStudi;
         if ($prodi) {
             $prodi->cpl = $this->cache->getCplByProdiAndKurikulum($prodi->id_prodi, $mahasiswa->id_kurikulum);
             $prodi->sistemPenilaian = $this->cache->getSistemPenilaian();
         }
-        $mahasiswa->programStudi = $prodi;
 
-        $pengajuan->skpi = DB::table('skpi')->where('id_pengajuan', $pengajuan->id_pengajuan)->first();
+        $pengajuan->skpi = $mahasiswa->skpi;
         $pengajuan->checklist = DB::table('checklist_verifikasi_skpi')->where('id_pengajuan', $pengajuan->id_pengajuan)->first();
-        $mahasiswa->skpi = $pengajuan->skpi;
 
         if ($allowedProdis !== null && !in_array($mahasiswa->id_prodi, $allowedProdis)) {
             abort(403, 'Akses ditolak. Mahasiswa ini berada di luar Program Studi/Fakultas Anda.');
         }
 
         $cached = $this->cache->rememberDetail("verifikasi:{$id_pengajuan}", function () use ($mahasiswa, $pengajuan) {
-            $mhsId = $mahasiswa->id_mahasiswa;
-
-            $prestasi = PrestasiMahasiswa::hydrate(
-                DB::table('prestasi_mahasiswa')->where('id_mahasiswa', $mhsId)
-                    ->select(['id_prestasi', 'id_mahasiswa', 'nama_prestasi', 'tingkat', 'tahun', 'status', 'approved_by', 'approved_at', 'keterangan', 'file_bukti'])
-                    ->get()->map(fn($row) => (array) $row)->toArray()
-            );
-
-            $organisasi = OrganisasiMahasiswa::hydrate(
-                DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $mhsId)
-                    ->select(['id_organisasi_mhs', 'id_mahasiswa', 'nama_organisasi', 'jabatan', 'tingkat', 'status', 'approved_by', 'approved_at', 'keterangan', 'file_bukti'])
-                    ->get()->map(fn($row) => (array) $row)->toArray()
-            );
-
-            $sertifikat = SertifikatMahasiswa::hydrate(
-                DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $mhsId)
-                    ->select(['id_sertifikat', 'id_mahasiswa', 'nama_sertifikat', 'penyelenggara', 'jenis_sertifikat', 'bidang', 'status', 'approved_by', 'approved_at', 'keterangan', 'file_bukti'])
-                    ->get()->map(fn($row) => (array) $row)->toArray()
-            );
-
-            $magang = MagangMahasiswa::hydrate(
-                DB::table('magang_mahasiswa')->where('id_mahasiswa', $mhsId)
-                    ->select(['id_magang', 'id_mahasiswa', 'tempat_magang', 'posisi', 'tanggal_mulai', 'tanggal_selesai', 'status', 'approved_by', 'approved_at', 'keterangan', 'file_bukti'])
-                    ->get()->map(fn($row) => (array) $row)->toArray()
-            );
-
-            $magang = $magang->map(function ($item) {
+            $prestasi = $mahasiswa->prestasi;
+            $organisasi = $mahasiswa->organisasi;
+            $sertifikat = $mahasiswa->sertifikat;
+            
+            $magang = $mahasiswa->magang->map(function ($item) {
                 $item->tempatMagang = (object) [
                     'nama_perusahaan' => $item->tempat_magang ?? '',
                     'alamat' => '',
                 ];
                 return $item;
             });
+            $mahasiswa->magang = $magang;
 
-            $tugasAkhirRaw = DB::table('tugas_akhir')
-                ->select(['id_tugas_akhir', 'id_mahasiswa', 'judul', 'status', 'approved_by', 'approved_at', 'keterangan'])
-                ->where('id_mahasiswa', $mhsId)->first();
-            $history = $this->verifikasiService->getHistoryTimeline($pengajuan);
-
-            $tugasAkhir = null;
-            if ($tugasAkhirRaw) {
-                $pembimbingCollection = DB::table('pembimbing_tugas_akhir')
-                    ->where('id_tugas_akhir', $tugasAkhirRaw->id_tugas_akhir)
-                    ->orderBy('urutan_pembimbing')
-                    ->get();
-
-                $tugasAkhir = (object) [
-                    'id_tugas_akhir' => $tugasAkhirRaw->id_tugas_akhir,
-                    'id_mahasiswa' => $tugasAkhirRaw->id_mahasiswa,
-                    'judul' => $tugasAkhirRaw->judul,
-                    'status' => $tugasAkhirRaw->status,
-                    'approved_by' => $tugasAkhirRaw->approved_by,
-                    'approved_at' => $tugasAkhirRaw->approved_at,
-                    'keterangan' => $tugasAkhirRaw->keterangan,
-                    'pembimbingTugasAkhir' => $pembimbingCollection,
-                ];
+            $tugasAkhir = $mahasiswa->tugasAkhir;
+            if ($tugasAkhir) {
+                $tugasAkhir->pembimbingTugasAkhir = $tugasAkhir->pembimbing;
             }
 
-            $mahasiswa->prestasi = $prestasi;
-            $mahasiswa->organisasi = $organisasi;
-            $mahasiswa->sertifikat = $sertifikat;
-            $mahasiswa->magang = $magang;
-            $mahasiswa->tugasAkhir = $tugasAkhir;
+            $history = $this->verifikasiService->getHistoryTimeline($pengajuan);
 
             $hasPendingItems = $prestasi->where('status', 'pending')->isNotEmpty()
                 || $organisasi->where('status', 'pending')->isNotEmpty()
@@ -582,39 +507,41 @@ class VerifikasiController extends Controller
 
         $tab = $request->tab;
         if ($tab === 'belum' || $tab === 'bypass') {
-            $query->where(function($q) {
-                $q->where('pengajuan_skpi.status', 'diajukan')
-                  ->orWhere(function($sub) {
-                      $sub->where('pengajuan_skpi.status', '<>', 'dicetak')
-                          ->where(function($or) {
-                              $or->whereExists(function($p) {
-                                  $p->select(DB::raw(1))->from('prestasi_mahasiswa')
-                                    ->whereColumn('prestasi_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                    ->where('prestasi_mahasiswa.status', 'pending');
-                              })
-                              ->orWhereExists(function($o) {
-                                  $o->select(DB::raw(1))->from('organisasi_mahasiswa')
-                                    ->whereColumn('organisasi_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                    ->where('organisasi_mahasiswa.status', 'pending');
-                              })
-                              ->orWhereExists(function($s) {
-                                  $s->select(DB::raw(1))->from('sertifikat_mahasiswa')
-                                    ->whereColumn('sertifikat_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                    ->where('sertifikat_mahasiswa.status', 'pending');
-                              })
-                              ->orWhereExists(function($m) {
-                                  $m->select(DB::raw(1))->from('magang_mahasiswa')
-                                    ->whereColumn('magang_mahasiswa.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                    ->where('magang_mahasiswa.status', 'pending');
-                              })
-                              ->orWhereExists(function($t) {
-                                  $t->select(DB::raw(1))->from('tugas_akhir')
-                                    ->whereColumn('tugas_akhir.id_mahasiswa', 'pengajuan_skpi.id_mahasiswa')
-                                    ->where('tugas_akhir.status', 'pending');
-                              });
-                          });
-                  });
-            });
+            $query = PengajuanSkpi::query()
+                ->leftJoin('mahasiswa', 'pengajuan_skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+                ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
+                ->leftJoin('checklist_verifikasi_skpi', 'pengajuan_skpi.id_pengajuan', '=', 'checklist_verifikasi_skpi.id_pengajuan')
+                ->leftJoin('skpi', 'pengajuan_skpi.id_pengajuan', '=', 'skpi.id_pengajuan')
+                ->select(
+                    'pengajuan_skpi.id_pengajuan',
+                    'pengajuan_skpi.id_mahasiswa',
+                    'pengajuan_skpi.status',
+                    'pengajuan_skpi.diverifikasi_oleh',
+                    'pengajuan_skpi.tanggal_pengajuan',
+                    'pengajuan_skpi.tanggal_verifikasi',
+                    'pengajuan_skpi.permohonan_cetak',
+                    'pengajuan_skpi.catatan_mahasiswa',
+                    'pengajuan_skpi.catatan_bak',
+                    'mahasiswa.nama_lengkap as mhs_nama',
+                    'mahasiswa.nim as mhs_nim',
+                    'mahasiswa.id_prodi as mhs_id_prodi',
+                    'program_studi.nama_prodi as prodi_nama',
+                    'checklist_verifikasi_skpi.cek_identitas_mahasiswa',
+                    'checklist_verifikasi_skpi.cek_identitas_prodi',
+                    'checklist_verifikasi_skpi.cek_cpl',
+                    'checklist_verifikasi_skpi.cek_prestasi',
+                    'checklist_verifikasi_skpi.cek_organisasi',
+                    'checklist_verifikasi_skpi.cek_sertifikat',
+                    'checklist_verifikasi_skpi.cek_magang',
+                    'checklist_verifikasi_skpi.cek_tugas_akhir',
+                    'checklist_verifikasi_skpi.cek_sistem_penilaian'
+                );
+
+            if ($allowedProdis !== null) {
+                $query->whereIn('mahasiswa.id_prodi', $allowedProdis);
+            }
+
+            $query->hasPendingItems();
         } elseif ($tab === 'permohonan_cetak') {
             $query->where('pengajuan_skpi.status', 'verifikasi')
                 ->where('pengajuan_skpi.permohonan_cetak', true);
@@ -632,9 +559,10 @@ class VerifikasiController extends Controller
         $studentIds = (clone $query)->pluck('pengajuan_skpi.id_mahasiswa')->unique()->toArray();
         $mahasiswas = collect();
         if (!empty($studentIds)) {
-            $mhsRows = DB::table('mahasiswa')->whereIn('id_mahasiswa', $studentIds)->get()->map(fn($row) => (array) $row)->toArray();
-            $mahasiswas = Mahasiswa::hydrate($mhsRows)->keyBy('id_mahasiswa');
-            $this->preloader->preloadMahasiswaItems($mahasiswas);
+            $mahasiswas = Mahasiswa::with(['prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir'])
+                ->whereIn('id_mahasiswa', $studentIds)
+                ->get()
+                ->keyBy('id_mahasiswa');
         }
 
         return DataTables::of($query)

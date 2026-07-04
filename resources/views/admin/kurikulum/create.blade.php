@@ -17,12 +17,10 @@
                             @endforeach
                         </select>
                     </div>
-
                     <div class="fv-row mb-5">
                         <label for="nama_kurikulum" class="form-label required fw-bolder text-dark fs-6">Nama Kurikulum</label>
                         <input type="text" name="nama_kurikulum" id="nama_kurikulum" required class="form-control form-control-sm" placeholder="Contoh: Kurikulum 2024">
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>

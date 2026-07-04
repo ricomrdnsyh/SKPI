@@ -1,46 +1,42 @@
 @extends('layout.main')
-
 @section('title', 'Dashboard Mahasiswa')
-
 @section('content')
     <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
         <div class="d-flex flex-column flex-column-fluid">
             <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
                 <div id="kt_app_content_container" class="app-container container-fluid">
-
-                    {{-- Welcome Banner --}}
-                    <div class="card border border-dashed border-primary bg-light-primary mb-5">
-                        <div class="card-body">
-                            <div class="d-flex align-items-start align-items-sm-center gap-4 w-100">
-                                <!-- Avatar -->
-                                <div class="symbol symbol-50px flex-shrink-0">
-                                    <div class="symbol-label bg-primary text-white fs-2 fw-bolder">
+                    <div class="card bg-light-primary mb-8" style="background: linear-gradient(135deg, rgba(235, 244, 255, 0.8) 0%, rgba(225, 238, 255, 0.4) 100%); border: 1px solid rgba(0, 158, 247, 0.1); box-shadow: 0 10px 30px rgba(0, 158, 247, 0.05); backdrop-filter: blur(10px); transition: transform 0.3s ease;">
+                        <div class="card-body p-8">
+                            <div class="d-flex align-items-start align-items-sm-center gap-6 w-100">
+                                <div class="symbol symbol-65px flex-shrink-0" style="filter: drop-shadow(0 5px 15px rgba(0, 158, 247, 0.3));">
+                                    <div class="symbol-label bg-primary text-white fs-1 fw-bolder rounded-circle">
                                         {{ substr($mahasiswa->nama_lengkap, 0, 1) }}</div>
                                 </div>
-
-                                <!-- Content Wrapper (Text + Badge) -->
                                 <div
                                     class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center w-100 gap-4">
                                     <div class="d-flex flex-column">
-                                        <h2 class="text-gray-900 fw-bold fs-2 mb-2">Halo, {{ $mahasiswa->nama_lengkap }}
+                                        <h2 class="text-gray-900 fw-bold fs-1 mb-2" style="letter-spacing: -0.5px;">Halo, <span style="background: linear-gradient(135deg, #009ef7 0%, #3250ef 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ $mahasiswa->nama_lengkap }}</span>
                                         </h2>
                                         <div
-                                            class="text-muted fs-6 fw-semibold d-flex flex-wrap align-items-center mt-1 gap-3">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-id-card fs-5 text-primary me-2"></i>
-                                                <span class="text-gray-800">{{ $mahasiswa->nim }}</span>
+                                            class="text-gray-600 fs-6 fw-semibold d-flex flex-wrap align-items-center mt-1 gap-4">
+                                            <div class="d-flex align-items-center bg-white px-3 py-1 rounded shadow-sm">
+                                                <i class="fas fa-id-card text-primary me-2"></i>
+                                                <span>{{ $mahasiswa->nim }}</span>
                                             </div>
-                                            <span class="opacity-50 d-none d-sm-inline">-</span>
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-graduation-cap fs-5 text-primary me-2"></i>
-                                                <span
-                                                    class="text-gray-800">{{ $mahasiswa->programStudi->nama_prodi }}</span>
+                                            <div class="d-flex align-items-center bg-white px-3 py-1 rounded shadow-sm">
+                                                <i class="fas fa-graduation-cap text-primary me-2"></i>
+                                                <span>{{ $mahasiswa->programStudi->nama_prodi }}</span>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Badge -->
-                                    <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0 flex-shrink-0">
+                                    <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0 flex-shrink-0" style="animation: pulse 2s infinite;">
+                                        <style>
+                                            @keyframes pulse {
+                                                0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 158, 247, 0.4); }
+                                                70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(0, 158, 247, 0); }
+                                                100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 158, 247, 0); }
+                                            }
+                                        </style>
                                         @if ($pengajuan)
                                             @php
                                                 $statusClass =
@@ -60,12 +56,12 @@
                                                                 ? 'Perlu Revisi'
                                                                 : 'Sedang Diproses'));
                                             @endphp
-                                            <span class="badge badge-{{ $statusClass }} fw-bold px-4 py-3 text-uppercase">
+                                            <span class="badge badge-{{ $statusClass }} fw-bold px-5 py-4 fs-6 rounded-pill text-uppercase shadow-sm border border-{{ $statusClass }}">
                                                 {{ $statusText }}
                                             </span>
                                         @else
                                             <span
-                                                class="badge badge-warning text-white fw-bold px-4 py-3 text-uppercase">Belum
+                                                class="badge badge-warning text-white fw-bold px-5 py-4 fs-6 rounded-pill text-uppercase shadow-sm">Belum
                                                 Mengajukan</span>
                                         @endif
                                     </div>
@@ -73,8 +69,6 @@
                             </div>
                         </div>
                     </div>
-
-                    {{-- Progress timeline --}}
                     <div class="card border border-dashed border-dark rounded mb-8">
                         <div class="card-header border-0 pt-5">
                             <h3 class="card-title align-items-start flex-column">
@@ -97,7 +91,6 @@
                                                     : ($step['status'] === 'revisi'
                                                         ? 'warning'
                                                         : 'secondary'));
-
                                         // Variasi warna cerah untuk teks, angka, dan badge jika masih 'Menunggu'
                                         $themeColors = [
                                             1 => 'primary',
@@ -112,7 +105,6 @@
                                             $stepColor === 'secondary'
                                                 ? $themeColors[$stepNum] ?? 'primary'
                                                 : $stepColor;
-
                                         // Logika teks dan badge status
                                         if ($step['status'] === 'sudah') {
                                             $badgeClass = 'badge-success';
@@ -127,7 +119,6 @@
                                             $badgeClass = 'badge-light-warning';
                                             $stepText = 'Menunggu';
                                         }
-
                                         // Khusus warna teks di dalam lingkaran agar jelas saat background warning (kuning)
                                         $circleTextColor = $themeColor === 'warning' ? 'text-gray-800' : 'text-white';
                                     @endphp
@@ -145,7 +136,6 @@
                                                 </div>
                                             </div>
                                             <div class="fs-8 text-gray-700 mb-5">{{ $step['desc'] }}</div>
-
                                             <div
                                                 class="d-flex justify-content-between align-items-center mt-auto pt-4 border-top border-{{ $themeColor }}">
                                                 <span
@@ -167,9 +157,7 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row g-5 g-xl-8 mb-8">
-                        {{-- Status Persetujuan Modul --}}
                         <div class="col-xl-12">
                             <div class="card border border-dashed border-dark rounded">
                                 <div class="card-header border-0 pt-5">
@@ -234,7 +222,6 @@
                                                 $allApproved = $mod['approved'];
                                                 $anyRejected = $mod['items']->where('status', 'rejected')->isNotEmpty();
                                                 $noItems = !$mod['hasItems'];
-
                                                 if ($noItems) {
                                                     $statusColor = 'secondary';
                                                     $statusText = 'Belum Diisi';
@@ -269,10 +256,8 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row g-5 g-xl-8">
                         <div class="col-xl-8">
-                            {{-- Kelengkapan Berkas --}}
                             <div class="card border border-dashed border-dark rounded h-100 mb-8 mb-xl-0">
                                 <div class="card-header border-0 pt-5">
                                     <h3 class="card-title align-items-start flex-column">
@@ -350,15 +335,12 @@
                                             </div>
                                         @endforeach
                                     </div>
-
-                                    {{-- Tugas Akhir --}}
                                     @php
                                         $taFilled = $mahasiswa->tugasAkhir && !empty($mahasiswa->tugasAkhir->judul);
                                         $taTheme = $taFilled ? 'success' : 'danger';
                                     @endphp
                                     <div
                                         class="mt-5 border border-dashed border-{{ $taTheme }} bg-light-{{ $taTheme }} rounded p-5 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-5 hover-elevate-up transition-all">
-
                                         <div class="d-flex align-items-start align-items-sm-center gap-4 w-100">
                                             <div class="symbol symbol-50px symbol-circle flex-shrink-0">
                                                 <div class="symbol-label bg-{{ $taTheme }}">
@@ -367,7 +349,6 @@
                                                             class="path3"></span><span class="path4"></span></i>
                                                 </div>
                                             </div>
-
                                             <div
                                                 class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center w-100 gap-4">
                                                 <div class="d-flex flex-column">
@@ -389,7 +370,6 @@
                                                                 class="badge badge-light-{{ $badgeColor }} px-2 py-1 fs-9 text-uppercase fw-bold">{{ $taStatus ?? 'pending' }}</span>
                                                         @endif
                                                     </div>
-
                                                     @if ($taFilled)
                                                         <span
                                                             class="fw-bolder text-gray-900 fs-5 mb-1">"{{ $mahasiswa->tugasAkhir->judul }}"</span>
@@ -400,7 +380,6 @@
                                                                     class="fw-bold text-gray-700">{{ $pta->nama_dosen }}</span>{{ !$loop->last ? ' & ' : '' }}
                                                             @endforeach
                                                         </span>
-
                                                         @if ($mahasiswa->tugasAkhir->keterangan)
                                                             <div
                                                                 class="mt-2 p-2 bg-light-danger text-danger fs-8 fw-bold rounded border border-danger border-dashed">
@@ -417,8 +396,6 @@
                                                             mengajukan SKPI.</span>
                                                     @endif
                                                 </div>
-
-                                                <!-- Kanan: Tombol -->
                                                 <div
                                                     class="d-flex flex-column align-items-start align-items-sm-end flex-shrink-0 mt-2 mt-sm-0">
                                                     @php
@@ -436,7 +413,6 @@
                                                         $readonlyTa = $isLockedTa || $isApprovedTa;
                                                         $canEditTa = !$readonlyTa;
                                                     @endphp
-
                                                     <a href="{{ route('mahasiswa.tugas_akhir.edit') }}"
                                                         class="btn btn-sm btn-{{ $canEditTa ? $taTheme : 'secondary' }} px-4">
                                                         <i
@@ -450,11 +426,8 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                         <div class="col-xl-4">
-                            {{-- Status Pengajuan SKPI --}}
                             <div class="card border border-dashed border-dark rounded h-100">
                                 <div class="card-header border-0 pt-5">
                                     <h3 class="card-title align-items-start flex-column">
@@ -484,7 +457,6 @@
                                                 <span
                                                     class="badge badge-light-{{ $pColor }} fw-bolder px-3 py-2 text-uppercase">{{ $pStatus }}</span>
                                             </div>
-
                                             <div class="text-center mt-6 mb-auto">
                                                 @if ($pStatus === 'dicetak')
                                                     <i class="ki-duotone ki-check-circle fs-5x text-success mb-4"><span
@@ -519,7 +491,6 @@
                                                         verifikasi. Silakan pantau progress timeline.</div>
                                                 @endif
                                             </div>
-
                                             @if ($pengajuan->keterangan)
                                                 <div
                                                     class="bg-light-danger border border-danger border-dashed rounded p-4 mt-6">
@@ -532,7 +503,6 @@
                                                     <div class="text-danger fs-8">{{ $pengajuan->keterangan }}</div>
                                                 </div>
                                             @endif
-
                                             @if ($pStatus === 'ditolak' || $pStatus === 'draft')
                                                 <div class="mt-auto pt-6">
                                                     <form action="{{ route('mahasiswa.pengajuan.submit') }}"
@@ -566,14 +536,11 @@
                                                 <div class="fs-8 text-muted mb-5">Anda belum membuat permohonan penerbitan
                                                     SKPI. Pastikan semua berkas telah disetujui.</div>
                                             </div>
-
                                             @php
                                                 $canAjukan =
                                                     $mahasiswa->tugasAkhir && !empty($mahasiswa->tugasAkhir->judul);
                                             @endphp
-
                                             <div class="mt-auto">
-
                                                 @if ($canAjukan)
                                                     <div
                                                         class="alert bg-light-success border border-success border-dashed d-flex align-items-center p-6 mb-6 text-start">
@@ -622,13 +589,11 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
 @section('js')
     @if (session('success'))
         <script>

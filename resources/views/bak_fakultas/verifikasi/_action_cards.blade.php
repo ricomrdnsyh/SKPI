@@ -6,7 +6,6 @@
         $pengajuanCycleCount = $prevPengajuanApprovals->where('role', 'baak')->count();
         $isResubmission = $pengajuanCycleCount > 0;
     @endphp
-
     @if ($isResubmission && $pengajuan->status === 'diajukan' && !$pengajuan->diverifikasi_oleh)
         <div
             class="alert alert-dismissible bg-light-primary border border-primary d-flex flex-column flex-sm-row p-5 mb-5">
@@ -18,8 +17,6 @@
             </div>
         </div>
     @endif
-
-
     @if ($pengajuan->status === 'verifikasi' && $pengajuan->permohonan_cetak && !$pengajuan->skpi)
         <div class="card border border-success border-dashed mb-5">
             <div class="card-body p-6">
@@ -54,7 +51,6 @@
             </div>
         </div>
     @endif
-
     @if ($pengajuan->status === 'dicetak')
         <div class="card border border-success border-dashed mb-5">
             <div class="card-body p-6">
@@ -63,22 +59,18 @@
                             class="path4"></span><span class="path5"></span></i> Cetak Ulang / Batalkan SKPI</h4>
                 <p class="text-muted fs-6 mb-5">SKPI sudah diterbitkan. Klik tombol di bawah untuk mencetak ulang
                     dokumen PDF.</p>
-
                 <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}?nim_ijazah={{ urlencode($mahasiswa->skpi->nim_ijazah ?? '') }}"
                     target="_blank" class="btn btn-success w-100 fw-bolder mb-6">
                     <i class="ki-duotone ki-file-down fs-2"><span class="path1"></span><span class="path2"></span></i>
                     Cetak Ulang PDF
                 </a>
-
                 <div class="separator separator-dashed mb-6"></div>
-
                 <div class="alert bg-light-danger border border-danger d-flex flex-column p-5">
                     <h5 class="mb-2 text-danger"><i class="ki-duotone ki-shield-cross fs-2 text-danger me-2"><span
                                 class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                         Batalkan Cetak SKPI</h5>
                     <p class="text-danger fw-semibold fs-7 mb-4">Jika dibatalkan, status akan dikembalikan ke Draft agar
                         mahasiswa dapat menambah/mengubah data. Dokumen SKPI yang sudah diterbitkan akan dihapus.</p>
-
                     <form action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}"
                         method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan cetak SKPI ini?')">
                         @csrf
@@ -95,7 +87,6 @@
             </div>
         </div>
     @endif
-
     @if ($pengajuan->status === 'draft')
         <div
             class="alert alert-dismissible bg-light-warning border border-warning d-flex flex-column flex-sm-row p-5 mb-5">
@@ -113,7 +104,6 @@
             </div>
         </div>
     @endif
-
     @if ($pengajuan->status === 'ditolak')
         <div
             class="alert alert-dismissible bg-light-danger border border-danger d-flex flex-column flex-sm-row p-5 mb-5">

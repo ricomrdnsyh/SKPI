@@ -35,4 +35,9 @@ class PrestasiMahasiswa extends Model
         if ($this->status === 'approved' || $this->approved_by) return 'approved';
         return 'waiting_baak';
     }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
 }

@@ -85,11 +85,9 @@
                 $('#table-fakultas [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-
         table.on('draw', function() {
             $('#table-fakultas [data-bs-toggle="tooltip"]').tooltip();
         });
-
         $('#btn_sync_fakultas').on('click', function() {
             Swal.fire({
                 title: "Sinkronisasi Fakultas?",
@@ -148,7 +146,6 @@
                 }
             });
         });
-
     });
 </script>
 <script>

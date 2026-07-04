@@ -46,7 +46,6 @@
                             <input type="number" name="urutan" id="edit_urutan" class="form-control form-control-sm" placeholder="Contoh: 1">
                         </div>
                     </div>
-
                     <div class="fv-row mb-6">
                         <label for="edit_deskripsi_cpl" class="form-label required fw-bolder text-dark">Deskripsi CPL</label>
                         <textarea name="deskripsi_cpl" id="edit_deskripsi_cpl" rows="4" required class="form-control form-control-sm" placeholder="Ketik deskripsi capaian pembelajaran..."></textarea>

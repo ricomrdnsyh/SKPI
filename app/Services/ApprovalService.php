@@ -55,8 +55,6 @@ class ApprovalService
         }
     }
 
-    // ---- GRUP A: Prestasi, Organisasi, Sertifikat, Magang ----
-
     public function baakApproveGrupA(string $type, $id, User $user): void
     {
         $item = $this->resolveGrupA($type, $id);
@@ -113,8 +111,6 @@ class ApprovalService
         $this->flushByItem($type, $id);
     }
 
-    // ---- GRUP B: Tugas Akhir ----
-
     public function baakApproveTugasAkhir($id, User $user): void
     {
         $item = TugasAkhir::findOrFail($id);
@@ -170,8 +166,6 @@ class ApprovalService
         $this->flushRelatedCaches($item->id_mahasiswa);
     }
 
-    // ---- GRUP C: Pengajuan Cetak SKPI ----
-
     public function baakApprovePengajuanCetak($idPengajuan, User $user): void
     {
         $pengajuan = PengajuanSkpi::findOrFail($idPengajuan);
@@ -225,8 +219,6 @@ class ApprovalService
 
         $this->flushRelatedCaches($pengajuan->id_mahasiswa, $idPengajuan);
     }
-
-    // ---- Helpers ----
 
     private function resolveGrupA(string $type, $id): mixed
     {

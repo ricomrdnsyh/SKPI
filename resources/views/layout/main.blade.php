@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" translate="no">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
@@ -17,12 +16,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-
         <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
     @yield('css')
-
 </head>
-
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
     data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
     data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
@@ -48,16 +44,11 @@
     </script>
     <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
         <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
-
             @include('layout.header')
-
             <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
-
                 @include('layout.sidebar')
-
                 <div class="app-main flex-column flex-row-fluid" id="kt_app_main_wrapper">
                     @yield('content')
-                    
                     @include('layout.footer')
                 </div>
             </div>
@@ -90,23 +81,19 @@
                         }
                         return;
                     }
-
                     let validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
                     let maxSize = 2 * 1024 * 1024; // 2MB
-
                     let nextEl = e.target.nextElementSibling;
                     if (nextEl && nextEl.classList.contains('invalid-feedback')) {
                         nextEl.remove();
                     }
                     e.target.classList.remove('is-invalid');
-
                     let errorMessage = '';
                     if (!validTypes.includes(file.type)) {
                         errorMessage = 'Format file tidak sesuai (hanya PDF, JPG, PNG).';
                     } else if (file.size > maxSize) {
                         errorMessage = 'Ukuran file terlalu besar (maksimal 2MB).';
                     }
-
                     if (errorMessage) {
                         e.target.value = '';
                         e.target.classList.add('is-invalid');
@@ -121,5 +108,4 @@
     </script>
     @yield('js')
 </body>
-
 </html>

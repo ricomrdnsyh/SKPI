@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,11 +18,9 @@
             background-size: 25px 25px;
             position: relative;
         }
-
         .auth-wrapper {
             min-height: 100vh;
         }
-
         .auth-card {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
@@ -35,7 +32,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .auth-card::before {
             content: "";
             position: absolute;
@@ -45,39 +41,31 @@
             opacity: 0.9;
             pointer-events: none;
         }
-
         .auth-card-inner {
             position: relative;
             z-index: 1;
         }
-
         .auth-title {
             font-weight: 600;
             letter-spacing: 0.02em;
         }
-
         .auth-subtitle {
             font-size: 0.95rem;
         }
-
         .auth-card .form-control {
             border-radius: 0.75rem;
         }
-
         .auth-card .input-group .form-control {
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
         }
-
         .auth-card .input-group-text {
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
         }
-
         .auth-footer-text {
             font-size: 0.8rem;
         }
-
         @media (max-width: 576px) {
             .auth-card {
                 padding: 2rem 1.5rem;
@@ -85,7 +73,6 @@
         }
     </style>
 </head>
-
 <body id="kt_body" class="bg-body bg-grid">
     <div class="d-flex flex-column flex-root auth-wrapper">
         <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
@@ -137,7 +124,6 @@
     </script>
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-
     <script>
         const form = document.getElementById('login_form');
         form.addEventListener('submit', function(event) {
@@ -152,7 +138,6 @@
             });
         });
     </script>
-
     @if (session('error'))
         <script>
             Swal.fire({
@@ -166,7 +151,6 @@
             });
         </script>
     @endif
-
     @if ($errors->any())
         <script>
             Swal.fire({
@@ -180,7 +164,6 @@
             });
         </script>
     @endif
-
     @if (session('success'))
         <script>
             Swal.fire({
@@ -194,7 +177,6 @@
             });
         </script>
     @endif
-
     <script>
         const togglePassword = document.querySelector('#togglePassword');
         const passwordInput = document.querySelector('#password');
@@ -207,5 +189,4 @@
         });
     </script>
 </body>
-
 </html>

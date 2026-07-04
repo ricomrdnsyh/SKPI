@@ -82,11 +82,9 @@
                 $('#table-mahasiswa [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-
         table.on('draw', function() {
             $('#table-mahasiswa [data-bs-toggle="tooltip"]').tooltip();
         });
-
         $('#filter-fakultas').on('change', function() {
             filterProdiByFakultas();
             table.ajax.reload(null, false);

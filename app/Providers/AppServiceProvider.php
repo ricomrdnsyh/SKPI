@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Services\ApprovalService;
 use App\Services\CacheService;
-use App\Services\DataPreloader;
 use App\Services\SkpiService;
 use App\Services\SkpiProgressService;
 use App\Services\PengajuanService;
@@ -16,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(CacheService::class);
-        $this->app->singleton(DataPreloader::class);
         $this->app->singleton(SkpiProgressService::class);
         $this->app->singleton(PengajuanService::class);
         $this->app->singleton(VerifikasiService::class);

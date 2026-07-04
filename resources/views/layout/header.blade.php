@@ -5,7 +5,6 @@
         max-width: 300px;
         margin-left: 8px;
     }
-
     .app-mobile-logo img {
         height: 35px;
         width: auto;
@@ -13,19 +12,16 @@
         object-fit: contain;
         object-position: left center;
     }
-
     @media (max-width: 575.98px) {
         .app-mobile-logo {
             max-width: 250px;
             margin-left: 4px;
         }
-
         .app-mobile-logo img {
             height: 28px;
         }
     }
 </style>
-
 @php
     $currentUser = auth()->user();
     $roleName = 'Pengguna';
@@ -39,7 +35,6 @@
         }
     }
 @endphp
-
 <div id="kt_app_header" class="app-header" data-kt-sticky="true" data-kt-sticky-activate="{default: true, lg: true}"
     data-kt-sticky-name="app-header-minimize" data-kt-sticky-offset="{default: '200px', lg: '0'}"
     data-kt-sticky-animation="false">

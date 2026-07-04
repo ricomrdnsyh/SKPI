@@ -1,7 +1,6 @@
 <script>
     function showModal(element) {
         let data = JSON.parse($(element).attr('data-row'));
-        
         $('#show_fakultas').val(data.fakultas_nama || '-');
         $('#show_nama_prodi').val(data.nama_prodi || '-');
         $('#show_kode_prodi').val(data.kode_prodi || '-');
@@ -16,10 +15,8 @@
         $('#show_jenis_pendidikan').val(data.jenis_pendidikan || '-');
         $('#show_jenis_pendidikan_lanjutan').val(data.jenis_pendidikan_lanjutan || '-');
         $('#show_persyaratan_penerimaan').val(data.persyaratan_penerimaan || '-');
-        
         let statusText = (data.status === 'aktif' || data.status === 'active') ? 'Aktif' : (data.status === 'nonaktif' ? 'Nonaktif' : (data.status || '-'));
         $('#show_status').val(statusText);
-
         $('#form_show').modal('show');
     }
 </script>

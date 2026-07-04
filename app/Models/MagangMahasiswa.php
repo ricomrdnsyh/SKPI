@@ -37,4 +37,8 @@ class MagangMahasiswa extends Model
         return 'waiting_baak';
     }
 
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
 }

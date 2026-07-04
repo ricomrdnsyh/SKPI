@@ -1,5 +1,4 @@
 @props(['steps', 'itemName' => 'Data Ini'])
-
 <div class="card shadow-sm"><div class="card-body">
     <h3 class="text-sm font-bold text-gray-900 mb-5 flex items-center gap-2">
         <i class="fa-solid fa-clock-rotate-left text-unuja-600"></i> Progress Approval {{ $itemName }}

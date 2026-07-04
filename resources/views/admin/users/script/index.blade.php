@@ -85,11 +85,9 @@
                 $('#table-users [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-
         table.on('draw', function() {
             $('#table-users [data-bs-toggle="tooltip"]').tooltip();
         });
-
         $('#filter-role, #filter-prodi').on('change', function() {
             table.ajax.reload(null, false);
         });
@@ -177,7 +175,6 @@
         });
     </script>
 @endif
-
 @if ($errors->any())
     <script>
         Swal.fire({

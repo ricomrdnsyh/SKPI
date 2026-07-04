@@ -7,7 +7,6 @@ use App\Models\Mahasiswa;
 use App\Models\PengajuanSkpi;
 use App\Models\TugasAkhir;
 use App\Services\CacheService;
-use App\Services\DataPreloader;
 use App\Services\SkpiProgressService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +18,7 @@ class MahasiswaController extends Controller
 
     public function __construct(
         private SkpiProgressService $progressService,
-        private CacheService $cache,
-        private DataPreloader $preloader
+        private CacheService $cache
     ) {}
 
     public function dashboard()
@@ -33,42 +31,27 @@ class MahasiswaController extends Controller
         $mahasiswaId = $user->id_mahasiswa;
 
         return $this->cache->rememberDashboard("mahasiswa:{$mahasiswaId}", function () use ($mahasiswaId) {
-            $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $mahasiswaId)->first();
-            if (!$mahasiswaRow) {
+            $mahasiswa = Mahasiswa::with([
+                'programStudi.fakultas',
+                'prestasi',
+                'organisasi',
+                'sertifikat',
+                'magang',
+                'tugasAkhir.pembimbing',
+                'skpi',
+                'pengajuanSkpi.skpi',
+                'pengajuanSkpi.checklist'
+            ])->find($mahasiswaId);
+
+            if (!$mahasiswa) {
                 abort(404, 'Data mahasiswa tidak ditemukan.');
             }
-            $mahasiswa = Mahasiswa::hydrate([(array) $mahasiswaRow])->first();
 
-            $prodi = $this->preloader->getProdi($mahasiswa->id_prodi);
-            if ($prodi) {
-                $prodi->fakultas = $this->preloader->getFakultas($prodi->id_fakultas);
-            }
-            $mahasiswa->programStudi = $prodi;
-
-            $prestasi = DB::table('prestasi_mahasiswa')
-                ->where('id_mahasiswa', $mahasiswaId)
-                ->select(['id_prestasi', 'nama_prestasi', 'tingkat', 'status', 'approved_by', 'approved_at', 'keterangan', 'file_bukti'])
-                ->get();
-            $mahasiswa->prestasi = $prestasi;
-
-            $organisasi = DB::table('organisasi_mahasiswa')
-                ->where('id_mahasiswa', $mahasiswaId)
-                ->select(['id_organisasi_mhs', 'nama_organisasi', 'jabatan', 'status', 'approved_by', 'approved_at', 'keterangan', 'file_bukti'])
-                ->get();
-            $mahasiswa->organisasi = $organisasi;
-
-            $sertifikat = DB::table('sertifikat_mahasiswa')
-                ->where('id_mahasiswa', $mahasiswaId)
-                ->select(['id_sertifikat', 'nama_sertifikat', 'penyelenggara', 'status', 'approved_by', 'approved_at', 'keterangan', 'file_bukti'])
-                ->get();
-            $mahasiswa->sertifikat = $sertifikat;
-
-            $magangCollection = DB::table('magang_mahasiswa')
-                ->where('magang_mahasiswa.id_mahasiswa', $mahasiswaId)
-                ->select('magang_mahasiswa.*')
-                ->get();
-
-            $magang = $magangCollection->map(function ($item) {
+            $prestasi = $mahasiswa->prestasi;
+            $organisasi = $mahasiswa->organisasi;
+            $sertifikat = $mahasiswa->sertifikat;
+            
+            $magang = $mahasiswa->magang->map(function ($item) {
                 $item->tempatMagang = (object) [
                     'nama_perusahaan' => $item->tempat_magang ?? '',
                     'alamat' => '',
@@ -77,50 +60,15 @@ class MahasiswaController extends Controller
             });
             $mahasiswa->magang = $magang;
 
-            $taRaw = DB::table('tugas_akhir')
-                ->where('id_mahasiswa', $mahasiswaId)
-                ->first();
-
-            $tugasAkhir = null;
-            if ($taRaw) {
-                $pembimbingCollection = DB::table('pembimbing_tugas_akhir')
-                    ->where('id_tugas_akhir', $taRaw->id_tugas_akhir)
-                    ->orderBy('urutan_pembimbing')
-                    ->get();
-
-                $tugasAkhir = (object) [
-                    'id_tugas_akhir' => $taRaw->id_tugas_akhir,
-                    'judul' => $taRaw->judul,
-                    'status' => $taRaw->status,
-                    'approved_by' => $taRaw->approved_by,
-                    'approved_at' => $taRaw->approved_at,
-                    'keterangan' => $taRaw->keterangan,
-                    'pembimbingTugasAkhir' => $pembimbingCollection,
-                ];
+            if ($mahasiswa->skpi && $mahasiswa->skpi->dicetak_oleh) {
+                $mahasiswa->skpi->printer = $this->preloader->getUser($mahasiswa->skpi->dicetak_oleh);
             }
-            $mahasiswa->tugasAkhir = $tugasAkhir;
 
-            $skpi = DB::table('skpi')
-                ->where('id_mahasiswa', $mahasiswaId)
-                ->first();
-
-            if ($skpi && $skpi->dicetak_oleh) {
-                $skpi->printer = $this->preloader->getUser($skpi->dicetak_oleh);
-            }
-            $mahasiswa->skpi = $skpi;
-
-            $pengajuanRow = DB::table('pengajuan_skpi')->where('id_mahasiswa', $mahasiswaId)->first();
-            $pengajuan = $pengajuanRow ? PengajuanSkpi::hydrate([(array) $pengajuanRow])->first() : null;
-
+            $pengajuan = $mahasiswa->pengajuanSkpi;
             if ($pengajuan) {
                 $pengajuan->verifier = $pengajuan->diverifikasi_oleh
                     ? $this->preloader->getUser($pengajuan->diverifikasi_oleh)
                     : null;
-                $pengajuan->checklist = null;
-
-                if ($skpi) {
-                    $pengajuan->skpi = $skpi;
-                }
             }
 
             $steps = $this->progressService->getSteps($mahasiswa, $pengajuan);
@@ -138,42 +86,23 @@ class MahasiswaController extends Controller
 
         $mahasiswaId = $user->id_mahasiswa;
 
-        $taRaw = DB::table('tugas_akhir')
-            ->where('id_mahasiswa', $mahasiswaId)
-            ->first();
+        $mahasiswa = Mahasiswa::with(['tugasAkhir.pembimbing', 'pengajuanSkpi'])->find($mahasiswaId);
 
-        $pengajuan = DB::table('pengajuan_skpi')
-            ->where('id_mahasiswa', $mahasiswaId)
-            ->first();
-
-        $isRejected = $taRaw && $taRaw->status === 'rejected';
-        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['diajukan', 'verifikasi', 'dicetak']);
-        $isApproved = $taRaw && $taRaw->status === 'approved';
-        $readonly = $isLocked || $isApproved;
-
-        $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $mahasiswaId)->first();
-        if (!$mahasiswaRow) {
+        if (!$mahasiswa) {
             abort(404, 'Data mahasiswa tidak ditemukan.');
         }
-        $mahasiswa = Mahasiswa::hydrate([(array) $mahasiswaRow])->first();
 
-        $tugasAkhir = null;
-        if ($taRaw) {
-            $pembimbingCollection = DB::table('pembimbing_tugas_akhir')
-                ->where('id_tugas_akhir', $taRaw->id_tugas_akhir)
-                ->orderBy('urutan_pembimbing')
-                ->get();
+        $tugasAkhir = $mahasiswa->tugasAkhir;
+        $pengajuan = $mahasiswa->pengajuanSkpi;
 
-            $tugasAkhir = (object) [
-                'id_tugas_akhir' => $taRaw->id_tugas_akhir,
-                'judul' => $taRaw->judul,
-                'status' => $taRaw->status,
-                'approved_by' => $taRaw->approved_by,
-                'keterangan' => $taRaw->keterangan,
-                'pembimbingTugasAkhir' => $pembimbingCollection,
-            ];
+        $isRejected = $tugasAkhir && $tugasAkhir->status === 'rejected';
+        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['diajukan', 'verifikasi', 'dicetak']);
+        $isApproved = $tugasAkhir && $tugasAkhir->status === 'approved';
+        $readonly = $isLocked || $isApproved;
+
+        if ($tugasAkhir) {
+            $tugasAkhir->pembimbingTugasAkhir = $tugasAkhir->pembimbing;
         }
-        $mahasiswa->tugasAkhir = $tugasAkhir;
 
         $itemSteps = [
             [
@@ -242,17 +171,18 @@ class MahasiswaController extends Controller
 
         $mahasiswaId = $user->id_mahasiswa;
 
-        $taRaw = DB::table('tugas_akhir')
-            ->where('id_mahasiswa', $mahasiswaId)
-            ->first();
+        $mahasiswa = Mahasiswa::with(['tugasAkhir', 'pengajuanSkpi'])->find($mahasiswaId);
 
-        $pengajuan = DB::table('pengajuan_skpi')
-            ->where('id_mahasiswa', $mahasiswaId)
-            ->first();
+        if (!$mahasiswa) {
+            abort(404, 'Data mahasiswa tidak ditemukan.');
+        }
 
-        $isRejected = $taRaw && $taRaw->status === 'rejected';
+        $tugasAkhir = $mahasiswa->tugasAkhir;
+        $pengajuan = $mahasiswa->pengajuanSkpi;
+
+        $isRejected = $tugasAkhir && $tugasAkhir->status === 'rejected';
         $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['diajukan', 'verifikasi', 'dicetak']);
-        $isApproved = $taRaw && $taRaw->status === 'approved';
+        $isApproved = $tugasAkhir && $tugasAkhir->status === 'approved';
 
         if ($isLocked) {
             return redirect()->route('mahasiswa.dashboard')->with('error', 'Tugas Akhir tidak dapat diubah karena pengajuan SKPI sedang diproses.');
@@ -262,13 +192,7 @@ class MahasiswaController extends Controller
             return redirect()->route('mahasiswa.dashboard')->with('error', 'Data Tugas Akhir yang telah disetujui tidak dapat diubah.');
         }
 
-        $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $mahasiswaId)->first();
-        if (!$mahasiswaRow) {
-            abort(404, 'Data mahasiswa tidak ditemukan.');
-        }
-        $mahasiswa = Mahasiswa::hydrate([(array) $mahasiswaRow])->first();
-
-        DB::transaction(function () use ($mahasiswa, $request, $taRaw, $mahasiswaId) {
+        DB::transaction(function () use ($mahasiswa, $request, $mahasiswaId) {
             $tugasAkhir = TugasAkhir::updateOrCreate(
                 ['id_mahasiswa' => $mahasiswaId],
                 [

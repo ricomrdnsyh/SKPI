@@ -2,7 +2,6 @@
     function editModal(element) {
         let data = JSON.parse($(element).attr('data-row'));
         let form = document.getElementById('form_edit_mahasiswa');
-        
         // Auto-populate inputs based on data keys
         for (let key in data) {
             let input = form.querySelector('[name="' + key + '"]');
@@ -15,26 +14,20 @@
                 }
             }
         }
-
         // Handle specific logic like Select2 triggers
         $(form).find('select').trigger('change.select2');
-
         // Set form action
         form.action = '/akademik/mahasiswa/' + data.id_mahasiswa;
-
         $('#form_edit').modal('show');
     }
-
     document.addEventListener('DOMContentLoaded', function() {
         const formEdit = document.getElementById('form_edit_mahasiswa');
         if (!formEdit) return;
-        
         let submitButtonEdit = formEdit.querySelector('[type="submit"]');
         if (!submitButtonEdit) {
              const ind = formEdit.querySelector('.indicator-label');
              if(ind) submitButtonEdit = ind.closest('button');
         }
-
         formEdit.addEventListener('submit', function(e) {
             if (!formEdit.checkValidity()) {
                 e.preventDefault();
@@ -42,7 +35,6 @@
                 formEdit.classList.add('was-validated');
                 return;
             }
-
             if (submitButtonEdit) {
                 submitButtonEdit.disabled = true;
                 const label = submitButtonEdit.querySelector('.indicator-label');
@@ -51,7 +43,6 @@
                 if(progress) progress.style.display = 'inline-block';
             }
         });
-
         const modalEl = document.getElementById('form_edit');
         if (modalEl) {
             modalEl.addEventListener('hidden.bs.modal', function () {

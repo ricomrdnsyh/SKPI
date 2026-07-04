@@ -8,7 +8,6 @@
             @foreach ($history as $h)
                 @php
                     $waktu = \Carbon\Carbon::parse($h['waktu'])->timezone('Asia/Jakarta');
-                    
                     $statusMapping = match(true) {
                         in_array($h['status'], ['approved', 'sudah', 'lulus', 'dicetak']) => ['color' => 'success', 'icon' => 'ki-check-circle'],
                         in_array($h['status'], ['ditolak', 'rejected']) => ['color' => 'danger', 'icon' => 'ki-cross-circle'],
@@ -18,7 +17,6 @@
                     $color = $statusMapping['color'];
                     $icon = $statusMapping['icon'];
                 @endphp
-                
                 <div class="timeline-item">
                     <div class="timeline-line w-40px"></div>
                     <div class="timeline-icon symbol symbol-circle symbol-40px">

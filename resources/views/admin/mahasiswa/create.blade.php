@@ -18,7 +18,6 @@
                             <input type="text" name="nama_lengkap" id="nama_lengkap" required class="form-control form-control-sm" placeholder="Nama lengkap sesuai ijazah">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="id_prodi" class="form-label required fw-bolder text-dark">Program Studi</label>
@@ -39,7 +38,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="tempat_lahir" class="form-label fw-bolder text-dark">Tempat Lahir</label>
@@ -50,7 +48,6 @@
                             <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="email" class="form-label fw-bolder text-dark">Email</label>
@@ -61,7 +58,6 @@
                             <input type="text" name="nomor_telepon" id="nomor_telepon" class="form-control form-control-sm" placeholder="08xxxxxxxxxx">
                         </div>
                     </div>
-
                     <div class="fv-row mb-6">
                         <label for="password" class="form-label fw-bolder text-dark">Password</label>
                         <input type="password" name="password" id="password" class="form-control form-control-sm" placeholder="Minimal 6 karakter">

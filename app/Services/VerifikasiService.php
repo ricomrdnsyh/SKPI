@@ -10,12 +10,12 @@ use App\Models\PrestasiMahasiswa;
 use App\Models\SertifikatMahasiswa;
 use App\Models\TugasAkhir;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class VerifikasiService
 {
     public function __construct(
-        private DataPreloader $preloader
     ) {}
 
     public function submitChecklist(PengajuanSkpi $pengajuan, array $data, User $user): void
@@ -58,19 +58,10 @@ class VerifikasiService
     {
         $mahasiswaId = $pengajuan->id_mahasiswa;
 
-        $prestasi = DB::table('prestasi_mahasiswa')->where('id_mahasiswa', $mahasiswaId)
-            ->select(['id_prestasi', 'id_mahasiswa', 'nama_prestasi', 'status', 'approved_by', 'approved_at', 'created_at', 'keterangan'])
-            ->get();
-        $organisasi = DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $mahasiswaId)
-            ->select(['id_organisasi_mhs', 'id_mahasiswa', 'nama_organisasi', 'status', 'approved_by', 'approved_at', 'created_at', 'keterangan'])
-            ->get();
-        $sertifikat = DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $mahasiswaId)
-            ->select(['id_sertifikat', 'id_mahasiswa', 'nama_sertifikat', 'status', 'approved_by', 'approved_at', 'created_at', 'keterangan'])
-            ->get();
-        $magang = DB::table('magang_mahasiswa')
-            ->where('magang_mahasiswa.id_mahasiswa', $mahasiswaId)
-            ->select('magang_mahasiswa.id_magang', 'magang_mahasiswa.posisi', 'magang_mahasiswa.status', 'magang_mahasiswa.approved_by', 'magang_mahasiswa.approved_at', 'magang_mahasiswa.created_at', 'magang_mahasiswa.keterangan', 'magang_mahasiswa.tempat_magang')
-            ->get()
+        $prestasi = \App\Models\PrestasiMahasiswa::where('id_mahasiswa', $mahasiswaId)->get();
+        $organisasi = \App\Models\OrganisasiMahasiswa::where('id_mahasiswa', $mahasiswaId)->get();
+        $sertifikat = \App\Models\SertifikatMahasiswa::where('id_mahasiswa', $mahasiswaId)->get();
+        $magang = \App\Models\MagangMahasiswa::where('id_mahasiswa', $mahasiswaId)->get()
             ->map(function ($item) {
                 $item->tempatMagang = (object) [
                     'nama_perusahaan' => $item->tempat_magang,
@@ -79,12 +70,8 @@ class VerifikasiService
                 return $item;
             });
 
-        $ta = DB::table('tugas_akhir')->where('id_mahasiswa', $mahasiswaId)
-            ->select(['id_tugas_akhir', 'id_mahasiswa', 'judul', 'status', 'approved_by', 'approved_at', 'created_at', 'keterangan'])
-            ->first();
-        $skpi = DB::table('skpi')->where('id_pengajuan', $pengajuan->id_pengajuan)
-            ->select(['id_skpi', 'id_pengajuan', 'nomor_skpi', 'tanggal_terbit', 'dicetak_oleh'])
-            ->first();
+        $ta = \App\Models\TugasAkhir::where('id_mahasiswa', $mahasiswaId)->first();
+        $skpi = \App\Models\Skpi::where('id_pengajuan', $pengajuan->id_pengajuan)->first();
 
         $history = collect();
 

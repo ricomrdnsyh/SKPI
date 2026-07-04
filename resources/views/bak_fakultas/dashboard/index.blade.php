@@ -1,7 +1,5 @@
 @extends('layout.main')
-
 @section('title', 'Dashboard BAAK Fakultas')
-
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/dataTables.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.css') }}">
@@ -9,12 +7,10 @@
         .table-row-dashed tr {
             border-bottom: 1px dashed #cccccc !important;
         }
-
         .dataTable thead tr th {
             vertical-align: middle;
             border-bottom: 1px dashed #cccccc !important;
         }
-
         .dataTable th,
         .dataTable td {
             vertical-align: middle !important;
@@ -26,12 +22,9 @@
         <div class="d-flex flex-column flex-column-fluid">
             <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
                 <div id="kt_app_content_container" class="app-container container-fluid">
-
-                    {{-- Welcome Banner --}}
                     <div class="card border-0 shadow-sm mb-8 overflow-hidden"
                         style="background: linear-gradient(112.14deg, #10B981 0%, #059669 100%);">
                         <div class="card-body py-8 position-relative">
-                            <!-- BG pattern -->
                             <div class="position-absolute top-0 end-0 opacity-10">
                                 <i class="ki-duotone ki-abstract-14 fs-10x text-white"><span class="path1"></span><span
                                         class="path2"></span></i>
@@ -52,8 +45,6 @@
                             </div>
                         </div>
                     </div>
-
-                    {{-- Stats Grid --}}
                     <div class="row g-5 g-xl-8 mb-8">
                         @php
                             $statCards = [
@@ -106,8 +97,6 @@
                             </div>
                         @endforeach
                     </div>
-
-                    {{-- Card for Tabs and Table --}}
                     <div class="card shadow-sm border border-dashed border-dark rounded">
                         <div class="card-header border-0 pt-6 px-6">
                             <div class="card-title">
@@ -141,7 +130,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body pt-0 px-6">
                             <ul
                                 class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mb-5 fs-6 fw-bold border-bottom-0 gap-4 mt-2">
@@ -173,7 +161,6 @@
                                     </a>
                                 </li>
                             </ul>
-
                             <table id="table-bak-fakultas" class="table align-middle table-row-dashed fs-6 gy-5">
                                 <thead>
                                     <tr class="text-start text-gray-500 fw-bolder fs-7 text-uppercase gs-0">
@@ -191,13 +178,11 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
 @section('js')
     <script src="{{ asset('assets/plugins/custom/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/dataTables.bootstrap5.min.js') }}"></script>
@@ -205,7 +190,6 @@
         $(document).ready(function() {
             var activeTab = 'belum';
             $('#status-filter-wrapper').hide();
-
             var table = $('#table-bak-fakultas').DataTable({
                 processing: false,
                 serverSide: true,
@@ -257,27 +241,22 @@
                     })
                 }
             });
-
             $('#filter-prodi, #filter-status').on('change', function() {
                 table.draw();
             });
-
             $('.tab-btn').on('click', function(e) {
                 e.preventDefault();
                 $('.tab-btn').removeClass('active');
                 $(this).addClass('active');
                 activeTab = $(this).data('tab');
-
                 if (activeTab === 'belum' || activeTab === 'permohonan_cetak') {
                     $('#filter-status').val('').trigger('change');
                     $('#status-filter-wrapper').hide();
                 } else {
                     $('#status-filter-wrapper').show();
                 }
-
                 table.column(4).visible(true);
                 table.column(5).visible(true);
-
                 table.draw();
             });
         });

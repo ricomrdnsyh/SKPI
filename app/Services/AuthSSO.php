@@ -32,7 +32,6 @@ class AuthSSO
 
         if ($cached && isset($cached['data_url'], $cached['headers'], $cached['expired_at'])) {
             $exp = $cached['expired_at'];
-            // Cek apakah berupa angka (timestamp) atau jika objek, pastikan valid
             if (is_numeric($exp)) {
                 if (now()->timestamp < $exp) {
                     return $cached;

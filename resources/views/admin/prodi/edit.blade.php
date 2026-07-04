@@ -18,7 +18,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_nama_prodi" class="form-label required fw-bolder text-dark fs-6">Nama Program Studi</label>
@@ -29,7 +28,6 @@
                             <input type="text" name="kode_prodi" id="edit_kode_prodi" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_jenjang" class="form-label required fw-bolder text-dark fs-6">Jenjang</label>
@@ -45,7 +43,6 @@
                             <input type="text" name="gelar" id="edit_gelar" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_sk_akreditasi" class="form-label fw-bolder text-dark fs-6">SK Akreditasi</label>
@@ -59,7 +56,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_masa_berlaku_akreditasi" class="form-label fw-bolder text-dark fs-6">Masa Berlaku Akreditasi</label>
@@ -73,7 +69,6 @@
                             <input type="text" name="jenjang_kkni" id="edit_jenjang_kkni" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_bahasa_pengantar" class="form-label fw-bolder text-dark fs-6">Bahasa Pengantar</label>
@@ -84,7 +79,6 @@
                             <input type="text" name="lama_studi" id="edit_lama_studi" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_jenis_pendidikan" class="form-label fw-bolder text-dark fs-6">Jenis Pendidikan</label>
@@ -95,7 +89,6 @@
                             <input type="text" name="jenis_pendidikan_lanjutan" id="edit_jenis_pendidikan_lanjutan" class="form-control form-control-sm">
                         </div>
                     </div>
-
                     <div class="fv-row mb-5">
                         <label for="edit_persyaratan_penerimaan" class="form-label fw-bolder text-dark fs-6">Persyaratan Penerimaan</label>
                         <textarea name="persyaratan_penerimaan" id="edit_persyaratan_penerimaan" rows="2" class="form-control form-control-sm"></textarea>

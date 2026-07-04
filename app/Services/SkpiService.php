@@ -14,8 +14,7 @@ class SkpiService
 {
     public function __construct(
         private PengajuanService $pengajuanService,
-        private CacheService $cache,
-        private DataPreloader $preloader
+        private CacheService $cache
     ) {}
 
     public function generateNomorSkpi(string $kodeProdi, int $tahun, string $kodeUni, $idMahasiswa): string
@@ -34,9 +33,9 @@ class SkpiService
 
     public function createSkpi(PengajuanSkpi $pengajuan, string $nimIjazah, ?string $statusProfesi, User $user): Skpi
     {
-        $mahasiswa = DB::table('mahasiswa')->where('id_mahasiswa', $pengajuan->id_mahasiswa)->first();
-        $prodi = $this->preloader->getProdi($mahasiswa->id_prodi);
-        $fakultas = $prodi ? $this->preloader->getFakultas($prodi->id_fakultas) : null;
+        $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->id_mahasiswa);
+        $prodi = $mahasiswa->programStudi;
+        $fakultas = $prodi->fakultas ?? null;
         $nidn = $fakultas->nidn_dekan ?? null;
         $namaDekan = $fakultas->dekan ?? $user->nama_lengkap;
 
@@ -78,11 +77,9 @@ class SkpiService
 
     public function generatePdf(PengajuanSkpi $pengajuan, Skpi $skpi): \Barryvdh\DomPDF\PDF
     {
-        $mahasiswa = DB::table('mahasiswa')->where('id_mahasiswa', $pengajuan->id_mahasiswa)->first();
-        $prodi = $this->preloader->getProdi($mahasiswa->id_prodi);
-        $fakultas = $prodi ? $this->preloader->getFakultas($prodi->id_fakultas) : null;
-
-        $mahasiswa->programStudi = $prodi;
+        $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->id_mahasiswa);
+        $prodi = $mahasiswa->programStudi;
+        $fakultas = $prodi->fakultas ?? null;
 
         $cplList = $this->getCplList($mahasiswa);
         $penilaian = $this->cache->getSistemPenilaian();

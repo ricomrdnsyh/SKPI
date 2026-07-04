@@ -12,7 +12,6 @@
                         <label for="nama_prestasi" class="form-label required fw-bold fs-6">Nama Prestasi / Kegiatan</label>
                         <input type="text" name="nama_prestasi" id="nama_prestasi" required class="form-control" placeholder="Contoh: Juara 1 Web Design Nasional">
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="tingkat" class="form-label required fw-bold fs-6">Tingkat Prestasi</label>
@@ -23,25 +22,21 @@
                                 <option value="Lokal">Lokal / Kampus</option>
                             </select>
                         </div>
-
                         <div class="fv-row">
                             <label for="peringkat" class="form-label required fw-bold fs-6">Peringkat / Penghargaan</label>
                             <input type="text" name="peringkat" id="peringkat" required class="form-control" placeholder="Contoh: Juara 1 / Best Paper">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="penyelenggara" class="form-label required fw-bold fs-6">Penyelenggara</label>
                             <input type="text" name="penyelenggara" id="penyelenggara" required class="form-control" placeholder="Contoh: Puspresnas Kemendikbud">
                         </div>
-
                         <div class="fv-row">
                             <label for="tahun" class="form-label required fw-bold fs-6">Tahun Perolehan</label>
                             <input type="number" name="tahun" id="tahun" required class="form-control" placeholder="Contoh: 2026">
                         </div>
                     </div>
-
                     <div class="fv-row mb-5">
                         <label for="file_bukti" class="form-label required fw-bold fs-6">Unggah File Bukti</label>
                         <input type="file" name="file_bukti" id="file_bukti" required class="form-control">
@@ -62,4 +57,3 @@
         </div>
     </div>
 </div>
-

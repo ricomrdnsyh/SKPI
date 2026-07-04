@@ -13,7 +13,6 @@
                         <label for="edit_nama_sertifikat" class="form-label required fw-bold fs-6">Nama Sertifikat / Pelatihan</label>
                         <input type="text" name="nama_sertifikat" id="edit_nama_sertifikat" required class="form-control" placeholder="Contoh: Cisco Certified Network Associate">
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_jenis_sertifikat" class="form-label required fw-bold fs-6">Jenis Sertifikat</label>
@@ -24,19 +23,16 @@
                                 <option value="Profesional">Profesional</option>
                             </select>
                         </div>
-
                         <div class="fv-row">
                             <label for="edit_bidang" class="form-label required fw-bold fs-6">Bidang Keahlian / Kompetensi</label>
                             <input type="text" name="bidang" id="edit_bidang" required class="form-control" placeholder="Contoh: Keamanan Jaringan / Bahasa Inggris">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_penyelenggara" class="form-label required fw-bold fs-6">Penyelenggara</label>
                             <input type="text" name="penyelenggara" id="edit_penyelenggara" required class="form-control" placeholder="Contoh: Cisco Networking Academy">
                         </div>
-
                         <div class="fv-row">
                             <label for="edit_tanggal_terbit" class="form-label required fw-bold fs-6">Tanggal Terbit</label>
                             <div class="input-group">
@@ -45,7 +41,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="fv-row mb-5">
                         <label for="edit_file_bukti" class="form-label fw-bold fs-6">Unggah File Bukti Sertifikat (Opsional)</label>
                         <input type="file" name="file_bukti" id="edit_file_bukti" class="form-control">
@@ -66,4 +61,3 @@
         </div>
     </div>
 </div>
-

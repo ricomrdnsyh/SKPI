@@ -54,61 +54,45 @@ class Mahasiswa extends Authenticatable
         return in_array($this->status, ['Aktif', 'Lulus']);
     }
 
-    // ---- Preloaded Data Properties (Query Builder Optimization) ----
-
-    public ?\Illuminate\Support\Collection $preloaded_prestasi = null;
-    public ?\Illuminate\Support\Collection $preloaded_organisasi = null;
-    public ?\Illuminate\Support\Collection $preloaded_sertifikat = null;
-    public ?\Illuminate\Support\Collection $preloaded_magang = null;
-    public ?object $preloaded_tugas_akhir = null;
-    public ?object $programStudi = null;
-
-    public static function preloadRelations(iterable $mahasiswas)
+    public function programStudi()
     {
-        if (empty($mahasiswas)) {
-            return;
-        }
-
-        $studentIds = [];
-        foreach ($mahasiswas as $mhs) {
-            $studentIds[] = $mhs->id_mahasiswa;
-        }
-        $studentIds = array_unique(array_filter($studentIds));
-
-        if (empty($studentIds)) {
-            return;
-        }
-
-        $prestasis = DB::table('prestasi_mahasiswa')->whereIn('id_mahasiswa', $studentIds)->select(['id_mahasiswa', 'status', 'approved_by', 'approved_at'])->get()->groupBy('id_mahasiswa');
-        $organisasis = DB::table('organisasi_mahasiswa')->whereIn('id_mahasiswa', $studentIds)->select(['id_mahasiswa', 'status', 'approved_by', 'approved_at'])->get()->groupBy('id_mahasiswa');
-        $sertifikats = DB::table('sertifikat_mahasiswa')->whereIn('id_mahasiswa', $studentIds)->select(['id_mahasiswa', 'status', 'approved_by', 'approved_at'])->get()->groupBy('id_mahasiswa');
-        $magangs = DB::table('magang_mahasiswa')->whereIn('id_mahasiswa', $studentIds)->select(['id_mahasiswa', 'status', 'approved_by', 'approved_at'])->get()->groupBy('id_mahasiswa');
-        $tugasAkhirs = DB::table('tugas_akhir')->whereIn('id_mahasiswa', $studentIds)->select(['id_mahasiswa', 'id_tugas_akhir', 'status', 'approved_by', 'judul'])->get()->keyBy('id_mahasiswa');
-
-        $prodiIds = [];
-        foreach ($mahasiswas as $mhs) {
-            if ($mhs->id_prodi) {
-                $prodiIds[] = $mhs->id_prodi;
-            }
-        }
-        $prodiIds = array_unique(array_filter($prodiIds));
-
-        $programStudis = collect();
-        if (!empty($prodiIds)) {
-            $programStudis = DB::table('program_studi')->whereIn('id_prodi', $prodiIds)->get()->keyBy('id_prodi');
-        }
-
-        foreach ($mahasiswas as $mhs) {
-            $mhs->preloaded_prestasi = $prestasis->get($mhs->id_mahasiswa) ?? collect();
-            $mhs->preloaded_organisasi = $organisasis->get($mhs->id_mahasiswa) ?? collect();
-            $mhs->preloaded_sertifikat = $sertifikats->get($mhs->id_mahasiswa) ?? collect();
-            $mhs->preloaded_magang = $magangs->get($mhs->id_mahasiswa) ?? collect();
-            $mhs->preloaded_tugas_akhir = $tugasAkhirs->get($mhs->id_mahasiswa);
-            $mhs->programStudi = $programStudis->get($mhs->id_prodi);
-        }
+        return $this->belongsTo(ProgramStudi::class, 'id_prodi', 'id_prodi');
     }
 
-    // ---- Progress and Verification ----
+    public function prestasi()
+    {
+        return $this->hasMany(PrestasiMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function organisasi()
+    {
+        return $this->hasMany(OrganisasiMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function sertifikat()
+    {
+        return $this->hasMany(SertifikatMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function magang()
+    {
+        return $this->hasMany(MagangMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function tugasAkhir()
+    {
+        return $this->hasOne(TugasAkhir::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function pengajuanSkpi()
+    {
+        return $this->hasOne(PengajuanSkpi::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function skpi()
+    {
+        return $this->hasOne(Skpi::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
 
     private array $progressStepsCache = [];
 
@@ -123,53 +107,27 @@ class Mahasiswa extends Authenticatable
 
     public function allPrestasiApproved(): bool
     {
-        if ($this->preloaded_prestasi !== null) {
-            return $this->preloaded_prestasi->where('status', 'pending')->count() === 0;
-        }
-        return !DB::table('prestasi_mahasiswa')
-            ->where('id_mahasiswa', $this->id_mahasiswa)
-            ->where('status', 'pending')
-            ->exists();
+        return !$this->prestasi()->where('status', 'pending')->exists();
     }
 
     public function allOrganisasiApproved(): bool
     {
-        if ($this->preloaded_organisasi !== null) {
-            return $this->preloaded_organisasi->where('status', 'pending')->count() === 0;
-        }
-        return !DB::table('organisasi_mahasiswa')
-            ->where('id_mahasiswa', $this->id_mahasiswa)
-            ->where('status', 'pending')
-            ->exists();
+        return !$this->organisasi()->where('status', 'pending')->exists();
     }
 
     public function allSertifikatApproved(): bool
     {
-        if ($this->preloaded_sertifikat !== null) {
-            return $this->preloaded_sertifikat->where('status', 'pending')->count() === 0;
-        }
-        return !DB::table('sertifikat_mahasiswa')
-            ->where('id_mahasiswa', $this->id_mahasiswa)
-            ->where('status', 'pending')
-            ->exists();
+        return !$this->sertifikat()->where('status', 'pending')->exists();
     }
 
     public function allMagangApproved(): bool
     {
-        if ($this->preloaded_magang !== null) {
-            return $this->preloaded_magang->where('status', 'pending')->count() === 0;
-        }
-        return !DB::table('magang_mahasiswa')
-            ->where('id_mahasiswa', $this->id_mahasiswa)
-            ->where('status', 'pending')
-            ->exists();
+        return !$this->magang()->where('status', 'pending')->exists();
     }
 
     public function tugasAkhirApproved(): bool
     {
-        $ta = $this->preloaded_tugas_akhir !== null 
-            ? $this->preloaded_tugas_akhir 
-            : DB::table('tugas_akhir')->where('id_mahasiswa', $this->id_mahasiswa)->first();
+        $ta = $this->tugasAkhir;
         return $ta && $ta->status === 'approved' && !empty($ta->judul);
     }
 
@@ -180,28 +138,10 @@ class Mahasiswa extends Authenticatable
 
     public function hasAnyPending(): bool
     {
-        if ($this->preloaded_prestasi !== null && $this->preloaded_organisasi !== null && $this->preloaded_sertifikat !== null && $this->preloaded_magang !== null) {
-            $ta = $this->preloaded_tugas_akhir;
-            return $this->preloaded_prestasi->where('status', 'pending')->isNotEmpty()
-                || $this->preloaded_organisasi->where('status', 'pending')->isNotEmpty()
-                || $this->preloaded_sertifikat->where('status', 'pending')->isNotEmpty()
-                || $this->preloaded_magang->where('status', 'pending')->isNotEmpty()
-                || ($ta && $ta->status === 'pending');
-        }
-
-        $id = $this->id_mahasiswa;
-        return DB::selectOne("
-            SELECT 1 FROM (
-                (SELECT id_mahasiswa FROM prestasi_mahasiswa WHERE id_mahasiswa = ? AND status = 'pending' LIMIT 1)
-                UNION ALL
-                (SELECT id_mahasiswa FROM organisasi_mahasiswa WHERE id_mahasiswa = ? AND status = 'pending' LIMIT 1)
-                UNION ALL
-                (SELECT id_mahasiswa FROM sertifikat_mahasiswa WHERE id_mahasiswa = ? AND status = 'pending' LIMIT 1)
-                UNION ALL
-                (SELECT id_mahasiswa FROM magang_mahasiswa WHERE id_mahasiswa = ? AND status = 'pending' LIMIT 1)
-                UNION ALL
-                (SELECT id_mahasiswa FROM tugas_akhir WHERE id_mahasiswa = ? AND status = 'pending' LIMIT 1)
-            ) t LIMIT 1
-        ", [$id, $id, $id, $id, $id]) !== null;
+        return $this->prestasi()->where('status', 'pending')->exists()
+            || $this->organisasi()->where('status', 'pending')->exists()
+            || $this->sertifikat()->where('status', 'pending')->exists()
+            || $this->magang()->where('status', 'pending')->exists()
+            || $this->tugasAkhir()->where('status', 'pending')->exists();
     }
 }

@@ -8,19 +8,28 @@ use Illuminate\Support\Facades\DB;
 class SkpiProgressService
 {
     public function __construct(
-        private CacheService $cache,
-        private DataPreloader $preloader
+        private CacheService $cache
     ) {}
 
     public function getSteps(Mahasiswa $mahasiswa, object|null $pengajuan = null): array
     {
-        $prodi = $this->preloader->getProdi($mahasiswa->id_prodi);
+        $mahasiswa->loadMissing(['programStudi.fakultas']);
+        $prodi = $mahasiswa->programStudi;
         $fakultasId = $prodi->id_fakultas ?? 0;
 
-        $baakList = $this->preloader->getBaakForFakultas($fakultasId, $mahasiswa->id_prodi ?? 0);
-        $baakNames = $baakList->map(fn($u) => $u->nama_lengkap)->implode(', ') ?: 'BAAK Fakultas';
+        $baakList = \App\Models\User::where('role', 'bak_fakultas')
+            ->whereHas('programStudi', function ($query) use ($fakultasId) {
+                $query->where('id_fakultas', $fakultasId);
+            })->select('id_user', 'nama_lengkap')->get();
 
-        $userIds = [];
+        if ($baakList->isEmpty() && $prodi) {
+            $baakList = \App\Models\User::where('role', 'bak_fakultas')
+                ->where('id_prodi', $prodi->id_prodi)
+                ->select('id_user', 'nama_lengkap')->get();
+        }
+
+        $baakNames = $baakList->pluck('nama_lengkap')->implode(', ') ?: 'BAAK Fakultas';
+
         $verifier = null;
         $printer = null;
         $skpi = null;
@@ -33,30 +42,18 @@ class SkpiProgressService
                 $skpi->dicetak_oleh ?? null,
             ]);
 
-            $userMap = $this->preloader->getUsersBatch($userIds)->keyBy('id_user');
+            $userMap = \App\Models\User::whereIn('id_user', $userIds)->get()->keyBy('id_user');
 
             $verifier = $userMap->get($pengajuan->diverifikasi_oleh);
             $printer = $skpi ? $userMap->get($skpi->dicetak_oleh) : null;
         }
 
-        $id = $mahasiswa->id_mahasiswa;
-        $selectCols = ['status', 'approved_by', 'approved_at'];
+        $mahasiswa->loadMissing(['prestasi', 'organisasi', 'sertifikat', 'magang']);
 
-        $prestasi = $mahasiswa->preloaded_prestasi !== null
-            ? $mahasiswa->preloaded_prestasi
-            : DB::table('prestasi_mahasiswa')->where('id_mahasiswa', $id)->select($selectCols)->get();
-
-        $organisasi = $mahasiswa->preloaded_organisasi !== null
-            ? $mahasiswa->preloaded_organisasi
-            : DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id)->select($selectCols)->get();
-
-        $sertifikat = $mahasiswa->preloaded_sertifikat !== null
-            ? $mahasiswa->preloaded_sertifikat
-            : DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id)->select($selectCols)->get();
-
-        $magang = $mahasiswa->preloaded_magang !== null
-            ? $mahasiswa->preloaded_magang
-            : DB::table('magang_mahasiswa')->where('id_mahasiswa', $id)->select($selectCols)->get();
+        $prestasi = $mahasiswa->prestasi;
+        $organisasi = $mahasiswa->organisasi;
+        $sertifikat = $mahasiswa->sertifikat;
+        $magang = $mahasiswa->magang;
 
         $allItems = collect()
             ->concat($prestasi)

@@ -67,7 +67,6 @@ class SyncKurikulumCommand extends Command
             }
 
             foreach ($data as $item) {
-                // Asumsi data dari API: id_kurikulum, nama_kurikulum, id_smt
                 $namaKurikulum = $item['nm_kurikulum'] ?? $item['nama_kurikulum'] ?? null;
                 if ($namaKurikulum) {
                     Kurikulum::updateOrCreate(

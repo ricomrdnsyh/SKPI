@@ -1,13 +1,10 @@
 @extends('layout.main')
-
 @section('title', $readonly ? 'Detail Tugas Akhir' : 'Ubah Tugas Akhir')
-
 @section('content')
     <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
         <div class="d-flex flex-column flex-column-fluid">
             <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
                 <div id="kt_app_content_container" class="app-container container-fluid">
-
                     <div class="card shadow-sm border border-dashed border-dark rounded">
                         <div class="card-header border-0 pt-6">
                             <div class="card-title">
@@ -19,11 +16,8 @@
                                 </h3>
                             </div>
                         </div>
-
                         <div class="separator my-2"></div>
-
                         <div class="card-body pt-5">
-
                             <div
                                 class="alert bg-light-primary border border-dashed border-primary d-flex align-items-center p-5 mb-8">
                                 <i class="fa-solid fa-circle-info fs-2hx text-primary me-4"></i>
@@ -37,7 +31,6 @@
                                     </span>
                                 </div>
                             </div>
-
                             @if ($isLocked)
                                 <div class="alert alert-warning d-flex align-items-center p-5 mb-8">
                                     <i class="fa-solid fa-lock fs-2hx text-warning me-4"></i>
@@ -47,7 +40,6 @@
                                     </div>
                                 </div>
                             @endif
-
                             @if (($mahasiswa->tugasAkhir->status ?? '') === 'approved')
                                 <div class="alert alert-success d-flex align-items-center p-5 mb-8">
                                     <i class="fa-solid fa-check-circle fs-2hx text-success me-4"></i>
@@ -57,7 +49,6 @@
                                     </div>
                                 </div>
                             @endif
-
                             @if (($mahasiswa->tugasAkhir->status ?? '') === 'rejected')
                                 <div class="alert alert-danger d-flex align-items-center p-5 mb-8">
                                     <i class="fa-solid fa-circle-exclamation fs-2hx text-danger me-4"></i>
@@ -68,7 +59,6 @@
                                     </div>
                                 </div>
                             @endif
-
                             @if ($errors->any())
                                 <div class="alert alert-danger p-5 mb-8">
                                     <ul class="mb-0">
@@ -78,16 +68,13 @@
                                     </ul>
                                 </div>
                             @endif
-
                             <form id="kt_tugas_akhir_form" action="{{ route('mahasiswa.tugas_akhir.update') }}" method="POST" class="form mb-0">
                                 @csrf
-
                                 <div class="fv-row mb-8">
                                     <label for="judul" class="form-label required fw-bold fs-6">Judul Tugas Akhir /
                                         Skripsi</label>
                                     <textarea name="judul" id="judul" rows="3" required class="form-control" {{ $readonly ? 'disabled' : '' }}>{{ old('judul', $mahasiswa->tugasAkhir->judul ?? '') }}</textarea>
                                 </div>
-
                                 @php
                                     $pembimbingNames = [];
                                     if ($mahasiswa->tugasAkhir) {
@@ -96,7 +83,6 @@
                                             ->toArray();
                                     }
                                 @endphp
-
                                 <div class="row g-8 mb-8">
                                     <div class="col-md-6 fv-row">
                                         <label class="form-label required fw-bold fs-6">Dosen Pembimbing 1 (Utama)</label>
@@ -119,7 +105,6 @@
                                             pembimbing pendamping.</div>
                                     </div>
                                 </div>
-
                                 @if (!$readonly)
                                     <div class="separator my-10"></div>
                                     <div class="d-flex justify-content-end">
@@ -136,13 +121,11 @@
                             </form>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
 @section('js')
 @if (!$readonly)
 <script>

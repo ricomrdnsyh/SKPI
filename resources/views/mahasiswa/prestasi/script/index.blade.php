@@ -67,12 +67,9 @@
                 $('#table-prestasi [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-        
         table.on('draw', function() {
             $('#table-prestasi [data-bs-toggle="tooltip"]').tooltip();
         });
-
-        
     });
 </script>
 <script>
@@ -145,5 +142,3 @@
         });
     </script>
 @endif
-
-

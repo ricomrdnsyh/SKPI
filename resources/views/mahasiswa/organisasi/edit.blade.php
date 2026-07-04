@@ -15,7 +15,6 @@
                         <input type="text" name="nama_organisasi" id="edit_nama_organisasi" required
                             class="form-control" placeholder="Contoh: Himpunan Mahasiswa Teknik Informatika">
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_tingkat" class="form-label required fw-bold fs-6">Tingkat
@@ -28,28 +27,24 @@
                                 <option value="Fakultas">Fakultas</option>
                             </select>
                         </div>
-
                         <div class="fv-row">
                             <label for="edit_jabatan" class="form-label required fw-bold fs-6">Jabatan</label>
                             <input type="text" name="jabatan" id="edit_jabatan" required class="form-control"
                                 placeholder="Contoh: Ketua / Sekretaris">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_tahun_mulai" class="form-label required fw-bold fs-6">Tahun Mulai</label>
                             <input type="number" name="tahun_mulai" id="edit_tahun_mulai" required class="form-control"
                                 placeholder="Contoh: 2023">
                         </div>
-
                         <div class="fv-row">
                             <label for="edit_tahun_selesai" class="form-label fw-bold fs-6">Tahun Selesai</label>
                             <input type="number" name="tahun_selesai" id="edit_tahun_selesai" class="form-control"
                                 placeholder="Kosongkan jika masih aktif">
                         </div>
                     </div>
-
                     <div class="fv-row mb-5">
                         <label for="edit_file_bukti" class="form-label fw-bold fs-6">Unggah SK / Surat Keterangan Bukti
                             (Opsional)</label>

@@ -28,7 +28,6 @@
                         <input type="text" id="show_urutan" class="form-control form-control-sm" disabled />
                     </div>
                 </div>
-
                 <div class="fv-row mb-6">
                     <label class="fw-bolder text-dark mb-2 fs-6">Deskripsi CPL</label>
                     <textarea id="show_deskripsi_cpl" rows="4" class="form-control form-control-sm" disabled></textarea>

@@ -175,14 +175,9 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $userRow = DB::table('users')->where('id_user', $id)->first();
-        if (!$userRow) abort(404);
-        $user = User::hydrate([(array) $userRow])->first();
-
-        // Prevent deleting oneself
-        if ($user->id_user === Auth::user()->id_user) {
+        if (Auth::id() === $user->id_user) {
             if (request()->ajax()) {
                 return response()->json(['success' => false, 'message' => 'Anda tidak dapat menghapus akun Anda sendiri.'], 403);
             }

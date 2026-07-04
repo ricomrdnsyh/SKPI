@@ -16,7 +16,6 @@
                         <input type="text" id="show_nama_lengkap" class="form-control form-control-sm" disabled />
                     </div>
                 </div>
-
                 <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                     <div class="fv-row">
                         <label class="fw-bolder text-dark mb-2 fs-6">Program Studi</label>
@@ -27,7 +26,6 @@
                         <input type="text" id="show_status" class="form-control form-control-sm" disabled />
                     </div>
                 </div>
-
                 <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                     <div class="fv-row">
                         <label class="fw-bolder text-dark mb-2 fs-6">Tempat Lahir</label>
@@ -38,7 +36,6 @@
                         <input type="date" id="show_tanggal_lahir" class="form-control form-control-sm" disabled />
                     </div>
                 </div>
-
                 <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                     <div class="fv-row">
                         <label class="fw-bolder text-dark mb-2 fs-6">Email</label>

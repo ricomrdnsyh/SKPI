@@ -1,7 +1,5 @@
 @extends('layout.main')
-
 @section('title', 'Detail Verifikasi SKPI')
-
 @section('content')
     @php
         $backRoute = route('bak_fakultas.dashboard');
@@ -15,7 +13,6 @@
         $statusClass = $statusColors[$pengajuan->status] ?? 'badge-light-secondary';
         $steps = $mahasiswa->getSkpiProgressSteps($pengajuan);
         $role = Auth::user()->role;
-
         $modStatus = function ($items) {
             if ($items->where('status', 'rejected')->isNotEmpty()) {
                 return 'ditolak';
@@ -37,12 +34,9 @@
             ['label' => 'Tugas Akhir', 'status' => $modStatus($taMod)],
         ];
     @endphp
-
     <div class="d-flex flex-column flex-column-fluid">
         <div class="app-content flex-column-fluid mt-7">
             <div class="app-container container-fluid">
-
-                {{-- 1. Unified Profile Card --}}
                 <div class="card mb-6 border border-dashed border-primary">
                     <div class="card-body pt-9 pb-0">
                         <div class="d-flex flex-wrap flex-sm-nowrap">
@@ -85,7 +79,6 @@
                                             </span>
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="d-flex flex-wrap flex-stack mt-2">
                                     <div class="d-flex flex-column flex-grow-1 pe-8">
@@ -125,7 +118,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder mt-5">
                             <li class="nav-item mt-2">
                                 <a class="nav-link text-active-primary ms-0 me-10 py-5 active" data-bs-toggle="tab"
@@ -138,18 +130,13 @@
                         </ul>
                     </div>
                 </div>
-
-                {{-- Tab Contents --}}
                 <div class="tab-content">
-
-                    {{-- Tab: Validasi Berkas --}}
                     <div class="tab-pane fade show active" id="tab_validasi" role="tabpanel">
                         @include('partials.overall_progress', [
                             'steps' => $steps,
                             'pengajuan' => $pengajuan,
                             'statusClass' => $statusClass,
                         ])
-                        
                         <div class="card border border-dashed border-dark mb-6">
                             <div class="card-header border-0 pt-6">
                                 <h3 class="card-title align-items-start flex-column">
@@ -189,36 +176,26 @@
                                     @endforeach
                                 </div>
                             </div>
-
                             <div class="separator separator-dashed my-6"></div>
-
                             @include('bak_fakultas.verifikasi._validation_data')
-
                             @if (Auth::user()->role === 'bak_fakultas' && $pengajuan->status === 'diajukan')
                                 @include('bak_fakultas.verifikasi._checklist_form')
                             @endif
                         </div>
-
                         @include('bak_fakultas.verifikasi._action_cards')
                     </div>
-
-                    {{-- Tab: Timeline --}}
                     <div class="tab-pane fade" id="tab_timeline" role="tabpanel">
-
                         @if ($history->isNotEmpty())
                             <div class="card border border-dashed border-dark">
                                 @include('bak_fakultas.verifikasi._timeline')
                             </div>
                         @endif
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
 @endsection
-
 @section('js')
     <script>
         function confirmReject(formId, inputId) {
@@ -252,7 +229,6 @@
                 }
             });
         }
-
         function confirmSetujui() {
             @if (!empty($hasPendingItems))
                 @php
@@ -270,7 +246,6 @@
                 });
                 return;
             @endif
-
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Anda akan menyetujui pengajuan SKPI ini untuk dilanjutkan ke proses pencetakan.",

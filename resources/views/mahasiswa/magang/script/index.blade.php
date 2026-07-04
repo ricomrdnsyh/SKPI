@@ -66,12 +66,9 @@
                 $('#table-magang [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-        
         table.on('draw', function() {
             $('#table-magang [data-bs-toggle="tooltip"]').tooltip();
         });
-
-        
     });
 </script>
 <script>
@@ -144,5 +141,3 @@
         });
     </script>
 @endif
-
-

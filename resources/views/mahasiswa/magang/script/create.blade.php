@@ -10,14 +10,12 @@
         });
         const formCreate = document.getElementById('form_create_magang');
         if (!formCreate) return;
-        
         let submitButtonCreate = formCreate.querySelector('[type="submit"]');
         if (!submitButtonCreate) {
              // Try to find by indicator class if type="submit" is missing
              const ind = formCreate.querySelector('.indicator-label');
              if(ind) submitButtonCreate = ind.closest('button');
         }
-
         formCreate.addEventListener('submit', function(e) {
             if (!formCreate.checkValidity()) {
                 e.preventDefault();
@@ -25,7 +23,6 @@
                 formCreate.classList.add('was-validated');
                 return;
             }
-
             if (submitButtonCreate) {
                 submitButtonCreate.disabled = true;
                 const label = submitButtonCreate.querySelector('.indicator-label');
@@ -34,7 +31,6 @@
                 if(progress) progress.style.display = 'inline-block';
             }
         });
-
         const modalEl = document.getElementById('form_create');
         if (modalEl) {
             modalEl.addEventListener('hidden.bs.modal', function () {

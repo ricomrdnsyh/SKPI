@@ -76,12 +76,9 @@
                 $('#table-kategori-cpl [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-
         table.on('draw', function() {
             $('#table-kategori-cpl [data-bs-toggle="tooltip"]').tooltip();
         });
-
-
     });
 </script>
 <script>

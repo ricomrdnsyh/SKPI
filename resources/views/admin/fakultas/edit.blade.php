@@ -35,7 +35,6 @@
                                 class="form-control form-control-sm form-control-sm">
                         </div>
                     </div>
-
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_no_telepon" class="form-label fw-bolder text-dark fs-6">Telepon

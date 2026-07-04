@@ -1,18 +1,14 @@
 @php
     $role = Auth::user()->role;
-
     $filterGrupA = function($collection) {
         return $collection;
     };
-
     $filteredPrestasi = $filterGrupA($prestasi);
     $filteredOrganisasi = $filterGrupA($organisasi);
     $filteredSertifikat = $filterGrupA($sertifikat);
     $filteredMagang = $filterGrupA($magang);
 @endphp
-
 <div class="card-body pt-5">
-    {{-- Prestasi --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
             <i class="fa-solid fa-trophy fs-3 me-2 text-warning"></i> Prestasi
@@ -38,8 +34,6 @@
             @endforelse
         </div>
     </div>
-
-    {{-- Organisasi --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
             <i class="fa-solid fa-users-rectangle fs-3 me-2 text-success"></i> Organisasi
@@ -65,8 +59,6 @@
             @endforelse
         </div>
     </div>
-
-    {{-- Sertifikat --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
             <i class="fa-solid fa-file-signature fs-3 me-2 text-primary"></i> Sertifikat
@@ -92,8 +84,6 @@
             @endforelse
         </div>
     </div>
-
-    {{-- Magang --}}
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
             <i class="fa-solid fa-briefcase fs-3 me-2 text-gray-600"></i> Magang / KP
@@ -119,14 +109,11 @@
             @endforelse
         </div>
     </div>
-
-    {{-- Tugas Akhir --}}
     <div class="mb-0">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
             <i class="fa-solid fa-graduation-cap fs-3 me-2 text-info"></i> Tugas Akhir / Skripsi
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
-        
         @if($mahasiswa->tugasAkhir)
             @php
                 $ta = $mahasiswa->tugasAkhir;

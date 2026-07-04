@@ -90,8 +90,6 @@ class CacheService
         return Cache::remember("stats:{$key}", self::TTL_STATS, $callback);
     }
 
-    // ── Flush methods ──
-
     public function flushDashboard($mahasiswaId): void
     {
         Cache::forget("dashboard:mahasiswa:{$mahasiswaId}");

@@ -1,5 +1,4 @@
 <div class="border-top border-gray-200 pt-7 px-7 pb-7 mt-5">
-
     @if ($hasNoTugasAkhir)
         <div class="alert bg-light-info border border-info d-flex flex-column p-5 mb-5">
             <h5 class="mb-2 text-info"><i class="ki-duotone ki-information fs-2 text-info me-2"><span
@@ -9,9 +8,7 @@
                 diproses, namun TA wajib dilengkapi sebelum SKPI dicetak.</span>
         </div>
     @endif
-
     <div class="row g-3">
-        <!-- Tombol Tolak Permanen -->
         <div class="col-12 col-md-4">
             <button type="button" class="btn btn-danger w-100 fw-bolder" data-bs-toggle="modal"
                 data-bs-target="#modalTolak">
@@ -19,8 +16,6 @@
                 Tolak Permanen
             </button>
         </div>
-
-        <!-- Tombol Revisi -->
         <div class="col-12 col-md-4">
             <button type="button" class="btn btn-warning w-100 fw-bolder" data-bs-toggle="modal"
                 data-bs-target="#modalRevisi">
@@ -28,8 +23,6 @@
                         class="path2"></span></i> Perlu Revisi
             </button>
         </div>
-
-        <!-- Tombol Setujui -->
         <div class="col-12 col-md-4">
             <form action="{{ route('bak_fakultas.verifikasi.checklist', $pengajuan->id_pengajuan) }}" method="POST"
                 class="m-0" id="formSetujui">
@@ -43,8 +36,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal Tolak -->
 <div class="modal fade" id="modalTolak" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <div class="modal-content">
@@ -68,7 +59,6 @@
                                 ini.</span>
                         </div>
                     </div>
-
                     <div class="d-flex flex-column mb-4 fv-row">
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
                             <span class="required">Alasan Penolakan</span>
@@ -89,8 +79,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal Revisi -->
 <div class="modal fade" id="modalRevisi" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <div class="modal-content">
@@ -115,7 +103,6 @@
                                 disebutkan sebelum mengajukan kembali.</span>
                         </div>
                     </div>
-
                     <div class="d-flex flex-column mb-4 fv-row">
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
                             <span class="required">Catatan Revisi</span>

@@ -16,40 +16,9 @@ class ClientSSO
         return $this->fetchData('fakultas');
     }
 
-    public function getDosenFromApi(): array
-    {
-        return $this->fetchData('dosen');
-    }
-
     public function getKurikulumFromApi(string $idSms): array
     {
         return $this->fetchData('kurikulum', ['id_sms' => $idSms]);
-    }
-
-    public function getMatakuliahFromApi(string $idSms): array
-    {
-        return $this->fetchData('matakuliah', ['id_sms' => $idSms]);
-    }
-
-    public function getKelasFromApi(string $idMatkul, string $idSms): array
-    {
-        return $this->fetchData('jadwal_matakuliah', [
-            'id_matkul' => $idMatkul,
-            'id_sms' => $idSms,
-        ]);
-    }
-
-    public function getMahasiswaMatakuliahFromApi(string $idSms, string $idMatkul): array
-    {
-        return $this->fetchData('mahasiswa_matakuliah', [
-            'id_sms' => $idSms,
-            'id_matkul' => $idMatkul,
-        ]);
-    }
-
-    public function getSemesterFromApi(): array
-    {
-        return $this->fetchData('tahun_ajaran');
     }
 
     public function getProdiByFakultas(string $idFakultas): array

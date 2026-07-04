@@ -1,14 +1,10 @@
 @extends('layout.main')
-
 @section('title', 'Dashboard Admin')
-
 @section('content')
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
     <div class="d-flex flex-column flex-column-fluid">
         <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
             <div id="kt_app_content_container" class="app-container container-fluid">
-                
-                {{-- Welcome Banner --}}
                 <div class="card border-transparent shadow-sm mb-5" style="background: linear-gradient(112.14deg, #00D2FF 0%, #3A7BD5 100%);">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
@@ -26,8 +22,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- Stats Grid --}}
                 <div class="row g-5 g-xl-8">
                     @php
                         $menuCards = [
@@ -41,7 +35,6 @@
                             ['route' => 'users.index', 'label' => 'Pengguna', 'key' => 'users', 'icon' => 'ki-setting-2', 'color' => 'secondary', 'desc' => 'Manajemen akun'],
                         ];
                     @endphp
-                    
                     @foreach($menuCards as $card)
                     <div class="col-xl-3 col-md-6">
                         <a href="{{ route($card['route']) }}" class="card bg-{{ $card['color'] }} hoverable card-xl-stretch mb-5 mb-xl-8">
@@ -55,7 +48,6 @@
                     </div>
                     @endforeach
                 </div>
-
             </div>
         </div>
     </div>

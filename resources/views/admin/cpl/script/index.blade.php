@@ -88,11 +88,9 @@
                 $('#table-cpl [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-
         table.on('draw', function() {
             $('#table-cpl [data-bs-toggle="tooltip"]').tooltip();
         });
-
         $('#filter-prodi, #filter-kurikulum').on('change', function() {
             table.ajax.reload(null, false);
         });

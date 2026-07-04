@@ -75,15 +75,12 @@
                 $('#table-kurikulum [data-bs-toggle="tooltip"]').tooltip();
             }
         });
-
         table.on('draw', function() {
             $('#table-kurikulum [data-bs-toggle="tooltip"]').tooltip();
         });
-
         $('#filter-prodi').on('change', function() {
             table.ajax.reload(null, false);
         });
-
         $('#btn_sync_kurikulum').on('click', function() {
             Swal.fire({
                 title: "Sinkronisasi Kurikulum?",

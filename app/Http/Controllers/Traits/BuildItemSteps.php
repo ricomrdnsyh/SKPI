@@ -45,7 +45,6 @@ trait BuildItemSteps
             ]
         ];
 
-        // --- BAAK ---
         $baakRejected = $item->status === 'rejected';
         $baakApproved = !is_null($item->approved_by) && !$baakRejected;
         $baakDone = $baakApproved || $baakRejected;

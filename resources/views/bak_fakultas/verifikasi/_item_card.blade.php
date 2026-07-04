@@ -1,6 +1,5 @@
 @php
     $isTugasAkhir = $itemType === 'tugas_akhir';
-
     if ($status === 'approved') {
         $badgeClass = 'badge-light-success text-success';
         $statusLabel = 'Disetujui';
@@ -18,7 +17,6 @@
         $borderColor = 'border-warning';
     }
 @endphp
-
 <div class="border border-dashed {{ $borderColor }} {{ $bgClass }} rounded p-5 mb-5">
     <div class="d-flex justify-content-between align-items-start gap-3">
         <div class="d-flex flex-column min-w-0">
@@ -26,7 +24,6 @@
             @if ($itemSubtitle)
                 <div class="text-muted fs-8 fw-semibold">{{ $itemSubtitle }}</div>
             @endif
-
             @if ($fileBukti)
                 <div class="mt-3">
                     <a href="{{ asset('storage/' . $fileBukti) }}" target="_blank"
@@ -39,8 +36,6 @@
         </div>
         <span class="badge {{ $badgeClass }} text-uppercase fw-bold shrink-0 mt-1">{{ $statusLabel }}</span>
     </div>
-
-    {{-- BAAK: Approve/Reject --}}
     @if ($status === 'pending' && Auth::user()->role === 'bak_fakultas')
         <div
             class="d-flex flex-column flex-sm-row justify-content-end align-items-sm-center gap-2 pt-4 mt-4 border-top border-gray-300">
@@ -100,8 +95,6 @@
             @endif
         </div>
     @endif
-
-    {{-- Rejection reason --}}
     @if ($status === 'rejected' && !empty($item->keterangan))
         <div
             class="bg-white rounded border border-danger border-dashed p-3 mt-4 text-gray-800 fs-8 d-flex align-items-start">

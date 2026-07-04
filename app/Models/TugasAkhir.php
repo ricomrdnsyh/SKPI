@@ -31,4 +31,19 @@ class TugasAkhir extends Model
         if ($this->approved_by) return 'approved';
         return 'waiting_baak';
     }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+    }
+
+    public function pembimbing()
+    {
+        return $this->hasMany(PembimbingTugasAkhir::class, 'id_tugas_akhir', 'id_tugas_akhir');
+    }
+
+    public function getPembimbingTugasAkhirAttribute()
+    {
+        return $this->pembimbing;
+    }
 }
