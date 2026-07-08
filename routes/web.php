@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\FakultasController;
 use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\SistemPenilaianController;
 use App\Http\Controllers\Admin\KategoriCplController;
+use App\Http\Controllers\TugasAkhirController;
 Route::get('/', function () {
     return (Auth::guard('web')->check() || Auth::guard('mahasiswa')->check()) ? redirect()->route('dashboard') : view('landing');
 });
@@ -36,6 +37,11 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('/tugas-akhir', [MahasiswaController::class, 'editTugasAkhir'])->name('tugas_akhir.edit');
         Route::post('/tugas-akhir', [MahasiswaController::class, 'updateTugasAkhir'])->name('tugas_akhir.update');
 
+        Route::post('/pengajuan/submit', [PengajuanSkpiController::class, 'submit'])->name('pengajuan.submit');
+        Route::post('/pengajuan/request-print', [PengajuanSkpiController::class, 'requestPrint'])->name('pengajuan.request_print');
+    });
+
+    Route::prefix('mahasiswa')->name('mahasiswa.')->middleware('role:mahasiswa,bak_fakultas')->group(function () {
         Route::get('prestasi/data', [PrestasiController::class, 'datatable'])->name('prestasi.datatable');
         Route::get('organisasi/data', [OrganisasiController::class, 'datatable'])->name('organisasi.datatable');
         Route::get('sertifikat/data', [SertifikatController::class, 'datatable'])->name('sertifikat.datatable');
@@ -45,14 +51,14 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::resource('organisasi', OrganisasiController::class)->except(['show']);
         Route::resource('sertifikat', SertifikatController::class)->except(['show']);
         Route::resource('magang', MagangController::class)->except(['show']);
-
-        Route::post('/pengajuan/submit', [PengajuanSkpiController::class, 'submit'])->name('pengajuan.submit');
-        Route::post('/pengajuan/request-print', [PengajuanSkpiController::class, 'requestPrint'])->name('pengajuan.request_print');
     });
-    Route::prefix('bak-fakultas')->middleware('role:bak_fakultas')->group(function () {
-        Route::get('/dashboard', [VerifikasiController::class, 'dashboard'])->name('bak_fakultas.dashboard');
-        Route::get('/data', [VerifikasiController::class, 'datatable'])->name('bak_fakultas.datatable');
-        Route::get('/verifikasi/{id_pengajuan}', [VerifikasiController::class, 'detail'])->name('bak_fakultas.verifikasi.detail');
+
+    Route::prefix('bak-fakultas')->middleware('role:bak_fakultas')->name('bak_fakultas.')->group(function () {
+        Route::get('/dashboard', [VerifikasiController::class, 'dashboard'])->name('dashboard');
+        Route::get('/data', [VerifikasiController::class, 'datatable'])->name('datatable');
+        Route::get('tugas-akhir/data', [TugasAkhirController::class, 'datatable'])->name('tugas_akhir.datatable');
+        Route::resource('tugas-akhir', TugasAkhirController::class)->except(['show'])->names('tugas_akhir');
+        Route::get('/verifikasi/{id_pengajuan}', [VerifikasiController::class, 'detail'])->name('verifikasi.detail');
         Route::post('/verifikasi/{id_pengajuan}/publish', [VerifikasiController::class, 'publish'])->name('bak_fakultas.verifikasi.publish');
         Route::post('/verifikasi/{id_pengajuan}/checklist', [VerifikasiController::class, 'submitChecklist'])->name('bak_fakultas.verifikasi.checklist');
         Route::post('/verifikasi/{id_pengajuan}/cancel-print', [VerifikasiController::class, 'cancelPrint'])->name('bak_fakultas.verifikasi.cancel_print');

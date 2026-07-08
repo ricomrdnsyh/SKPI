@@ -114,6 +114,9 @@
                                     <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                         <th class="text-center p-0" style="width:28px; min-width:28px;"></th>
                                         <th class="text-center">Actions</th>
+                                        @if(Auth::user()->role === 'bak_fakultas')
+                                            <th class="min-w-150px">Mahasiswa</th>
+                                        @endif
                                         <th class="min-w-150px">Tempat Magang</th>
                                         <th class="min-w-150px">Posisi</th>
                                         <th class="min-w-100px">Tanggal Mulai</th>

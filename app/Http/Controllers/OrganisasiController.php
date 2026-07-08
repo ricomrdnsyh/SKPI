@@ -20,12 +20,25 @@ class OrganisasiController extends Controller
     use BuildItemSteps, AutoResubmitPengajuan;
     public function index()
     {
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $filterOptions = [
-            'tingkat' => DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('tingkat')->distinct()->orderBy('tingkat')->pluck('tingkat'),
-            'status' => DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('status')->distinct()->pluck('status'),
-        ];
-        return view('mahasiswa.organisasi.index', compact('filterOptions'));
+        $user = Auth::user();
+        if ($user->role === 'bak_fakultas') {
+            $filterOptions = [
+                'tingkat' => DB::table('organisasi_mahasiswa')->select('tingkat')->distinct()->orderBy('tingkat')->pluck('tingkat'),
+                'status' => DB::table('organisasi_mahasiswa')->select('status')->distinct()->pluck('status'),
+            ];
+            $id_fakultas = $user->programStudi->id_fakultas;
+            $mahasiswas = Mahasiswa::whereHas('programStudi', function($q) use ($id_fakultas) {
+                $q->where('id_fakultas', $id_fakultas);
+            })->get();
+            return view('mahasiswa.organisasi.index', compact('filterOptions', 'mahasiswas'));
+        } else {
+            $id_mahasiswa = $user->id_mahasiswa;
+            $filterOptions = [
+                'tingkat' => DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('tingkat')->distinct()->orderBy('tingkat')->pluck('tingkat'),
+                'status' => DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('status')->distinct()->pluck('status'),
+            ];
+            return view('mahasiswa.organisasi.index', compact('filterOptions'));
+        }
     }
 
     public function create()
@@ -43,7 +56,12 @@ class OrganisasiController extends Controller
         }
 
         $data = $request->validated();
-        $data['id_mahasiswa'] = Auth::user()->id_mahasiswa;
+        if (Auth::user()->role === 'bak_fakultas') {
+            $request->validate(['id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa']);
+            $data['id_mahasiswa'] = $request->id_mahasiswa;
+        } else {
+            $data['id_mahasiswa'] = Auth::user()->id_mahasiswa;
+        }
         $data['status'] = 'pending';
 
         if ($request->hasFile('file_bukti')) {
@@ -62,13 +80,20 @@ class OrganisasiController extends Controller
     {
         $organisasi = $this->getOwnedItem($id);
 
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+        $user = Auth::user();
+        if ($user->role === 'bak_fakultas') {
+            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $organisasi->id_mahasiswa)->first();
+            $isLocked = false;
+            $readonly = false;
+        } else {
+            $id_mahasiswa = $user->id_mahasiswa;
+            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
 
-        $isRejected = $organisasi->status === 'rejected';
-        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
-        $isApproved = $organisasi->status === 'approved';
-        $readonly = $isLocked || $isApproved;
+            $isRejected = $organisasi->status === 'rejected';
+            $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
+            $isApproved = $organisasi->status === 'approved';
+            $readonly = $isLocked || $isApproved;
+        }
 
         $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $organisasi->id_mahasiswa)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
@@ -137,12 +162,21 @@ class OrganisasiController extends Controller
 
     public function datatable(Request $request)
     {
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
-        $query = DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id_mahasiswa);
+        $user = Auth::user();
+        $query = DB::table('organisasi_mahasiswa');
+        
+        if ($user->role === 'bak_fakultas') {
+            $id_fakultas = $user->programStudi->id_fakultas;
+            $query->join('mahasiswa', 'organisasi_mahasiswa.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+                  ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
+                  ->where('program_studi.id_fakultas', $id_fakultas)
+                  ->select('organisasi_mahasiswa.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
+        } else {
+            $query->where('id_mahasiswa', $user->id_mahasiswa);
+        }
 
         if ($request->filled('tingkat')) $query->where('tingkat', $request->tingkat);
-        if ($request->filled('status')) $query->where('status', $request->status);
+        if ($request->filled('status')) $query->where('organisasi_mahasiswa.status', $request->status);
 
         return DataTables::of($query)
             ->addColumn('bukti', fn($row) => DataTableHelper::buktiLink($row->file_bukti))
@@ -162,7 +196,7 @@ class OrganisasiController extends Controller
         if (!$row) {
             abort(404, 'Organisasi tidak ditemukan.');
         }
-        if ($row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
+        if (Auth::user()->role !== 'bak_fakultas' && $row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
             abort(403, 'Akses ditolak.');
         }
         return OrganisasiMahasiswa::hydrate([(array) $row])->first();
@@ -170,6 +204,9 @@ class OrganisasiController extends Controller
 
     private function checkPengajuanProcessing($item = null): bool
     {
+        if (Auth::user()->role === 'bak_fakultas') {
+            return false;
+        }
         if ($item && $item->status === 'rejected') {
             return false;
         }

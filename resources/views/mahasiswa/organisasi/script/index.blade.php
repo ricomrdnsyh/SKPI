@@ -54,6 +54,9 @@
             columns: [
                 { data: null, defaultContent: '', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false },
+                @if(Auth::user()->role === 'bak_fakultas')
+                { data: 'nama_mahasiswa', name: 'mahasiswa.nama_lengkap' },
+                @endif
                 { data: 'nama_organisasi' },
                 { data: 'tingkat' },
                 { data: 'jabatan' },

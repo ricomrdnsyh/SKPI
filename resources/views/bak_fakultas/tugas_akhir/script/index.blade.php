@@ -1,6 +1,6 @@
 <script>
     $(document).ready(function() {
-        let table = $('#table-prestasi').DataTable({
+        let table = $('#table-tugas-akhir').DataTable({
             processing: false,
             serverSide: true,
             responsive: {
@@ -37,41 +37,34 @@
                 {
                     extend: 'csv',
                     titleAttr: 'Csv',
-                    title: 'Data SKPI',
+                    title: 'Data Tugas Akhir',
                     className: 'btn btn-sm btn-primary mt-2 rounded-2'
                 },
                 {
                     extend: 'excel',
                     titleAttr: 'Excel',
-                    title: 'Data SKPI',
+                    title: 'Data Tugas Akhir',
                     className: 'btn btn-sm btn-primary mt-2 rounded-2'
                 }
             ],
             ajax: {
-                url: '{{ route('mahasiswa.prestasi.datatable') }}',
+                url: '{{ route('bak_fakultas.tugas_akhir.datatable') }}',
                 data: function(d) {}
             },
             columns: [
                 { data: null, defaultContent: '', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false },
-                @if(Auth::user()->role === 'bak_fakultas')
                 { data: 'nama_mahasiswa', name: 'mahasiswa.nama_lengkap' },
-                @endif
-                { data: 'nama_prestasi' },
-                { data: 'tingkat' },
-                { data: 'peringkat' },
-                { data: 'penyelenggara' },
-                { data: 'tahun' },
-                { data: 'bukti', orderable: false, searchable: false },
-                { data: 'status', orderable: false, searchable: false },
-                { data: 'catatan', orderable: false, searchable: false }
+                { data: 'judul' },
+                { data: 'pembimbing', orderable: false, searchable: false },
+                { data: 'status', orderable: false, searchable: false }
             ],
             drawCallback: function() {
-                $('#table-prestasi [data-bs-toggle="tooltip"]').tooltip();
+                $('#table-tugas-akhir [data-bs-toggle="tooltip"]').tooltip();
             }
         });
         table.on('draw', function() {
-            $('#table-prestasi [data-bs-toggle="tooltip"]').tooltip();
+            $('#table-tugas-akhir [data-bs-toggle="tooltip"]').tooltip();
         });
     });
 </script>
@@ -91,7 +84,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/mahasiswa/prestasi/' + id,
+                    url: '/bak-fakultas/tugas-akhir/' + id,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -113,7 +106,7 @@
                             confirmButtonText: "Ok, got it!",
                             customClass: { confirmButton: "btn btn-primary" }
                         });
-                        $('#table-prestasi').DataTable().ajax.reload(null, false);
+                        $('#table-tugas-akhir').DataTable().ajax.reload(null, false);
                     },
                     error: function(xhr) {
                         Swal.fire("Error!", "Terjadi kesalahan saat menghapus data.", "error");
@@ -121,6 +114,16 @@
                 });
             }
         })
+    }
+
+    function editTugasAkhir(id, data) {
+        $('#kt_modal_edit_form').attr('action', '/bak-fakultas/tugas-akhir/' + id);
+        $('#edit_id_tugas_akhir').val(data.id_tugas_akhir);
+        $('#edit_id_mahasiswa').val(data.id_mahasiswa).trigger('change');
+        $('#edit_judul').val(data.judul);
+        $('#edit_pembimbing_1').val(data.pembimbing_1);
+        $('#edit_pembimbing_2').val(data.pembimbing_2);
+        $('#form_edit').modal('show');
     }
 </script>
 @if ($message = Session::get('success'))

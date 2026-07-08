@@ -20,13 +20,27 @@ class SertifikatController extends Controller
     use BuildItemSteps, AutoResubmitPengajuan;
     public function index()
     {
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $filterOptions = [
-            'jenis_sertifikat' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('jenis_sertifikat')->distinct()->pluck('jenis_sertifikat'),
-            'bidang' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('bidang')->distinct()->orderBy('bidang')->pluck('bidang'),
-            'status' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('status')->distinct()->pluck('status'),
-        ];
-        return view('mahasiswa.sertifikat.index', compact('filterOptions'));
+        $user = Auth::user();
+        if ($user->role === 'bak_fakultas') {
+            $filterOptions = [
+                'jenis_sertifikat' => DB::table('sertifikat_mahasiswa')->select('jenis_sertifikat')->distinct()->pluck('jenis_sertifikat'),
+                'bidang' => DB::table('sertifikat_mahasiswa')->select('bidang')->distinct()->orderBy('bidang')->pluck('bidang'),
+                'status' => DB::table('sertifikat_mahasiswa')->select('status')->distinct()->pluck('status'),
+            ];
+            $id_fakultas = $user->programStudi->id_fakultas;
+            $mahasiswas = Mahasiswa::whereHas('programStudi', function($q) use ($id_fakultas) {
+                $q->where('id_fakultas', $id_fakultas);
+            })->get();
+            return view('mahasiswa.sertifikat.index', compact('filterOptions', 'mahasiswas'));
+        } else {
+            $id_mahasiswa = $user->id_mahasiswa;
+            $filterOptions = [
+                'jenis_sertifikat' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('jenis_sertifikat')->distinct()->pluck('jenis_sertifikat'),
+                'bidang' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('bidang')->distinct()->orderBy('bidang')->pluck('bidang'),
+                'status' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('status')->distinct()->pluck('status'),
+            ];
+            return view('mahasiswa.sertifikat.index', compact('filterOptions'));
+        }
     }
 
     public function create()
@@ -44,7 +58,12 @@ class SertifikatController extends Controller
         }
 
         $data = $request->validated();
-        $data['id_mahasiswa'] = Auth::user()->id_mahasiswa;
+        if (Auth::user()->role === 'bak_fakultas') {
+            $request->validate(['id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa']);
+            $data['id_mahasiswa'] = $request->id_mahasiswa;
+        } else {
+            $data['id_mahasiswa'] = Auth::user()->id_mahasiswa;
+        }
         $data['status'] = 'pending';
 
         if ($request->hasFile('file_bukti')) {
@@ -63,13 +82,20 @@ class SertifikatController extends Controller
     {
         $sertifikat = $this->getOwnedItem($id);
 
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+        $user = Auth::user();
+        if ($user->role === 'bak_fakultas') {
+            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $sertifikat->id_mahasiswa)->first();
+            $isLocked = false;
+            $readonly = false;
+        } else {
+            $id_mahasiswa = $user->id_mahasiswa;
+            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
 
-        $isRejected = $sertifikat->status === 'rejected';
-        $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
-        $isApproved = $sertifikat->status === 'approved';
-        $readonly = $isLocked || $isApproved;
+            $isRejected = $sertifikat->status === 'rejected';
+            $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
+            $isApproved = $sertifikat->status === 'approved';
+            $readonly = $isLocked || $isApproved;
+        }
 
         $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $sertifikat->id_mahasiswa)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
@@ -138,13 +164,22 @@ class SertifikatController extends Controller
 
     public function datatable(Request $request)
     {
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
-        $query = DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa);
+        $user = Auth::user();
+        $query = DB::table('sertifikat_mahasiswa');
+        
+        if ($user->role === 'bak_fakultas') {
+            $id_fakultas = $user->programStudi->id_fakultas;
+            $query->join('mahasiswa', 'sertifikat_mahasiswa.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+                  ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
+                  ->where('program_studi.id_fakultas', $id_fakultas)
+                  ->select('sertifikat_mahasiswa.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
+        } else {
+            $query->where('id_mahasiswa', $user->id_mahasiswa);
+        }
 
         if ($request->filled('jenis')) $query->where('jenis_sertifikat', $request->jenis);
         if ($request->filled('bidang')) $query->where('bidang', $request->bidang);
-        if ($request->filled('status')) $query->where('status', $request->status);
+        if ($request->filled('status')) $query->where('sertifikat_mahasiswa.status', $request->status);
 
         return DataTables::of($query)
             ->addColumn('jenis', fn($row) => $row->jenis_sertifikat)
@@ -166,7 +201,7 @@ class SertifikatController extends Controller
         if (!$row) {
             abort(404, 'Sertifikat tidak ditemukan.');
         }
-        if ($row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
+        if (Auth::user()->role !== 'bak_fakultas' && $row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
             abort(403, 'Akses ditolak.');
         }
         return SertifikatMahasiswa::hydrate([(array) $row])->first();
@@ -174,6 +209,9 @@ class SertifikatController extends Controller
 
     private function checkPengajuanProcessing($item = null): bool
     {
+        if (Auth::user()->role === 'bak_fakultas') {
+            return false;
+        }
         if ($item && $item->status === 'rejected') {
             return false;
         }

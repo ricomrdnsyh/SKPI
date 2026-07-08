@@ -8,6 +8,17 @@
             <form id="form_create_magang" action="{{ route('mahasiswa.magang.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
+                    @if(Auth::user()->role === 'bak_fakultas')
+                    <div class="fv-row mb-5">
+                        <label for="id_mahasiswa_create" class="form-label required fw-bold fs-6">Pilih Mahasiswa</label>
+                        <select name="id_mahasiswa" id="id_mahasiswa_create" required class="form-select" data-control="select2" data-placeholder="Pilih Mahasiswa" data-dropdown-parent="#form_create">
+                            <option value=""></option>
+                            @foreach($mahasiswas as $mhs)
+                                <option value="{{ $mhs->id_mahasiswa }}">{{ $mhs->nim }} - {{ $mhs->nama_lengkap }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="tempat_magang" class="form-label required fw-bold fs-6">Mitra Industri (Perusahaan)</label>

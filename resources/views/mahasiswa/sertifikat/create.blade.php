@@ -8,6 +8,17 @@
             <form id="form_create_sertifikat" action="{{ route('mahasiswa.sertifikat.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
+                    @if(Auth::user()->role === 'bak_fakultas')
+                    <div class="fv-row mb-5">
+                        <label for="id_mahasiswa_create" class="form-label required fw-bold fs-6">Pilih Mahasiswa</label>
+                        <select name="id_mahasiswa" id="id_mahasiswa_create" required class="form-select" data-control="select2" data-placeholder="Pilih Mahasiswa" data-dropdown-parent="#form_create">
+                            <option value=""></option>
+                            @foreach($mahasiswas as $mhs)
+                                <option value="{{ $mhs->id_mahasiswa }}">{{ $mhs->nim }} - {{ $mhs->nama_lengkap }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
                     <div class="fv-row mb-5">
                         <label for="nama_sertifikat" class="form-label required fw-bold fs-6">Nama Sertifikat / Pelatihan</label>
                         <input type="text" name="nama_sertifikat" id="nama_sertifikat" required class="form-control" placeholder="Contoh: Cisco Certified Network Associate">

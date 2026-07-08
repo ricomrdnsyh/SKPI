@@ -1,5 +1,5 @@
 @extends('layout.main')
-@section('title', ' Sertifikat')
+@section('title', 'Tugas Akhir')
 @section('css')
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/dataTables.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.css') }}">
@@ -97,35 +97,27 @@
                             <div class="card-title">
                                 <div class="d-flex align-items-center position-relative my-1">
                                     <h3 class="card-title align-items-start flex-column"><span
-                                            class="card-label fw-bolder fs-3 mb-1">List Sertifikat</span></h3>
+                                            class="card-label fw-bolder fs-3 mb-1">List Tugas Akhir</span></h3>
                                 </div>
                             </div>
                             <div class="card-toolbar">
                                 <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah
-                                        Sertifikat</button>
+                                        data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah Tugas Akhir</button>
                                 </div>
                             </div>
                         </div>
                         <div class="separator my-5"></div>
                         <div class="card-body pt-0">
-                            <table class="table align-middle table-row-dashed fs-6 gy-5" id="table-sertifikat">
-                                <thead class="">
+                            <table class="table align-middle table-row-dashed fs-6 gy-5" id="table-tugas-akhir">
+                                <thead>
                                     <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                         <th class="text-center p-0" style="width:28px; min-width:28px;"></th>
                                         <th class="text-center">Actions</th>
-                                        @if(Auth::user()->role === 'bak_fakultas')
-                                            <th class="min-w-150px">Mahasiswa</th>
-                                        @endif
-                                        <th class="min-w-150px">Nama Sertifikat</th>
-                                        <th class="min-w-100px">Jenis</th>
-                                        <th class="min-w-100px">Bidang</th>
-                                        <th class="min-w-150px">Penyelenggara</th>
-                                        <th class="min-w-100px">Tanggal Terbit</th>
-                                        <th class="min-w-100px">Bukti</th>
+                                        <th class="min-w-150px">Mahasiswa</th>
+                                        <th class="min-w-200px">Judul</th>
+                                        <th class="min-w-150px">Pembimbing</th>
                                         <th class="min-w-100px">Status</th>
-                                        <th class="min-w-150px">Catatan</th>
                                     </tr>
                                 </thead>
                                 <tbody class="fw-bold text-gray-800">
@@ -137,9 +129,8 @@
             </div>
         </div>
     </div>
-    @include('mahasiswa.sertifikat.create')
-    @include('mahasiswa.sertifikat.edit')
-    @include('mahasiswa.sertifikat.show')
+    @include('bak_fakultas.tugas_akhir.create')
+    @include('bak_fakultas.tugas_akhir.edit')
 @endsection
 @section('js')
     <script src="{{ asset('assets/plugins/custom/datatables/jquery.dataTables.min.js') }}"></script>
@@ -154,8 +145,5 @@
     <script src="{{ asset('assets/plugins/custom/datatables/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/print.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.js') }}"></script>
-    @include('mahasiswa.sertifikat.script.index')
-    @include('mahasiswa.sertifikat.script.create')
-    @include('mahasiswa.sertifikat.script.edit')
-    @include('mahasiswa.sertifikat.script.show')
+    @include('bak_fakultas.tugas_akhir.script.index')
 @endsection

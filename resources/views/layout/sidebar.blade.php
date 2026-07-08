@@ -235,7 +235,7 @@
                             <span class="menu-title">Dashboard</span>
                         </a>
                     </div>
-                    @if ($role === 'mahasiswa')
+                    @if ($role === 'mahasiswa' || $role === 'bak_fakultas')
                         <div class="menu-item pt-5">
                             <div class="menu-content pb-2">
                                 <span class="menu-section text-muted text-uppercase fs-8 ls-1">Data Pendukung</span>
@@ -269,9 +269,19 @@
                                 <span class="menu-title">Magang / KP</span>
                             </a>
                         </div>
+                    @endif
+                    @if ($role === 'mahasiswa')
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('mahasiswa/tugas-akhir*') ? 'active' : '' }}"
                                 href="{{ route('mahasiswa.tugas_akhir.edit') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-graduation-cap fs-4"></i></span>
+                                <span class="menu-title">Tugas Akhir</span>
+                            </a>
+                        </div>
+                    @elseif ($role === 'bak_fakultas')
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('bak-fakultas/tugas-akhir*') ? 'active' : '' }}"
+                                href="{{ route('bak_fakultas.tugas_akhir.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-graduation-cap fs-4"></i></span>
                                 <span class="menu-title">Tugas Akhir</span>
                             </a>
