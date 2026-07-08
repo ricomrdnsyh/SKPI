@@ -36,7 +36,7 @@
         </div>
         <span class="badge {{ $badgeClass }} text-uppercase fw-bold shrink-0 mt-1">{{ $statusLabel }}</span>
     </div>
-    @if ($status === 'pending' && Auth::user()->role === 'bak_fakultas')
+    @if ($status === 'pending' && in_array(Auth::user()->role, ['bak_fakultas', 'admin']))
         <div
             class="d-flex flex-column flex-sm-row justify-content-end align-items-sm-center gap-2 pt-4 mt-4 border-top border-gray-300">
             @if ($isTugasAkhir)

@@ -54,7 +54,7 @@
             columns: [
                 { data: null, defaultContent: '', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false },
-                @if(Auth::user()->role === 'bak_fakultas')
+                @if(in_array(Auth::user()->role, ['bak_fakultas', 'admin']))
                 { data: 'nama_mahasiswa', name: 'mahasiswa.nama_lengkap' },
                 @endif
                 { data: 'mitra' },

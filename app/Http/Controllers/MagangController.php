@@ -22,14 +22,18 @@ class MagangController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->role === 'bak_fakultas') {
+        if (in_array($user->role, ['bak_fakultas', 'admin'])) {
             $filterOptions = [
                 'status' => DB::table('magang_mahasiswa')->select('status')->distinct()->pluck('status'),
             ];
-            $id_fakultas = $user->programStudi->id_fakultas;
-            $mahasiswas = Mahasiswa::whereHas('programStudi', function($q) use ($id_fakultas) {
-                $q->where('id_fakultas', $id_fakultas);
-            })->get();
+            if ($user->role === 'bak_fakultas') {
+                $id_fakultas = $user->programStudi->id_fakultas;
+                $mahasiswas = Mahasiswa::whereHas('programStudi', function($q) use ($id_fakultas) {
+                    $q->where('id_fakultas', $id_fakultas);
+                })->get();
+            } else {
+                $mahasiswas = Mahasiswa::all();
+            }
             return view('mahasiswa.magang.index', compact('filterOptions', 'mahasiswas'));
         } else {
             $id_mahasiswa = $user->id_mahasiswa;
@@ -55,7 +59,7 @@ class MagangController extends Controller
         }
 
         $data = $request->validated();
-        if (Auth::user()->role === 'bak_fakultas') {
+        if (in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
             $request->validate(['id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa']);
             $data['id_mahasiswa'] = $request->id_mahasiswa;
         } else {
@@ -80,7 +84,7 @@ class MagangController extends Controller
         $magang = $this->getOwnedItem($id);
 
         $user = Auth::user();
-        if ($user->role === 'bak_fakultas') {
+        if (in_array($user->role, ['bak_fakultas', 'admin'])) {
             $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $magang->id_mahasiswa)->first();
             $isLocked = false;
             $readonly = false;
@@ -164,12 +168,15 @@ class MagangController extends Controller
         $user = Auth::user();
         $query = DB::table('magang_mahasiswa');
         
-        if ($user->role === 'bak_fakultas') {
-            $id_fakultas = $user->programStudi->id_fakultas;
+        if (in_array($user->role, ['bak_fakultas', 'admin'])) {
             $query->join('mahasiswa', 'magang_mahasiswa.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
                   ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
-                  ->where('program_studi.id_fakultas', $id_fakultas)
                   ->select('magang_mahasiswa.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
+            
+            if ($user->role === 'bak_fakultas') {
+                $id_fakultas = $user->programStudi->id_fakultas;
+                $query->where('program_studi.id_fakultas', $id_fakultas);
+            }
         } else {
             $query->where('magang_mahasiswa.id_mahasiswa', $user->id_mahasiswa)
                   ->select('magang_mahasiswa.*');
@@ -198,7 +205,7 @@ class MagangController extends Controller
         if (!$row) {
             abort(404, 'Magang tidak ditemukan.');
         }
-        if (Auth::user()->role !== 'bak_fakultas' && $row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
+        if (!in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
             abort(403, 'Akses ditolak.');
         }
         return MagangMahasiswa::hydrate([(array) $row])->first();
@@ -206,7 +213,7 @@ class MagangController extends Controller
 
     private function checkPengajuanProcessing($item = null): bool
     {
-        if (Auth::user()->role === 'bak_fakultas') {
+        if (in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
             return false;
         }
         if ($item && $item->status === 'rejected') {

@@ -41,7 +41,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::post('/pengajuan/request-print', [PengajuanSkpiController::class, 'requestPrint'])->name('pengajuan.request_print');
     });
 
-    Route::prefix('mahasiswa')->name('mahasiswa.')->middleware('role:mahasiswa,bak_fakultas')->group(function () {
+    Route::prefix('mahasiswa')->name('mahasiswa.')->middleware('role:mahasiswa,bak_fakultas,admin')->group(function () {
         Route::get('prestasi/data', [PrestasiController::class, 'datatable'])->name('prestasi.datatable');
         Route::get('organisasi/data', [OrganisasiController::class, 'datatable'])->name('organisasi.datatable');
         Route::get('sertifikat/data', [SertifikatController::class, 'datatable'])->name('sertifikat.datatable');
@@ -53,21 +53,26 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::resource('magang', MagangController::class)->except(['show']);
     });
 
-    Route::prefix('bak-fakultas')->middleware('role:bak_fakultas')->name('bak_fakultas.')->group(function () {
-        Route::get('/dashboard', [VerifikasiController::class, 'dashboard'])->name('dashboard');
-        Route::get('/data', [VerifikasiController::class, 'datatable'])->name('datatable');
-        Route::get('tugas-akhir/data', [TugasAkhirController::class, 'datatable'])->name('tugas_akhir.datatable');
-        Route::resource('tugas-akhir', TugasAkhirController::class)->except(['show'])->names('tugas_akhir');
-        Route::get('/verifikasi/{id_pengajuan}', [VerifikasiController::class, 'detail'])->name('verifikasi.detail');
-        Route::post('/verifikasi/{id_pengajuan}/publish', [VerifikasiController::class, 'publish'])->name('bak_fakultas.verifikasi.publish');
-        Route::post('/verifikasi/{id_pengajuan}/checklist', [VerifikasiController::class, 'submitChecklist'])->name('bak_fakultas.verifikasi.checklist');
-        Route::post('/verifikasi/{id_pengajuan}/cancel-print', [VerifikasiController::class, 'cancelPrint'])->name('bak_fakultas.verifikasi.cancel_print');
-        Route::post('/tugas-akhir/{id}/approve', [VerifikasiController::class, 'approveTugasAkhir'])->name('bak_fakultas.tugas_akhir.approve');
-        Route::post('/tugas-akhir/{id}/reject', [VerifikasiController::class, 'rejectTugasAkhir'])->name('bak_fakultas.tugas_akhir.reject');
-        Route::post('/pengajuan-cetak/{id_pengajuan}/approve', [VerifikasiController::class, 'approvePengajuanCetak'])->name('bak_fakultas.pengajuan_cetak.approve');
-        Route::post('/pengajuan-cetak/{id_pengajuan}/reject', [VerifikasiController::class, 'rejectPengajuanCetak'])->name('bak_fakultas.pengajuan_cetak.reject');
-        Route::post('/{type}/{id}/approve', [VerifikasiController::class, 'approveItem'])->name('bak_fakultas.data.approve');
-        Route::post('/{type}/{id}/reject', [VerifikasiController::class, 'rejectItem'])->name('bak_fakultas.data.reject');
+    Route::prefix('bak-fakultas')->name('bak_fakultas.')->group(function () {
+        Route::middleware('role:bak_fakultas,admin')->group(function () {
+            Route::get('tugas-akhir/data', [TugasAkhirController::class, 'datatable'])->name('tugas_akhir.datatable');
+            Route::resource('tugas-akhir', TugasAkhirController::class)->except(['show'])->names('tugas_akhir');
+        });
+
+        Route::middleware('role:bak_fakultas,admin')->group(function () {
+            Route::get('/dashboard', [VerifikasiController::class, 'dashboard'])->name('dashboard');
+            Route::get('/data', [VerifikasiController::class, 'datatable'])->name('datatable');
+            Route::get('/verifikasi/{id_pengajuan}', [VerifikasiController::class, 'detail'])->name('verifikasi.detail');
+            Route::post('/verifikasi/{id_pengajuan}/publish', [VerifikasiController::class, 'publish'])->name('verifikasi.publish');
+            Route::post('/verifikasi/{id_pengajuan}/checklist', [VerifikasiController::class, 'submitChecklist'])->name('verifikasi.checklist');
+            Route::post('/verifikasi/{id_pengajuan}/cancel-print', [VerifikasiController::class, 'cancelPrint'])->name('verifikasi.cancel_print');
+            Route::post('/tugas-akhir/{id}/approve', [VerifikasiController::class, 'approveTugasAkhir'])->name('tugas_akhir.approve');
+            Route::post('/tugas-akhir/{id}/reject', [VerifikasiController::class, 'rejectTugasAkhir'])->name('tugas_akhir.reject');
+            Route::post('/pengajuan-cetak/{id_pengajuan}/approve', [VerifikasiController::class, 'approvePengajuanCetak'])->name('pengajuan_cetak.approve');
+            Route::post('/pengajuan-cetak/{id_pengajuan}/reject', [VerifikasiController::class, 'rejectPengajuanCetak'])->name('pengajuan_cetak.reject');
+            Route::post('/{type}/{id}/approve', [VerifikasiController::class, 'approveItem'])->name('data.approve');
+            Route::post('/{type}/{id}/reject', [VerifikasiController::class, 'rejectItem'])->name('data.reject');
+        });
     });
     Route::prefix('akademik')->middleware('role:admin,bak_fakultas')->group(function () {
         Route::get('mahasiswa/data', [MahasiswaCrudController::class, 'datatable'])->name('mahasiswa.datatable');

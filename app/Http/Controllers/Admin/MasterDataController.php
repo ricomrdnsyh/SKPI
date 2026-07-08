@@ -32,6 +32,38 @@ class MasterDataController extends Controller
             return $stats;
         });
 
-        return view('admin.dashboard', compact('stats'));
+        $statusCounts = Cache::remember('admin:skpi_status_counts', 3600, function () {
+            return DB::table('pengajuan_skpi')
+                ->selectRaw('COALESCE(status, "unknown") as status, COUNT(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status');
+        });
+
+        $permohonanCetakCount = Cache::remember('admin:skpi_permohonan_cetak_count', 3600, function () {
+            return DB::table('pengajuan_skpi')
+                ->where('status', 'verifikasi')
+                ->where('permohonan_cetak', true)
+                ->count();
+        });
+
+        $pendingCount = \App\Models\PengajuanSkpi::hasPendingItems()->count();
+
+        $skpiStats = [
+            'pending' => $pendingCount,
+            'verifikasi' => $statusCounts->get('verifikasi', 0),
+            'completed' => $statusCounts->get('dicetak', 0),
+            'sudah_verifikasi' => $statusCounts->only(['verifikasi', 'dicetak', 'ditolak'])->sum(),
+            'permohonan_cetak_count' => $permohonanCetakCount,
+        ];
+
+        $statuses = Cache::remember('master:pengajuan_statuses', 7200, function () {
+            return DB::table('pengajuan_skpi')->select('status')->distinct()->pluck('status')->sort()->values();
+        });
+
+        $prodis = Cache::remember('master:prodi_names:all', 7200, function () {
+            return DB::table('program_studi')->pluck('nama_prodi')->sort()->values();
+        });
+
+        return view('admin.dashboard', compact('stats', 'skpiStats', 'statuses', 'prodis'));
     }
 }

@@ -14,23 +14,32 @@ class TugasAkhirController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->role !== 'bak_fakultas') {
+        if (!in_array($user->role, ['bak_fakultas', 'admin'])) {
             abort(403);
         }
 
-        $id_fakultas = $user->programStudi->id_fakultas;
-        
-        $mahasiswas = Mahasiswa::whereHas('programStudi', function($q) use ($id_fakultas) {
-            $q->where('id_fakultas', $id_fakultas);
-        })->get();
+        if ($user->role === 'bak_fakultas') {
+            $id_fakultas = $user->programStudi->id_fakultas;
+            
+            $mahasiswas = Mahasiswa::whereHas('programStudi', function($q) use ($id_fakultas) {
+                $q->where('id_fakultas', $id_fakultas);
+            })->get();
 
-        $filterOptions = [
-            'status' => DB::table('tugas_akhir')
-                ->join('mahasiswa', 'tugas_akhir.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
-                ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
-                ->where('program_studi.id_fakultas', $id_fakultas)
-                ->select('tugas_akhir.status')->distinct()->pluck('status'),
-        ];
+            $filterOptions = [
+                'status' => DB::table('tugas_akhir')
+                    ->join('mahasiswa', 'tugas_akhir.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+                    ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
+                    ->where('program_studi.id_fakultas', $id_fakultas)
+                    ->select('tugas_akhir.status')->distinct()->pluck('status'),
+            ];
+        } else {
+            $mahasiswas = Mahasiswa::all();
+            
+            $filterOptions = [
+                'status' => DB::table('tugas_akhir')
+                    ->select('status')->distinct()->pluck('status'),
+            ];
+        }
 
         return view('bak_fakultas.tugas_akhir.index', compact('filterOptions', 'mahasiswas'));
     }
@@ -50,16 +59,18 @@ class TugasAkhirController extends Controller
     public function datatable(Request $request)
     {
         $user = Auth::user();
-        if ($user->role !== 'bak_fakultas') {
+        if (!in_array($user->role, ['bak_fakultas', 'admin'])) {
             abort(403);
         }
 
-        $id_fakultas = $user->programStudi->id_fakultas;
-
         $query = TugasAkhir::join('mahasiswa', 'tugas_akhir.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
             ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
-            ->where('program_studi.id_fakultas', $id_fakultas)
             ->select('tugas_akhir.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
+
+        if ($user->role === 'bak_fakultas') {
+            $id_fakultas = $user->programStudi->id_fakultas;
+            $query->where('program_studi.id_fakultas', $id_fakultas);
+        }
 
         if ($request->filled('status')) {
             $query->where('tugas_akhir.status', $request->status);
@@ -132,7 +143,7 @@ class TugasAkhirController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if ($user->role !== 'bak_fakultas') {
+        if (!in_array($user->role, ['bak_fakultas', 'admin'])) {
             abort(403);
         }
 
@@ -183,7 +194,7 @@ class TugasAkhirController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::user();
-        if ($user->role !== 'bak_fakultas') {
+        if (!in_array($user->role, ['bak_fakultas', 'admin'])) {
             abort(403);
         }
 
@@ -231,7 +242,7 @@ class TugasAkhirController extends Controller
     public function destroy($id)
     {
         $user = Auth::user();
-        if ($user->role !== 'bak_fakultas') {
+        if (!in_array($user->role, ['bak_fakultas', 'admin'])) {
             abort(403);
         }
 

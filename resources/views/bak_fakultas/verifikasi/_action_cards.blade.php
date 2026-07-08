@@ -1,4 +1,4 @@
-@if (Auth::user()->role === 'bak_fakultas')
+@if (in_array(Auth::user()->role, ['bak_fakultas', 'admin']))
     @php
         $prevPengajuanApprovals = \App\Models\Approval::where('approvable_type', 'pengajuan_skpi')
             ->where('approvable_id', $pengajuan->id_pengajuan)

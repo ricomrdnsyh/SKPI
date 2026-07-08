@@ -9,7 +9,7 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
-                    @if(Auth::user()->role === 'bak_fakultas')
+                    @if(in_array(Auth::user()->role, ['bak_fakultas', 'admin']))
                     <div class="fv-row mb-5">
                         <label for="id_mahasiswa_edit" class="form-label required fw-bold fs-6">Pilih Mahasiswa</label>
                         <select name="id_mahasiswa" id="id_mahasiswa_edit" required class="form-select" data-control="select2" data-placeholder="Pilih Mahasiswa" data-dropdown-parent="#form_edit">

@@ -235,7 +235,16 @@
                             <span class="menu-title">Dashboard</span>
                         </a>
                     </div>
-                    @if ($role === 'mahasiswa' || $role === 'bak_fakultas')
+                    @if ($role === 'admin')
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('admin/users*') ? 'active' : '' }}"
+                                href="{{ route('users.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-user-gear fs-4"></i></span>
+                                <span class="menu-title">Pengguna</span>
+                            </a>
+                        </div>
+                    @endif
+                    @if (in_array($role, ['mahasiswa', 'bak_fakultas', 'admin']))
                         <div class="menu-item pt-5">
                             <div class="menu-content pb-2">
                                 <span class="menu-section text-muted text-uppercase fs-8 ls-1">Data Pendukung</span>
@@ -278,7 +287,7 @@
                                 <span class="menu-title">Tugas Akhir</span>
                             </a>
                         </div>
-                    @elseif ($role === 'bak_fakultas')
+                    @elseif (in_array($role, ['bak_fakultas', 'admin']))
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('bak-fakultas/tugas-akhir*') ? 'active' : '' }}"
                                 href="{{ route('bak_fakultas.tugas_akhir.index') }}">
@@ -337,13 +346,6 @@
                         </div>
                     @endif
                     @if ($role === 'admin')
-                        <div class="menu-item">
-                            <a class="menu-link {{ Request::is('admin/users*') ? 'active' : '' }}"
-                                href="{{ route('users.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-user-gear fs-4"></i></span>
-                                <span class="menu-title">Pengguna</span>
-                            </a>
-                        </div>
                         <div class="menu-item pt-5">
                             <div class="menu-content pb-2">
                                 <span class="menu-section text-muted text-uppercase fs-8 ls-1">Master</span>

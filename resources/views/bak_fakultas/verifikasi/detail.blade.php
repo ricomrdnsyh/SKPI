@@ -180,7 +180,7 @@
                             </div>
                             <div class="separator separator-dashed my-6"></div>
                             @include('bak_fakultas.verifikasi._validation_data')
-                            @if (Auth::user()->role === 'bak_fakultas' && $pengajuan->status === 'diajukan')
+                            @if (in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $pengajuan->status === 'diajukan')
                                 @include('bak_fakultas.verifikasi._checklist_form')
                             @endif
                         </div>
