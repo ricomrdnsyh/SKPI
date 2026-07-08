@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Surat Keterangan Pendamping Ijazah</title>
@@ -10,55 +11,65 @@
             font-weight: bold;
             font-style: normal;
         }
+
         @font-face {
             font-family: 'Cambria';
             src: url('{{ public_path('fonts/cambriai.ttf') }}') format('truetype');
             font-weight: normal;
             font-style: italic;
         }
+
         @font-face {
             font-family: 'Cambria';
             src: url('{{ public_path('fonts/cambriaz.ttf') }}') format('truetype');
             font-weight: bold;
             font-style: italic;
         }
+
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             font-size: 11px;
             line-height: 1.4;
             color: #333;
         }
+
         @page {
             margin: 0.5cm 2cm 2cm 2cm;
         }
+
         .header-table {
             width: 100%;
             border-bottom: 3px double #000;
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
+
         .logo {
             width: 80px;
             height: auto;
         }
+
         .title-uni {
             font-size: 16px;
             font-weight: bold;
             text-transform: uppercase;
             text-align: center;
         }
+
         .sub-uni {
             font-size: 11px;
             text-align: center;
         }
+
         .title-doc {
             font-size: 14px;
             font-weight: bold;
             text-align: center;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             line-height: 1.2;
         }
+
         .section-title {
             font-size: 12px;
             font-weight: bold;
@@ -69,57 +80,70 @@
             border-left: 5px solid #163673;
             text-transform: uppercase;
         }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
         }
+
         .data-table td {
             padding: 4px;
             vertical-align: top;
         }
+
         .data-table td.label {
             width: 35%;
             font-weight: bold;
         }
+
         .data-table td.separator {
             width: 2%;
         }
+
         .data-table td.value {
             width: 63%;
         }
+
         .grid-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
         }
+
         .grid-table th,
         .grid-table td {
             border: 1px solid #ddd;
             padding: 6px;
             text-align: left;
         }
+
         .grid-table th {
             background-color: #f9f9f9;
             font-weight: bold;
         }
+
         .cpl-category {
             font-weight: bold;
             color: #163673;
             margin-top: 10px;
             margin-bottom: 5px;
         }
+
         .footer-table {
             width: 100%;
             margin-top: 30px;
         }
+
         .footer-table td {
             width: 50%;
             vertical-align: top;
         }
+
         .page-break {
             page-break-after: always;
         }
+
         .logo-cell {
             width: 17%;
             text-align: center;
@@ -127,6 +151,7 @@
             padding-top: 10px;
             padding-bottom: 15px;
         }
+
         .title-cell {
             width: 58%;
             text-align: left;
@@ -136,6 +161,7 @@
             padding-bottom: 15px;
             font-family: 'Cambria', 'Times New Roman', Times, serif;
         }
+
         .contact-cell {
             width: 25%;
             text-align: right;
@@ -150,6 +176,7 @@
         }
     </style>
 </head>
+
 <body>
     <div
         style="position: absolute; top: -2cm; left: -0.1cm; width: 18%; height: 200px; background-color: #264a85; z-index: -1;">
@@ -165,7 +192,7 @@
                     YAYASAN NURUL JADID PAITON</div>
                 <div
                     style="font-size: 20px; font-weight: bold; color: #000; margin-top: 0px; margin-bottom: 0px; font-family: 'Cambria', 'Times New Roman', Times, serif; text-transform: uppercase; line-height: 1;">
-                    {{ $fakultas->nama_fakultas ?? 'FAKULTAS AGAMA ISLAM' }}</div>
+                    FAKULTAS {{ $fakultas->nama_fakultas ?? 'FAKULTAS AGAMA ISLAM' }}</div>
                 <div
                     style="font-size: 26px; font-weight: bold; color: #163673; margin-top: -2px; margin-bottom: 0px; font-family: 'Cambria', 'Times New Roman', Times, serif; line-height: 1;">
                     UNIVERSITAS NURUL JADID</div>
@@ -458,10 +485,11 @@
                     keaslian data langsung pada sistem penjaminan mutu universitas.
                 </div>
             </td>
-            <td style="width: 50%; text-align: center; vertical-align: top;">
-                Probolinggo, {{ \Carbon\Carbon::parse($skpi->tanggal_terbit)->isoFormat('D MMMM YYYY') }}<br>
-                Dekan Fakultas Teknik,<br>
-                <div style="margin-top: 8px; margin-bottom: 8px;">
+            <td style="width: 50%; text-align: right; vertical-align: top;">
+                <div style="display: inline-block; text-align: left;">
+                    Probolinggo, {{ \Carbon\Carbon::parse($skpi->tanggal_terbit)->isoFormat('D MMMM YYYY') }}<br>
+                    Dekan Fakultas Teknik,<br>
+                    <div style="margin-top: 8px; margin-bottom: 8px;">
                     @php
                         $verifyUrl = route('skpi.verify', ['id_skpi' => $skpi]);
                         $qrCodeBase64 = base64_encode(
@@ -474,8 +502,10 @@
                 <strong
                     style="text-decoration: underline;">{{ $skpi->ditandatangani_oleh ?? $fakultas->dekan }}</strong><br>
                 NIDN: {{ $skpi->nidn_penandatangan ?? $fakultas->nidn_dekan }}
+                </div>
             </td>
         </tr>
     </table>
 </body>
+
 </html>

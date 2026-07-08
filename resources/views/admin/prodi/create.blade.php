@@ -30,7 +30,8 @@
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="jenjang" class="form-label required fw-bolder text-dark fs-6">Jenjang</label>
-                            <select name="jenjang" id="jenjang" required class="form-select form-select-sm" data-control="select2" data-hide-search="true">
+                            <select name="jenjang" id="jenjang" required class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Jenjang" data-dropdown-parent="#form_create">
+                                <option value="">-- Pilih Jenjang --</option>
                                 <option value="S1">S1</option>
                                 <option value="D3">D3</option>
                                 <option value="S2">S2</option>

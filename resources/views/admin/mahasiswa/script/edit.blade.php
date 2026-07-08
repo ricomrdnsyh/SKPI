@@ -4,6 +4,8 @@
         let form = document.getElementById('form_edit_mahasiswa');
         // Auto-populate inputs based on data keys
         for (let key in data) {
+            if (key === 'password') continue; // Jangan masukkan hash password ke input field
+            
             let input = form.querySelector('[name="' + key + '"]');
             if (input) {
                 if (input.type === 'checkbox' || input.type === 'radio') {

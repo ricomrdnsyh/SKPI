@@ -6,17 +6,20 @@
         border-radius: 0.75rem;
         transition: all 0.3s ease;
     }
+
     #kt_app_sidebar_user .user-card:hover {
         background: rgba(255, 255, 255, 0.08) !important;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     body[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_user .sidebar-minimize-hide,
     html[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_user .sidebar-minimize-hide,
     body.app-sidebar-minimize #kt_app_sidebar_user .sidebar-minimize-hide,
     html.app-sidebar-minimize #kt_app_sidebar_user .sidebar-minimize-hide {
         display: none !important
     }
+
     body[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_user,
     html[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_user,
     body.app-sidebar-minimize #kt_app_sidebar_user,
@@ -24,18 +27,21 @@
         padding-left: .5rem !important;
         padding-right: .5rem !important
     }
+
     body[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_user .user-card,
     html[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_user .user-card,
     body.app-sidebar-minimize #kt_app_sidebar_user .user-card,
     html.app-sidebar-minimize #kt_app_sidebar_user .user-card {
         padding: .5rem !important
     }
+
     body[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_footer .sidebar-minimize-hide,
     html[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_footer .sidebar-minimize-hide,
     body.app-sidebar-minimize #kt_app_sidebar_footer .sidebar-minimize-hide,
     html.app-sidebar-minimize #kt_app_sidebar_footer .sidebar-minimize-hide {
         display: none !important
     }
+
     body[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_footer .btn,
     html[data-kt-app-sidebar-minimize="on"] #kt_app_sidebar_footer .btn,
     body.app-sidebar-minimize #kt_app_sidebar_footer .btn,
@@ -44,6 +50,7 @@
         padding-right: .75rem !important;
         justify-content: center !important
     }
+
     /* Clean Logout Button */
     #kt_app_sidebar_footer .btn {
         background: rgba(255, 255, 255, 0.04) !important;
@@ -54,10 +61,12 @@
         font-weight: 600;
         padding: 0.75rem 1rem;
     }
+
     #kt_app_sidebar_footer .btn i {
         color: rgba(255, 255, 255, 0.8) !important;
         transition: all 0.3s ease;
     }
+
     #kt_app_sidebar_footer .btn:hover {
         background: rgba(220, 53, 69, 0.85) !important;
         /* Soft crimson hover */
@@ -65,22 +74,27 @@
         box-shadow: 0 4px 15px rgba(220, 53, 69, 0.25);
         transform: translateY(-1px);
     }
+
     #kt_app_sidebar_footer .btn:hover i {
         color: #ffffff !important;
         transform: translateX(3px);
         /* Subtle slide effect */
     }
+
     /* Thin Custom Scrollbar */
     #kt_app_sidebar_menu_scroll::-webkit-scrollbar {
         width: 4px;
     }
+
     #kt_app_sidebar_menu_scroll::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.1);
         border-radius: 4px;
     }
+
     #kt_app_sidebar_menu_scroll:hover::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.25);
     }
+
     #kt_app_sidebar_logo .app-sidebar-logo-default {
         height: 55px !important;
         width: auto !important;
@@ -90,18 +104,21 @@
         object-fit: contain;
         object-position: left center;
     }
+
     #kt_app_sidebar_logo .app-sidebar-logo-minimize {
         height: 28px !important;
         width: auto !important;
         object-fit: contain;
         object-position: center;
     }
+
     @media (min-width: 992px) {
         #kt_app_sidebar_logo {
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         #kt_app_sidebar_logo>a {
             display: inline-flex;
             align-items: center;
@@ -110,15 +127,18 @@
             max-width: 100%;
         }
     }
+
     @media (max-width: 991.98px) {
         #kt_app_sidebar_logo .app-sidebar-logo-default {
             height: 45px !important;
             max-width: 100%;
         }
+
         #kt_app_sidebar_logo .app-sidebar-logo-minimize {
             height: 24px !important;
         }
     }
+
     /* Custom Menu Arrow + and - */
     #kt_app_sidebar_menu .menu-item .menu-arrow:after {
         content: "+" !important;
@@ -134,6 +154,7 @@
         justify-content: center;
         transition: all 0.3s ease;
     }
+
     #kt_app_sidebar_menu .menu-item.show>.menu-link .menu-arrow:after,
     #kt_app_sidebar_menu .menu-item.here>.menu-link .menu-arrow:after {
         content: "-" !important;
@@ -206,7 +227,10 @@
                         <a class="menu-link {{ Request::is('dashboard') || Request::is('*/dashboard') ? 'active' : '' }}"
                             href="{{ route('dashboard') }}">
                             <span class="menu-icon">
-                                <i class="fa-solid fa-gauge fs-4"></i>
+                                <i class="ki-duotone ki-element-11 fs-2">
+                                    <span class="path1"></span><span class="path2"></span>
+                                    <span class="path3"></span><span class="path4"></span>
+                                </i>
                             </span>
                             <span class="menu-title">Dashboard</span>
                         </a>

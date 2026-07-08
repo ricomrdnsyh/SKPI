@@ -17,9 +17,42 @@ class SkpiService
         private CacheService $cache
     ) {}
 
-    public function generateNomorSkpi(string $kodeProdi, int $tahun, string $kodeUni, $idMahasiswa): string
+    public function generateNomorSkpi(string $kodeFakultas): string
     {
-        return "SKPI.{$kodeProdi}{$tahun}/{$kodeUni}/FT.1/S1/{$tahun}-" . str_pad($idMahasiswa, 3, '0', STR_PAD_LEFT);
+        $kodeFakultasAngka = match (strtoupper($kodeFakultas)) {
+            'FAI' => '01',
+            'FT' => '02',
+            'FKES' => '03',
+            'SOSHUM' => '04',
+            'PASCA' => '05',
+            default => '00',
+        };
+
+        $bulanTahun = date('m.Y');
+        $tahun = date('Y');
+        
+        $prefix = "NJ-T06/{$kodeFakultasAngka}/";
+        $suffixPattern = "/SKPI/%.{$tahun}";
+
+        // Get the latest number for this faculty in the current year
+        $latestSkpi = DB::table('skpi')
+            ->where('nomor_skpi', 'like', $prefix . '%' . $suffixPattern)
+            ->where('nomor_skpi', 'not like', '%(DRAFT)%')
+            ->orderBy('id_skpi', 'desc')
+            ->value('nomor_skpi');
+
+        $nextSeq = 1;
+        if ($latestSkpi) {
+            $parts = explode('/', $latestSkpi);
+            // Expected format: NJ-T06 / 01 / 0001 / SKPI / 07.2026
+            if (isset($parts[2]) && is_numeric($parts[2])) {
+                $nextSeq = intval($parts[2]) + 1;
+            }
+        }
+
+        $nomorUrut = str_pad($nextSeq, 4, '0', STR_PAD_LEFT);
+
+        return "{$prefix}{$nomorUrut}/SKPI/{$bulanTahun}";
     }
 
     public function checkNomorIjazahUnique(string $nimIjazah, ?int $exceptId = null): ?string
@@ -39,10 +72,8 @@ class SkpiService
         $nidn = $fakultas->nidn_dekan ?? null;
         $namaDekan = $fakultas->dekan ?? $user->nama_lengkap;
 
-        $tahun = $mahasiswa->tahun_lulus ?? date('Y');
-        $kodeProdi = $prodi->kode_prodi ?? 'PRODI';
-        $kodeUni = config('skpi.university_code', 'UNUJA');
-        $nomorSkpi = $this->generateNomorSkpi($kodeProdi, $tahun, $kodeUni, $mahasiswa->id_mahasiswa);
+        $kodeFakultas = $fakultas->kode_fakultas ?? 'FAKULTAS';
+        $nomorSkpi = $this->generateNomorSkpi($kodeFakultas);
 
         return DB::transaction(function () use ($nomorSkpi, $mahasiswa, $pengajuan, $nimIjazah, $statusProfesi, $user, $nidn, $namaDekan) {
             $skpi = Skpi::create([

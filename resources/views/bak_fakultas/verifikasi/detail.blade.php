@@ -66,16 +66,17 @@
                                                         class="path3"></span></i> {{ $mahasiswa->nim }}
                                             </span>
                                             <span class="d-flex align-items-center text-gray-500 me-5 mb-2">
+                                                <i class="ki-duotone ki-bank fs-4 me-1"><span class="path1"></span><span
+                                                        class="path2"></span></i> Fakultas
+                                                {{ $mahasiswa->programStudi->fakultas->nama_fakultas ?? '-' }}
+
+                                            </span>
+                                            <span class="d-flex align-items-center text-gray-500 mb-2">
                                                 <i class="ki-duotone ki-book-open fs-4 me-1"><span
                                                         class="path1"></span><span class="path2"></span><span
                                                         class="path3"></span><span class="path4"></span></i>
                                                 {{ $mahasiswa->programStudi->nama_prodi }}
                                                 ({{ $mahasiswa->programStudi->jenjang }})
-                                            </span>
-                                            <span class="d-flex align-items-center text-gray-500 mb-2">
-                                                <i class="ki-duotone ki-bank fs-4 me-1"><span class="path1"></span><span
-                                                        class="path2"></span></i>
-                                                {{ $mahasiswa->programStudi->fakultas->nama_fakultas ?? '-' }}
                                             </span>
                                         </div>
                                     </div>
@@ -142,7 +143,8 @@
                                 <h3 class="card-title align-items-start flex-column">
                                     <span class="card-label fw-bolder fs-3 mb-1 d-flex align-items-center"><i
                                             class="ki-duotone ki-shield-tick fs-1 me-2 text-primary"><span
-                                                class="path1"></span><span class="path2"></span></i> Status Persetujuan Modul</span>
+                                                class="path1"></span><span class="path2"></span></i> Status Persetujuan
+                                        Modul</span>
                                 </h3>
                             </div>
                             <div class="card-body pt-5 pb-0">
@@ -229,6 +231,7 @@
                 }
             });
         }
+
         function confirmSetujui() {
             @if (!empty($hasPendingItems))
                 @php

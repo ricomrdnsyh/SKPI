@@ -40,6 +40,7 @@ class SkpiController extends Controller
                 'mahasiswa.*',
                 'program_studi.nama_prodi',
                 'program_studi.kode_prodi',
+                'program_studi.jenjang',
                 'fakultas.nama_fakultas',
                 'fakultas.dekan',
                 'fakultas.nidn_dekan',
@@ -101,10 +102,8 @@ class SkpiController extends Controller
                     'dekan' => $mahasiswaRow->dekan,
                     'nidn_dekan' => $mahasiswaRow->nidn_dekan,
                 ];
-                $tahun = $mahasiswa->tahun_lulus ?? date('Y');
-                $kodeProdi = $mahasiswaRow->kode_prodi ?? 'PRODI';
-                $kodeUni = config('skpi.university_code', 'UNUJA');
-                $nomorSkpi = $this->skpiService->generateNomorSkpi($kodeProdi, $tahun, $kodeUni, $mahasiswa->id_mahasiswa);
+                $kodeFakultas = $mahasiswaRow->kode_fakultas ?? 'FAKULTAS';
+                $nomorSkpi = $this->skpiService->generateNomorSkpi($kodeFakultas);
 
                 $draftSkpi = new Skpi([
                     'nomor_skpi' => $nomorSkpi . ' (DRAFT)',

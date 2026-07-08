@@ -22,25 +22,35 @@
         <div class="d-flex flex-column flex-column-fluid">
             <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
                 <div id="kt_app_content_container" class="app-container container-fluid">
-                    <div class="card border-0 shadow-sm mb-8 overflow-hidden"
-                        style="background: linear-gradient(112.14deg, #10B981 0%, #059669 100%);">
-                        <div class="card-body py-8 position-relative">
-                            <div class="position-absolute top-0 end-0 opacity-10">
-                                <i class="ki-duotone ki-abstract-14 fs-10x text-white"><span class="path1"></span><span
-                                        class="path2"></span></i>
-                            </div>
-                            <div
-                                class="d-flex align-items-center justify-content-between flex-wrap gap-4 position-relative z-index-1">
-                                <div class="d-flex flex-column">
-                                    <h2 class="text-white fw-bolder fs-1 mb-2">Dashboard BAAK Fakultas</h2>
-                                    <div class="text-white opacity-75 fs-6 fw-semibold">Kelola antrian verifikasi dan alur
-                                        penerbitan SKPI dengan mudah dan cepat.</div>
+                    <!-- Dashboard Banner -->
+                    <div class="card border-0 shadow-sm mb-8 rounded-4" style="background-color: #ffffff; background-image: radial-gradient(ellipse at top right, rgba(16, 185, 129, 0.08) 0%, transparent 60%); position: relative; overflow: hidden;">
+                        
+                        <!-- Left Accent Line -->
+                        <div class="position-absolute top-0 start-0 h-100 w-5px bg-success rounded-start"></div>
+
+                        <div class="card-body py-6 py-md-10 px-6 px-md-8 position-relative z-index-1">
+                            <div class="d-flex align-items-sm-center justify-content-between flex-column flex-sm-row gap-5">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div class="symbol symbol-45px symbol-md-60px symbol-circle shadow-sm">
+                                        <div class="symbol-label bg-light-success">
+                                            <i class="ki-duotone ki-bank fs-1 fs-md-2x text-success"><span class="path1"></span><span class="path2"></span></i>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <h2 class="text-gray-900 fw-bolder fs-2 fs-md-2hx mb-1">Dashboard BAAK Fakultas</h2>
+                                        <div class="text-muted fs-7 fs-md-5 fw-semibold">
+                                            Kelola antrian verifikasi dan alur penerbitan SKPI
+                                        </div>
+                                    </div>
                                 </div>
-                                <div
-                                    class="d-flex align-items-center bg-white bg-opacity-20 rounded px-5 py-3 border border-white border-opacity-25 shadow-sm">
-                                    <i class="ki-duotone ki-calendar fs-2 text-white me-2"><span class="path1"></span><span
-                                            class="path2"></span></i>
-                                    <span class="text-white fw-bold fs-6">{{ now()->translatedFormat('l, d F Y') }}</span>
+                                
+                                <div class="d-flex align-items-center bg-white rounded-pill px-4 px-md-6 py-2 py-md-3 border border-gray-200 shadow-sm w-100 w-sm-auto justify-content-center" style="transition: all 0.3s ease;" onmouseover="this.classList.add('shadow'); this.classList.remove('shadow-sm');" onmouseout="this.classList.remove('shadow'); this.classList.add('shadow-sm');">
+                                    <div class="symbol symbol-30px symbol-circle me-2 me-md-3">
+                                        <div class="symbol-label bg-light-success">
+                                            <i class="ki-duotone ki-calendar fs-5 fs-md-4 text-success"><span class="path1"></span><span class="path2"></span></i>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-800 fw-bold fs-7 fs-md-6">{{ now()->translatedFormat('l, d F Y') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -106,17 +116,19 @@
                                     </h3>
                                 </div>
                             </div>
-                            <div class="card-toolbar">
-                                <div class="d-flex justify-content-end gap-3" data-kt-customer-table-toolbar="base">
-                                    <select id="filter-prodi" class="form-select form-select-sm w-250px fw-bold"
-                                        data-control="select2" data-placeholder="Semua Prodi">
-                                        <option value="">Semua Prodi</option>
-                                        @foreach ($prodis as $prodi)
-                                            <option value="{{ $prodi }}">{{ $prodi }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div id="status-filter-wrapper">
-                                        <select id="filter-status" class="form-select form-select-sm w-200px fw-bold"
+                            <div class="card-toolbar w-100 w-md-auto mt-4 mt-md-0">
+                                <div class="d-flex flex-row justify-content-end gap-3 w-100" data-kt-customer-table-toolbar="base">
+                                    <div class="w-50 w-md-200px">
+                                        <select id="filter-prodi" class="form-select form-select-sm w-100 fw-bold"
+                                            data-control="select2" data-placeholder="Semua Prodi">
+                                            <option value="">Semua Prodi</option>
+                                            @foreach ($prodis as $prodi)
+                                                <option value="{{ $prodi }}">{{ $prodi }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div id="status-filter-wrapper" class="w-50 w-md-200px">
+                                        <select id="filter-status" class="form-select form-select-sm w-100 fw-bold"
                                             data-control="select2" data-placeholder="Semua Status" data-hide-search="true">
                                             <option value="">Semua Status</option>
                                             @foreach ($statuses as $status)
@@ -131,9 +143,9 @@
                             </div>
                         </div>
                         <div class="card-body pt-0 px-6">
-                            <ul
-                                class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mb-5 fs-6 fw-bold border-bottom-0 gap-4 mt-2">
-                                <li class="nav-item">
+                            <div class="table-responsive" style="overflow-x: auto; overflow-y: hidden;">
+                                <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mb-5 fs-6 fw-bold border-bottom-0 gap-4 mt-2 flex-nowrap text-nowrap" style="padding-bottom: 2px;">
+                                    <li class="nav-item">
                                     <a class="nav-link active tab-btn text-active-warning px-2 transition-all"
                                         data-bs-toggle="tab" href="#" data-tab="belum">
                                         <i class="ki-duotone ki-time fs-2 me-2"><span class="path1"></span><span
@@ -161,6 +173,7 @@
                                     </a>
                                 </li>
                             </ul>
+                            </div>
                             <table id="table-bak-fakultas" class="table align-middle table-row-dashed fs-6 gy-5">
                                 <thead>
                                     <tr class="text-start text-gray-500 fw-bolder fs-7 text-uppercase gs-0">
