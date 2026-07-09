@@ -1,8 +1,7 @@
 @extends('layout.main')
 @section('title', 'Dashboard Mahasiswa')
 @section('content')
-    <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-        <div class="d-flex flex-column flex-column-fluid">
+    <div class="d-flex flex-column flex-column-fluid">
             <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
                 <div id="kt_app_content_container" class="app-container container-fluid">
                     <div class="card bg-light-primary mb-8" style="background: linear-gradient(135deg, rgba(235, 244, 255, 0.8) 0%, rgba(225, 238, 255, 0.4) 100%); border: 1px solid rgba(0, 158, 247, 0.1); box-shadow: 0 10px 30px rgba(0, 158, 247, 0.05); backdrop-filter: blur(10px); transition: transform 0.3s ease;">
@@ -589,8 +588,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                            </div>
         </div>
     </div>
 @endsection

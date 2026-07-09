@@ -22,34 +22,42 @@
     <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
         <div id="kt_app_content_container" class="app-container container-fluid">
                 <!-- Dashboard Banner -->
-                <div class="card border-0 shadow-sm mb-8 rounded-4" style="background-color: #ffffff; background-image: radial-gradient(ellipse at top right, rgba(58, 123, 213, 0.08) 0%, transparent 60%); position: relative; overflow: hidden;">
+                <div class="card border-0 mb-8 rounded-4 overflow-hidden shadow-sm">
+                    <!-- Background overlay -->
+                    <div class="position-absolute top-0 end-0 h-100 w-100" style="background: radial-gradient(circle at 100% 100%, rgba(0, 163, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 0% 0%, rgba(0, 163, 255, 0.05) 0%, transparent 50%); pointer-events: none;"></div>
                     
-                    <!-- Left Accent Line -->
-                    <div class="position-absolute top-0 start-0 h-100 w-5px bg-primary rounded-start"></div>
-
                     <div class="card-body py-6 py-md-10 px-6 px-md-8 position-relative z-index-1">
-                        <div class="d-flex align-items-sm-center justify-content-between flex-column flex-sm-row gap-5">
-                            <div class="d-flex align-items-center gap-4">
-                                <div class="symbol symbol-45px symbol-md-60px symbol-circle shadow-sm">
-                                    <div class="symbol-label bg-light-primary">
-                                        <i class="ki-duotone ki-shield-tick fs-1 fs-md-2x text-primary"><span class="path1"></span><span class="path2"></span></i>
+                        <div class="d-flex align-items-center justify-content-between flex-column flex-md-row gap-5">
+                            <!-- Content -->
+                            <div class="d-flex align-items-center flex-column flex-sm-row text-center text-sm-start gap-4 gap-sm-6">
+                                <!-- Icon Block -->
+                                <div class="symbol symbol-60px symbol-md-70px symbol-circle shadow-sm">
+                                    <div class="symbol-label bg-light-primary border border-primary border-dashed">
+                                        <i class="ki-duotone ki-shield-tick fs-2x fs-md-3x text-primary"><span class="path1"></span><span class="path2"></span></i>
                                     </div>
                                 </div>
+                                <!-- Text -->
                                 <div class="d-flex flex-column">
-                                    <h2 class="text-gray-900 fw-bolder fs-2 fs-md-2hx mb-1">Dashboard Administrator</h2>
-                                    <div class="text-muted fs-7 fs-md-5 fw-semibold">
+                                    <h2 class="text-gray-900 fw-bolder fs-2 fs-md-1 mb-2">Dashboard Administrator</h2>
+                                    <div class="text-gray-500 fs-6 fs-md-5 fw-semibold">
                                         Pantau seluruh antrian verifikasi dan alur penerbitan SKPI
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="d-flex align-items-center bg-white rounded-pill px-4 px-md-6 py-2 py-md-3 border border-gray-200 shadow-sm w-100 w-sm-auto justify-content-center" style="transition: all 0.3s ease;" onmouseover="this.classList.add('shadow'); this.classList.remove('shadow-sm');" onmouseout="this.classList.remove('shadow'); this.classList.add('shadow-sm');">
-                                <div class="symbol symbol-30px symbol-circle me-2 me-md-3">
-                                    <div class="symbol-label bg-light-primary">
-                                        <i class="ki-duotone ki-calendar fs-5 fs-md-4 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                            <!-- Action / Date -->
+                            <div class="d-flex align-items-center w-100 w-md-auto">
+                                <div class="bg-white rounded-4 p-4 border border-gray-200 shadow-sm d-flex align-items-center justify-content-center gap-4 w-100">
+                                    <div class="symbol symbol-40px symbol-circle">
+                                        <div class="symbol-label bg-light-primary">
+                                            <i class="ki-duotone ki-calendar fs-3 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column text-start">
+                                        <span class="text-gray-400 fw-bold fs-7 text-uppercase mb-1">Hari Ini</span>
+                                        <span class="text-gray-800 fw-bolder fs-5">{{ now()->translatedFormat('d F Y') }}</span>
                                     </div>
                                 </div>
-                                <span class="text-gray-800 fw-bold fs-7 fs-md-6">{{ now()->translatedFormat('l, d F Y') }}</span>
                             </div>
                         </div>
                     </div>
@@ -143,7 +151,7 @@
                         </div>
                     </div>
                     <div class="card-body pt-0 px-6">
-                        <div class="table-responsive" style="overflow-x: auto; overflow-y: hidden;">
+                        <div class="overflow-auto" style="overflow-y: hidden;">
                             <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x mb-5 fs-6 fw-bold border-bottom-0 gap-4 mt-2 flex-nowrap text-nowrap" style="padding-bottom: 2px;">
                                 <li class="nav-item">
                                 <a class="nav-link active tab-btn text-active-warning px-2 transition-all"

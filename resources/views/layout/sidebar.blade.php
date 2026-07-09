@@ -303,13 +303,6 @@
                             </div>
                         </div>
                         <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
-                                href="{{ route('kurikulum.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
-                                <span class="menu-title">Kurikulum</span>
-                            </a>
-                        </div>
-                        <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/fakultas*') ? 'active' : '' }}"
                                 href="{{ route('fakultas.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-building fs-4"></i></span>
@@ -321,6 +314,13 @@
                                 href="{{ route('prodi.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-graduation-cap fs-4"></i></span>
                                 <span class="menu-title">Prodi</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
+                                href="{{ route('kurikulum.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
+                                <span class="menu-title">Kurikulum</span>
                             </a>
                         </div>
                         <div class="menu-item">
@@ -352,13 +352,6 @@
                             </div>
                         </div>
                         <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
-                                href="{{ route('kurikulum.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
-                                <span class="menu-title">Kurikulum</span>
-                            </a>
-                        </div>
-                        <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/fakultas*') ? 'active' : '' }}"
                                 href="{{ route('fakultas.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-building fs-4"></i></span>
@@ -370,6 +363,13 @@
                                 href="{{ route('prodi.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-graduation-cap fs-4"></i></span>
                                 <span class="menu-title">Program Studi</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
+                                href="{{ route('kurikulum.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-calendar fs-4"></i></span>
+                                <span class="menu-title">Kurikulum</span>
                             </a>
                         </div>
                         <div class="menu-item">
