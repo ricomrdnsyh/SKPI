@@ -72,18 +72,6 @@
                                     'icon' => 'ki-time',
                                 ],
                                 [
-                                    'label' => 'Sedang Diproses',
-                                    'value' => $stats['verifikasi'],
-                                    'color' => 'info',
-                                    'icon' => 'ki-arrows-circle',
-                                ],
-                                [
-                                    'label' => 'Permohonan Cetak',
-                                    'value' => $stats['permohonan_cetak_count'],
-                                    'color' => 'primary',
-                                    'icon' => 'ki-printer',
-                                ],
-                                [
                                     'label' => 'Sudah Tercetak',
                                     'value' => $stats['completed'],
                                     'color' => 'success',
@@ -161,15 +149,7 @@
                                             id="count-belum">{{ $stats['pending'] }}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link tab-btn text-active-primary px-2 transition-all" data-bs-toggle="tab"
-                                        href="#" data-tab="permohonan_cetak">
-                                        <i class="ki-duotone ki-printer fs-2 me-2"><span class="path1"></span><span
-                                                class="path2"></span><span class="path3"></span></i> Permohonan Cetak
-                                        <span class="badge badge-light-primary text-primary ms-2"
-                                            id="count-permohonan-cetak">{{ $stats['permohonan_cetak_count'] }}</span>
-                                    </a>
-                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link tab-btn text-active-success px-2 transition-all" data-bs-toggle="tab"
                                         href="#" data-tab="sudah">

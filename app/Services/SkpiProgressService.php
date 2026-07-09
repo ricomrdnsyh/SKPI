@@ -48,18 +48,23 @@ class SkpiProgressService
             $printer = $skpi ? $userMap->get($skpi->dicetak_oleh) : null;
         }
 
-        $mahasiswa->loadMissing(['prestasi', 'organisasi', 'sertifikat', 'magang']);
+        $mahasiswa->loadMissing(['prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir']);
 
         $prestasi = $mahasiswa->prestasi;
         $organisasi = $mahasiswa->organisasi;
         $sertifikat = $mahasiswa->sertifikat;
         $magang = $mahasiswa->magang;
+        $tugasAkhir = $mahasiswa->tugasAkhir;
 
         $allItems = collect()
             ->concat($prestasi)
             ->concat($organisasi)
             ->concat($sertifikat)
             ->concat($magang);
+
+        if ($tugasAkhir) {
+            $allItems->push($tugasAkhir);
+        }
 
         $totalItemsCount = $allItems->count();
         $pendingItemsCount = $allItems->filter(fn($item) => $item->status === 'pending')->count();

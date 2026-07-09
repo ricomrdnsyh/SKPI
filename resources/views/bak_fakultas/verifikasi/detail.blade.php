@@ -138,6 +138,9 @@
                             'pengajuan' => $pengajuan,
                             'statusClass' => $statusClass,
                         ])
+                        
+                        @include('bak_fakultas.verifikasi._action_cards')
+
                         <div class="card border border-dashed border-dark mb-6">
                             <div class="card-header border-0 pt-6">
                                 <h3 class="card-title align-items-start flex-column">
@@ -184,7 +187,6 @@
                                 @include('bak_fakultas.verifikasi._checklist_form')
                             @endif
                         </div>
-                        @include('bak_fakultas.verifikasi._action_cards')
                     </div>
                     <div class="tab-pane fade" id="tab_timeline" role="tabpanel">
                         @if ($history->isNotEmpty())

@@ -124,10 +124,6 @@ class SkpiController extends Controller
                     abort(403, 'SKPI belum diterbitkan oleh BAK Fakultas.');
                 }
 
-                if (!$pengajuan->permohonan_cetak) {
-                    abort(403, 'SKPI tidak dapat dibuat karena mahasiswa belum mengajukan permohonan cetak.');
-                }
-
                 $request->validate([
                     'nim_ijazah' => 'required|string|max:50',
                     'status_profesi' => 'nullable|string|max:255',

@@ -241,7 +241,14 @@ class VerifikasiController extends Controller
 
         $this->flushRelatedCaches($id_pengajuan, $pengajuanRow->id_mahasiswa);
 
-        return redirect()->route('bak_fakultas.verifikasi.detail', $id_pengajuan)
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pencetakan SKPI berhasil dibatalkan. Status dikembalikan ke Draft agar mahasiswa dapat mengedit.'
+            ]);
+        }
+
+        return redirect()->route('bak_fakultas.dashboard')
             ->with('success', 'Pencetakan SKPI berhasil dibatalkan. Status dikembalikan ke Draft agar mahasiswa dapat mengedit.');
     }
 
@@ -405,17 +412,9 @@ class VerifikasiController extends Controller
         if (!$mahasiswa) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($mahasiswa->id_prodi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
-        if (!$pengajuan->permohonan_cetak) {
-            return back()->with('error', 'Mahasiswa belum mengajukan permohonan cetak.');
-        }
-
         $skpi = DB::table('skpi')->where('id_pengajuan', $pengajuan->id_pengajuan)->first();
         if ($pengajuan->status === 'dicetak' || $skpi) {
             return back()->with('error', 'SKPI sudah diterbitkan sebelumnya.');
-        }
-
-        if ($pengajuan->status !== 'verifikasi') {
-            return back()->with('error', 'SKPI hanya bisa dicetak jika pengajuan sudah diverifikasi.');
         }
 
         if (!$mahasiswa->tugasAkhirApproved()) {
@@ -571,22 +570,34 @@ class VerifikasiController extends Controller
             ->addColumn('prodi', fn($p) => $p->prodi_nama ?? '-')
             ->addColumn('dosen_wali', fn($p) => '-')
             ->addColumn('tanggal', fn($p) => DataTableHelper::tanggal($p->tanggal_pengajuan))
-            ->addColumn('verifikasi', function ($p) {
-                $hasChecklist = $p->cek_identitas_mahasiswa !== null;
-                if (!$hasChecklist) return '0 / 0';
-                $total = 9;
-                $checked = collect([
-                    $p->cek_identitas_mahasiswa,
-                    $p->cek_identitas_prodi,
-                    $p->cek_cpl,
-                    $p->cek_prestasi,
-                    $p->cek_organisasi,
-                    $p->cek_sertifikat,
-                    $p->cek_magang,
-                    $p->cek_tugas_akhir,
-                    $p->cek_sistem_penilaian,
-                ])->filter()->count();
-                return "$checked / $total";
+            ->addColumn('verifikasi', function ($p) use ($mahasiswas) {
+                $mhs = $mahasiswas->get($p->id_mahasiswa);
+                if (!$mhs) return '-';
+                
+                $mhs->loadMissing(['prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir']);
+                $allItems = collect()
+                    ->concat($mhs->prestasi)
+                    ->concat($mhs->organisasi)
+                    ->concat($mhs->sertifikat)
+                    ->concat($mhs->magang);
+                
+                if ($mhs->tugasAkhir) {
+                    $allItems->push($mhs->tugasAkhir);
+                }
+                    
+                $total = $allItems->count();
+                if ($total == 0) return '<span class="badge badge-light-secondary fw-bold px-3 py-2">0 / 0</span>';
+
+                if (in_array($p->status, ['dicetak', 'selesai', 'permohonan_cetak'])) {
+                    $checked = $total;
+                } else {
+                    $checked = $allItems->where('status', 'approved')->count();
+                }
+
+                $color = ($checked == $total) ? 'success' : 'warning';
+                if ($checked == 0 && $total > 0) $color = 'danger';
+
+                return '<span class="badge badge-light-'.$color.' fw-bold px-3 py-2">'.$checked.' / '.$total.'</span>';
             })
             ->addColumn('progress', function ($p) use ($mahasiswas) {
                 $mhs = $mahasiswas->get($p->id_mahasiswa);
@@ -609,30 +620,76 @@ class VerifikasiController extends Controller
                 return DataTableHelper::actionButtons([
                     ['type' => 'view', 'url' => $detailRoute],
                     ['type' => 'custom', 'html' => <<<HTML
-<button type="button" class="btn-destroy" style="color:#ef4444;" title="Batalkan Cetak SKPI" onclick="
-    let reason = prompt('Masukkan alasan pembatalan cetak SKPI:');
-    if (reason && reason.trim() !== '') {
-        let form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '{$cancelRoute}';
-        
-        let csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_token';
-        csrfInput.value = '{$csrfToken}';
-        form.appendChild(csrfInput);
-        
-        let reasonInput = document.createElement('input');
-        reasonInput.type = 'hidden';
-        reasonInput.name = 'catatan';
-        reasonInput.value = reason;
-        form.appendChild(reasonInput);
-        
-        document.body.appendChild(form);
-        form.submit();
-    } else if (reason !== null) {
-        alert('Alasan pembatalan cetak wajib diisi.');
-    }
+<button type="button" class="btn btn-sm btn-light btn-active-light-danger border-0" data-bs-toggle="tooltip" data-bs-title="Batalkan Cetak SKPI" onclick="
+    Swal.fire({
+        icon: 'warning',
+        iconColor: '#f1416c',
+        title: 'Batalkan Cetak SKPI?',
+        html: `
+            <div class='text-gray-500 fw-semibold fs-6 mb-5'>
+                Dokumen SKPI ini akan dibatalkan pencetakannya dan status dikembalikan ke tahap awal.
+            </div>
+            <div class='text-start'>
+                <label class='required form-label fw-bold mb-2'>Alasan Pembatalan</label>
+                <textarea id='cancel_reason' class='form-control' rows='4' placeholder='Ketik alasan pembatalan di sini...'></textarea>
+            </div>
+        `,
+        width: '600px',
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: 'Ya, Batalkan',
+        cancelButtonText: 'Tutup',
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-secondary'
+        },
+        preConfirm: () => {
+            let reason = document.getElementById('cancel_reason').value;
+            if (!reason || reason.trim() === '') {
+                Swal.showValidationMessage('Alasan pembatalan cetak wajib diisi.');
+                return false;
+            }
+            
+            Swal.showLoading();
+            
+            return fetch('{$cancelRoute}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{$csrfToken}'
+                },
+                body: JSON.stringify({ catatan: reason })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.statusText || 'Terjadi kesalahan');
+                }
+                return response.json();
+            })
+            .catch(error => {
+                Swal.showValidationMessage(`Gagal memproses permintaan: \${error}`);
+            });
+        }
+    }).then((result) => {
+        if (result.isConfirmed && result.value && result.value.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: result.value.message,
+                confirmButtonText: 'Tutup',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                }
+            }).then(() => {
+                if (typeof $ !== 'undefined' && $.fn.DataTable.isDataTable('#table-bak-fakultas')) {
+                    $('#table-bak-fakultas').DataTable().ajax.reload(null, false);
+                } else {
+                    window.location.reload();
+                }
+            });
+        }
+    });
 ">
     <i class="fa-solid fa-ban"></i>
 </button>
@@ -640,7 +697,7 @@ HTML
                     ],
                 ]);
             })
-            ->rawColumns(['status', 'aksi', 'progress'])
+            ->rawColumns(['status', 'aksi', 'progress', 'verifikasi'])
             ->make(true);
     }
 }

@@ -474,7 +474,7 @@
                                                             class="path1"></span><span class="path2"></span></i>
                                                     <div class="fs-5 fw-bold text-gray-800 mb-2">Perlu Perbaikan</div>
                                                     <div class="fs-7 text-muted">
-                                                        @if ($pengajuan->keterangan)
+                                                        @if ($pengajuan->catatan_bak)
                                                             Silakan periksa catatan revisi di bawah ini dan lakukan
                                                             perbaikan.
                                                         @else
@@ -490,16 +490,16 @@
                                                         verifikasi. Silakan pantau progress timeline.</div>
                                                 @endif
                                             </div>
-                                            @if ($pengajuan->keterangan)
+                                            @if ($pengajuan->catatan_bak)
                                                 <div
-                                                    class="bg-light-danger border border-danger border-dashed rounded p-4 mt-6">
-                                                    <div class="d-flex align-items-center mb-2">
+                                                    class="bg-light-danger border border-danger border-dashed rounded p-4 mt-6 text-center">
+                                                    <div class="d-flex align-items-center justify-content-center mb-2">
                                                         <i class="ki-duotone ki-information-5 fs-3 text-danger me-2"><span
                                                                 class="path1"></span><span class="path2"></span><span
                                                                 class="path3"></span></i>
                                                         <span class="fw-bolder text-danger fs-7">Catatan / Revisi</span>
                                                     </div>
-                                                    <div class="text-danger fs-8">{{ $pengajuan->keterangan }}</div>
+                                                    <div class="text-danger fs-8">{{ $pengajuan->catatan_bak }}</div>
                                                 </div>
                                             @endif
                                             @if ($pStatus === 'ditolak' || $pStatus === 'draft')

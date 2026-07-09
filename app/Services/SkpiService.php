@@ -116,9 +116,8 @@ class SkpiService
         $penilaian = $this->cache->getSistemPenilaian();
 
         $mhsId = $mahasiswa->id_mahasiswa;
-        $cacheKey = "skpi:pdf_data:{$mhsId}";
 
-        $data = Cache::remember($cacheKey, 3600, function () use ($mhsId) {
+        $data = (function () use ($mhsId) {
             $prestasi = DB::table('prestasi_mahasiswa')
                 ->where('id_mahasiswa', $mhsId)
                 ->where('status', 'approved')
@@ -160,7 +159,7 @@ class SkpiService
             }
 
             return compact('prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir');
-        });
+        })();
 
         $pdf = Pdf::setOption([
             'isRemoteEnabled' => true,

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTugasAkhirRequest;
 use App\Models\Mahasiswa;
 use App\Models\PengajuanSkpi;
 use App\Models\TugasAkhir;
+use App\Models\User;
 use App\Services\CacheService;
 use App\Services\SkpiProgressService;
 use Illuminate\Support\Facades\Auth;
@@ -61,13 +62,13 @@ class MahasiswaController extends Controller
             $mahasiswa->magang = $magang;
 
             if ($mahasiswa->skpi && $mahasiswa->skpi->dicetak_oleh) {
-                $mahasiswa->skpi->printer = $this->preloader->getUser($mahasiswa->skpi->dicetak_oleh);
+                $mahasiswa->skpi->printer = User::find($mahasiswa->skpi->dicetak_oleh);
             }
 
             $pengajuan = $mahasiswa->pengajuanSkpi;
             if ($pengajuan) {
                 $pengajuan->verifier = $pengajuan->diverifikasi_oleh
-                    ? $this->preloader->getUser($pengajuan->diverifikasi_oleh)
+                    ? User::find($pengajuan->diverifikasi_oleh)
                     : null;
             }
 

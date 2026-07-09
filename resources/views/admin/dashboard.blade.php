@@ -74,18 +74,6 @@
                                 'icon' => 'ki-time',
                             ],
                             [
-                                'label' => 'Sedang Diproses',
-                                'value' => $skpiStats['verifikasi'],
-                                'color' => 'info',
-                                'icon' => 'ki-arrows-circle',
-                            ],
-                            [
-                                'label' => 'Permohonan Cetak',
-                                'value' => $skpiStats['permohonan_cetak_count'],
-                                'color' => 'primary',
-                                'icon' => 'ki-printer',
-                            ],
-                            [
                                 'label' => 'Sudah Tercetak',
                                 'value' => $skpiStats['completed'],
                                 'color' => 'success',
@@ -160,15 +148,6 @@
                                             class="path2"></span></i> Belum Verifikasi
                                     <span class="badge badge-light-warning text-warning ms-2"
                                         id="count-belum">{{ $skpiStats['pending'] }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link tab-btn text-active-primary px-2 transition-all" data-bs-toggle="tab"
-                                    href="#" data-tab="permohonan_cetak">
-                                    <i class="ki-duotone ki-printer fs-2 me-2"><span class="path1"></span><span
-                                            class="path2"></span><span class="path3"></span></i> Permohonan Cetak
-                                    <span class="badge badge-light-primary text-primary ms-2"
-                                        id="count-permohonan-cetak">{{ $skpiStats['permohonan_cetak_count'] }}</span>
                                 </a>
                             </li>
                             <li class="nav-item">

@@ -17,7 +17,7 @@
             </div>
         </div>
     @endif
-    @if ($pengajuan->status === 'verifikasi' && $pengajuan->permohonan_cetak && !$pengajuan->skpi)
+    @if (in_array($pengajuan->status, ['diajukan', 'verifikasi']) && !$pengajuan->skpi)
         <div class="card border border-success border-dashed mb-5">
             <div class="card-body p-6">
                 <h4 class="mb-3 text-success"><i class="ki-duotone ki-printer fs-2 text-success me-2"><span
@@ -31,14 +31,12 @@
                         <div class="col-md-6 mb-5 mb-md-0">
                             <label for="nim_ijazah" class="required form-label fw-bold">Nomor Ijazah Nasional (NIM
                                 Ijazah)</label>
-                            <input type="text" name="nim_ijazah" id="nim_ijazah"
-                                class="form-control form-control-solid"
+                            <input type="text" name="nim_ijazah" id="nim_ijazah" class="form-control"
                                 value="{{ old('nim_ijazah', $mahasiswa->nim ?? '') }}" required>
                         </div>
                         <div class="col-md-6">
                             <label for="status_profesi" class="form-label fw-bold">Status Profesi (Opsional)</label>
-                            <input type="text" name="status_profesi" id="status_profesi"
-                                class="form-control form-control-solid"
+                            <input type="text" name="status_profesi" id="status_profesi" class="form-control"
                                 value="{{ old('status_profesi', 'Belum ada keanggotaan profesi') }}">
                         </div>
                     </div>
@@ -74,12 +72,12 @@
                     <form action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}"
                         method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan cetak SKPI ini?')">
                         @csrf
-                        <textarea name="catatan" required class="form-control form-control-solid mb-4" rows="3"
+                        <textarea name="catatan" required class="form-control mb-4" rows="3"
                             placeholder="Alasan pembatalan cetak (wajib diisi)..."></textarea>
                         <button type="submit" class="btn btn-danger w-100 fw-bolder">
                             <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span
-                                    class="path2"></span><span class="path3"></span><span
-                                    class="path4"></span><span class="path5"></span></i> Batalkan & Kembalikan ke
+                                    class="path2"></span><span class="path3"></span><span class="path4"></span><span
+                                    class="path5"></span></i> Batalkan & Kembalikan ke
                             Draft
                         </button>
                     </form>
@@ -107,8 +105,8 @@
     @if ($pengajuan->status === 'ditolak')
         <div
             class="alert alert-dismissible bg-light-danger border border-danger d-flex flex-column flex-sm-row p-5 mb-5">
-            <i class="ki-duotone ki-cross-circle fs-2hx text-danger me-4 mb-5 mb-sm-0"><span
-                    class="path1"></span><span class="path2"></span></i>
+            <i class="ki-duotone ki-cross-circle fs-2hx text-danger me-4 mb-5 mb-sm-0"><span class="path1"></span><span
+                    class="path2"></span></i>
             <div class="d-flex flex-column pe-0 pe-sm-10">
                 <h5 class="mb-1 text-danger">Pengajuan Ditolak</h5>
                 <span>Pengajuan cetak SKPI ini telah ditolak. Menunggu mahasiswa mengajukan ulang.</span>

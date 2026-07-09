@@ -4,9 +4,9 @@ namespace App\Helpers;
 
 class DataTableHelper
 {
-    public static function progressBar(int $completed, int $total = 6): string
+    public static function progressBar(int $completed, int $total = 3): string
     {
-        $percent = round(($completed / $total) * 100);
+        $percent = $total > 0 ? round(($completed / $total) * 100) : 0;
         return <<<HTML
         <div class="space-y-1" style="min-width: 120px;">
             <div class="flex items-center justify-between text-[10px] font-bold text-gray-500">
