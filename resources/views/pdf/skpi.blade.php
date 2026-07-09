@@ -490,14 +490,26 @@
                     Probolinggo, {{ \Carbon\Carbon::parse($skpi->tanggal_terbit)->isoFormat('D MMMM YYYY') }}<br>
                     Dekan Fakultas Teknik,<br>
                     <div style="margin-top: 8px; margin-bottom: 8px;">
-                    @php
-                        $verifyUrl = route('skpi.verify', ['id_skpi' => $skpi]);
-                        $qrCodeBase64 = base64_encode(
-                            \SimpleSoftwareIO\QrCode\Facades\QrCode::size(80)->generate($verifyUrl),
-                        );
-                    @endphp
-                    <img src="data:image/svg+xml;base64,{{ $qrCodeBase64 }}" width="80" height="80"
-                        alt="QR Code Keaslian">
+                    @if ($pengajuan->status === 'dicetak')
+                        @php
+                            $verifyUrl = route('skpi.verify', ['id_skpi' => $skpi]);
+                            $qrCodeBase64 = base64_encode(
+                                \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->errorCorrection('H')->generate($verifyUrl)
+                            );
+                            $logoPath = public_path('assets/media/logos/unuja.png');
+                            $logoBase64 = base64_encode(file_get_contents($logoPath));
+                        @endphp
+                        <div style="width: 100px; height: 100px; display: inline-block; text-align: left;">
+                            <img src="data:image/svg+xml;base64,{{ $qrCodeBase64 }}" width="100" height="100" style="display: block;" alt="QR Code Keaslian">
+                            <div style="margin-top: -65px; margin-left: 35px; width: 30px; height: 30px; background-color: white; border-radius: 3px;">
+                                <img src="data:image/png;base64,{{ $logoBase64 }}" width="26" height="26" style="margin-top: 2px; margin-left: 2px;">
+                            </div>
+                        </div>
+                    @else
+                        <div style="width: 100px; height: 100px; display: inline-block; border: 2px dashed #ccc; color: #ccc; text-align: center; line-height: 100px; font-weight: bold; font-size: 14px;">
+                            DRAFT
+                        </div>
+                    @endif
                 </div>
                 <strong
                     style="text-decoration: underline;">{{ $skpi->ditandatangani_oleh ?? $fakultas->dekan }}</strong><br>

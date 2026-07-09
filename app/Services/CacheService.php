@@ -44,7 +44,7 @@ class CacheService
     public function getSistemPenilaian(): \Illuminate\Support\Collection
     {
         return Cache::remember('master:sistem_penilaian', self::TTL_MASTER, function () {
-            return DB::table('sistem_penilaian')->orderBy('nilai_min')->get();
+            return DB::table('sistem_penilaian')->orderByDesc('nilai_min')->get();
         });
     }
 
