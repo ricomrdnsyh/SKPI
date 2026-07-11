@@ -202,7 +202,7 @@
                     style="width:10px;height:10px;"></span>
             </div>
             <div class="sidebar-minimize-hide mt-2 w-100">
-                <div class="text-white fw-semibold text-truncate">{{ $currentUser?->nama ?? 'User' }}</div>
+                <div class="text-white fw-semibold text-truncate">{{ $currentUser?->nama_lengkap ?? 'User' }}</div>
                 <div class="text-gray-400 fs-8 text-truncate">
                     {{ $roleName }}
                 </div>

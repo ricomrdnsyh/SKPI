@@ -174,7 +174,7 @@
                                 </div>
                                 <div class="d-flex flex-column">
                                     <div class="fw-bold d-flex align-items-center fs-5">
-                                        {{ $currentUser?->nama ?? 'User' }}
+                                        {{ $currentUser?->nama_lengkap ?? 'User' }}
                                     </div>
                                     <span
                                         class="fw-semibold text-muted text-hover-primary fs-7">{{ $roleName }}</span>
