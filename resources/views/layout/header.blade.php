@@ -22,7 +22,7 @@
         }
     }
     
-    /* Header Transparency and Sticky Styling */
+    
     #kt_app_header {
         background-color: transparent !important;
         box-shadow: none !important;

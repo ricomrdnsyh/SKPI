@@ -2,13 +2,11 @@
     function editModal(element) {
         let data = JSON.parse($(element).attr('data-row'));
         let form = document.getElementById('form_edit_users');
-        // Auto-populate inputs based on data keys
         for (let key in data) {
             if (key === 'password') continue; // Jangan isi password dengan hash
             let input = form.querySelector('[name="' + key + '"]');
             if (input) {
                 if (input.type === 'checkbox' || input.type === 'radio') {
-                    // Handle checkbox/radio if needed
                     if(input.value == data[key]) input.checked = true;
                 } else {
                     input.value = data[key];
@@ -17,9 +15,7 @@
         }
         let pwd = form.querySelector('[name="password"]');
         if (pwd) pwd.value = '';
-        // Handle specific logic like Select2 triggers
         $(form).find('select').trigger('change');
-        // Set form action
         form.action = '/admin/users/' + data.id_user;
         $('#form_edit').modal('show');
     }

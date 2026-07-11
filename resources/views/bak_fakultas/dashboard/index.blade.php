@@ -21,22 +21,22 @@
     <div class="d-flex flex-column flex-column-fluid">
         <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
             <div id="kt_app_content_container" class="app-container container-fluid">
-                    <!-- Dashboard Banner -->
+                    
                     <div class="card border-0 mb-8 rounded-4 overflow-hidden shadow-sm">
-                        <!-- Background overlay -->
+                        
                         <div class="position-absolute top-0 end-0 h-100 w-100" style="background: radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 50%), radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%); pointer-events: none;"></div>
                         
                         <div class="card-body py-6 py-md-10 px-6 px-md-8 position-relative z-index-1">
                             <div class="d-flex align-items-center justify-content-between flex-column flex-md-row gap-5">
-                                <!-- Content -->
+                                
                                 <div class="d-flex align-items-center flex-column flex-sm-row text-center text-sm-start gap-4 gap-sm-6">
-                                    <!-- Icon Block -->
+                                    
                                     <div class="symbol symbol-60px symbol-md-70px symbol-circle shadow-sm">
                                         <div class="symbol-label bg-light-success border border-success border-dashed">
                                             <i class="ki-duotone ki-bank fs-2x fs-md-3x text-success"><span class="path1"></span><span class="path2"></span></i>
                                         </div>
                                     </div>
-                                    <!-- Text -->
+                                    
                                     <div class="d-flex flex-column">
                                         <h2 class="text-gray-900 fw-bolder fs-2 fs-md-1 mb-2">Dashboard BAAK Fakultas</h2>
                                         <div class="text-gray-500 fs-6 fs-md-5 fw-semibold">
@@ -45,7 +45,7 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Action / Date -->
+                                
                                 <div class="d-flex align-items-center w-100 w-md-auto">
                                     <div class="bg-white rounded-4 p-4 border border-gray-200 shadow-sm d-flex align-items-center justify-content-center gap-4 w-100">
                                         <div class="symbol symbol-40px symbol-circle">

@@ -2,23 +2,19 @@
     function editModal(element) {
         let data = JSON.parse($(element).attr('data-row'));
         let form = document.getElementById('form_edit_mahasiswa');
-        // Auto-populate inputs based on data keys
         for (let key in data) {
             if (key === 'password') continue; // Jangan masukkan hash password ke input field
             
             let input = form.querySelector('[name="' + key + '"]');
             if (input) {
                 if (input.type === 'checkbox' || input.type === 'radio') {
-                    // Handle checkbox/radio if needed
                     if(input.value == data[key]) input.checked = true;
                 } else {
                     input.value = data[key];
                 }
             }
         }
-        // Handle specific logic like Select2 triggers
         $(form).find('select').trigger('change.select2');
-        // Set form action
         form.action = '/akademik/mahasiswa/' + data.id_mahasiswa;
         $('#form_edit').modal('show');
     }

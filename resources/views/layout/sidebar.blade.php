@@ -1,5 +1,5 @@
 <style>
-    /* Clean Sidebar Enhancements */
+    
     #kt_app_sidebar_user .user-card {
         background: rgba(255, 255, 255, 0.03);
         border: none;
@@ -51,7 +51,7 @@
         justify-content: center !important
     }
 
-    /* Clean Logout Button */
+    
     #kt_app_sidebar_footer .btn {
         background: rgba(255, 255, 255, 0.04) !important;
         border: none !important;
@@ -69,7 +69,7 @@
 
     #kt_app_sidebar_footer .btn:hover {
         background: rgba(220, 53, 69, 0.85) !important;
-        /* Soft crimson hover */
+        
         color: #ffffff !important;
         box-shadow: 0 4px 15px rgba(220, 53, 69, 0.25);
         transform: translateY(-1px);
@@ -78,10 +78,10 @@
     #kt_app_sidebar_footer .btn:hover i {
         color: #ffffff !important;
         transform: translateX(3px);
-        /* Subtle slide effect */
+        
     }
 
-    /* Thin Custom Scrollbar */
+    
     #kt_app_sidebar_menu_scroll::-webkit-scrollbar {
         width: 4px;
     }
@@ -139,7 +139,7 @@
         }
     }
 
-    /* Custom Menu Arrow + and - */
+    
     #kt_app_sidebar_menu .menu-item .menu-arrow:after {
         content: "+" !important;
         background: none !important;

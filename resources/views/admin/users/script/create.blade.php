@@ -12,11 +12,9 @@
                 $('#id_fakultas').val(null).trigger('change.select2');
             }
         });
-        // Set initial state
         $('#role').trigger('change');
         let submitButtonCreate = formCreate.querySelector('[type="submit"]');
         if (!submitButtonCreate) {
-             // Try to find by indicator class if type="submit" is missing
              const ind = formCreate.querySelector('.indicator-label');
              if(ind) submitButtonCreate = ind.closest('button');
         }

@@ -81,7 +81,6 @@
                             <div class="row g-5">
                                 @foreach ($steps as $stepNum => $step)
                                     @php
-                                        // Logika warna dasar card berdasarkan status (abu-abu jika menunggu)
                                         $stepColor =
                                             $step['status'] === 'sudah'
                                                 ? 'success'
@@ -90,7 +89,6 @@
                                                     : ($step['status'] === 'revisi'
                                                         ? 'warning'
                                                         : 'secondary'));
-                                        // Variasi warna cerah untuk teks, angka, dan badge jika masih 'Menunggu'
                                         $themeColors = [
                                             1 => 'primary',
                                             2 => 'info',
@@ -98,13 +96,10 @@
                                             4 => 'info',
                                             5 => 'primary',
                                         ];
-                                        // Gunakan warna status asli jika sudah selesai/ditolak/revisi,
-                                        // tapi gunakan warna tema cerah jika masih 'Menunggu' (secondary)
                                         $themeColor =
                                             $stepColor === 'secondary'
                                                 ? $themeColors[$stepNum] ?? 'primary'
                                                 : $stepColor;
-                                        // Logika teks dan badge status
                                         if ($step['status'] === 'sudah') {
                                             $badgeClass = 'badge-success';
                                             $stepText = 'Selesai';
@@ -118,7 +113,6 @@
                                             $badgeClass = 'badge-light-warning';
                                             $stepText = 'Menunggu';
                                         }
-                                        // Khusus warna teks di dalam lingkaran agar jelas saat background warning (kuning)
                                         $circleTextColor = $themeColor === 'warning' ? 'text-gray-800' : 'text-white';
                                     @endphp
                                     <div class="col-md-6 col-lg position-relative">

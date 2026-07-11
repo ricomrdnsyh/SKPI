@@ -2,7 +2,6 @@
     function editModal(element) {
         let data = JSON.parse($(element).attr('data-row'));
         let form = document.getElementById('form_edit_fakultas');
-        // Auto-populate inputs based on data keys
         for (let key in data) {
             let input = form.querySelector('[name="' + key + '"]');
             if (input) {
@@ -13,9 +12,7 @@
                 }
             }
         }
-        // Handle specific logic like Select2 triggers
         $(form).find('select').trigger('change');
-        // Set form action
         form.action = '/akademik/fakultas/' + data.id_fakultas;
         $('#form_edit').modal('show');
     }

@@ -2,23 +2,18 @@
     function editModal(element) {
         let data = JSON.parse($(element).attr('data-row'));
         let form = document.getElementById('form_edit_organisasi');
-        // Auto-populate inputs based on data keys
         for (let key in data) {
             let input = form.querySelector('[name="' + key + '"]');
             if (input) {
                 if (input.type === 'file') {
-                    // skip file inputs
                 } else if (input.type === 'checkbox' || input.type === 'radio') {
-                    // Handle checkbox/radio if needed
                     if(input.value == data[key]) input.checked = true;
                 } else {
                     input.value = data[key];
                 }
             }
         }
-        // Handle specific logic like Select2 triggers
         $(form).find('select').trigger('change.select2');
-        // Set form action
         form.action = '/mahasiswa/organisasi/' + data.id_organisasi_mhs;
         $('#form_edit').modal('show');
     }
