@@ -175,6 +175,9 @@ class KurikulumController extends Controller
         }
 
         return DataTables::of($query)
+            ->filterColumn('prodi', function($query, $keyword) {
+                $query->where('program_studi.nama_prodi', 'like', "%{$keyword}%");
+            })
             ->addColumn('prodi', fn($k) => $k->prodi_nama ?? '-')
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');

@@ -189,6 +189,12 @@ class SertifikatController extends Controller
         if ($request->filled('status')) $query->where('sertifikat_mahasiswa.status', $request->status);
 
         return DataTables::of($query)
+            ->filterColumn('nama_mahasiswa', function($query, $keyword) {
+                $query->where('mahasiswa.nama_lengkap', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('nim', function($query, $keyword) {
+                $query->where('mahasiswa.nim', 'like', "%{$keyword}%");
+            })
             ->addColumn('jenis', fn($row) => $row->jenis_sertifikat)
             ->addColumn('tanggal_terbit', fn($row) => DataTableHelper::tanggal($row->tanggal_terbit))
             ->addColumn('bukti', fn($row) => DataTableHelper::buktiLink($row->file_bukti))

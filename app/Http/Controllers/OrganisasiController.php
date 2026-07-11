@@ -186,6 +186,12 @@ class OrganisasiController extends Controller
         if ($request->filled('status')) $query->where('organisasi_mahasiswa.status', $request->status);
 
         return DataTables::of($query)
+            ->filterColumn('nama_mahasiswa', function($query, $keyword) {
+                $query->where('mahasiswa.nama_lengkap', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('nim', function($query, $keyword) {
+                $query->where('mahasiswa.nim', 'like', "%{$keyword}%");
+            })
             ->addColumn('bukti', fn($row) => DataTableHelper::buktiLink($row->file_bukti))
             ->addColumn('status', fn($row) => DataTableHelper::statusBadge($row->status, ['pending' => 'warning', 'approved' => 'success', 'rejected' => 'danger']))
             ->addColumn('catatan', fn($row) => $row->keterangan ? e($row->keterangan) : '-')

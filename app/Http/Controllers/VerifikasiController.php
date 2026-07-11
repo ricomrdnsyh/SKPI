@@ -565,6 +565,15 @@ class VerifikasiController extends Controller
         }
 
         return DataTables::of($query)
+            ->filterColumn('mahasiswa', function($query, $keyword) {
+                $query->where('mahasiswa.nama_lengkap', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('nim', function($query, $keyword) {
+                $query->where('mahasiswa.nim', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('prodi', function($query, $keyword) {
+                $query->where('program_studi.nama_prodi', 'like', "%{$keyword}%");
+            })
             ->addColumn('mahasiswa', fn($p) => $p->mhs_nama ?? '-')
             ->addColumn('nim', fn($p) => $p->mhs_nim ?? '-')
             ->addColumn('prodi', fn($p) => $p->prodi_nama ?? '-')

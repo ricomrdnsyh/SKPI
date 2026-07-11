@@ -169,6 +169,20 @@ class ProgramStudiController extends Controller
         }
 
         return DataTables::of($query)
+            ->filterColumn('prodi', function($query, $keyword) {
+                $query->whereRaw("CONCAT(program_studi.nama_prodi, ' (', IFNULL(program_studi.gelar, ''), ')') like ?", ["%{$keyword}%"])
+                      ->orWhere('program_studi.nama_prodi', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('jenjang', function($query, $keyword) {
+                $query->whereRaw("CONCAT(program_studi.jenjang, ' - ', IFNULL(program_studi.gelar, '')) like ?", ["%{$keyword}%"])
+                      ->orWhere('program_studi.jenjang', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('akreditasi', function($query, $keyword) {
+                $query->where('program_studi.sk_akreditasi', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('fakultas', function($query, $keyword) {
+                $query->where('fakultas.nama_fakultas', 'like', "%{$keyword}%");
+            })
             ->addColumn('prodi', fn($p) => $p->nama_prodi . ($p->gelar ? ' (' . $p->gelar . ')' : ''))
             ->addColumn('jenjang', fn($p) => $p->jenjang . ($p->gelar ? ' - ' . $p->gelar : ''))
             ->addColumn('akreditasi', fn($p) => ($p->sk_akreditasi ?? '-') . ($p->masa_berlaku_akreditasi ? ' s.d ' . Carbon::parse($p->masa_berlaku_akreditasi)->isoFormat('D MMM YYYY') : ''))

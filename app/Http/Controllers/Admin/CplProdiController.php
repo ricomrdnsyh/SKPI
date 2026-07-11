@@ -212,6 +212,18 @@ class CplProdiController extends Controller
         }
 
         return DataTables::of($query)
+            ->filterColumn('prodi', function($query, $keyword) {
+                $query->where('program_studi.nama_prodi', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('kurikulum', function($query, $keyword) {
+                $query->where('kurikulum.nama_kurikulum', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('kategori', function($query, $keyword) {
+                $query->where('kategori_cpl.nama_kategori', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('deskripsi', function($query, $keyword) {
+                $query->where('cpl_prodi.deskripsi_cpl', 'like', "%{$keyword}%");
+            })
             ->addColumn('prodi', fn($c) => $c->prodi_nama ?? '-')
             ->addColumn('kurikulum', fn($c) => $c->kurikulum_nama ?? '-')
             ->addColumn('kategori', fn($c) => $c->kategori_nama ?? '-')

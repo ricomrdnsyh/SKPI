@@ -208,6 +208,12 @@ class UserController extends Controller
         }
 
         return DataTables::of($query)
+            ->filterColumn('prodi', function($query, $keyword) {
+                $query->where('program_studi.nama_prodi', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('fakultas', function($query, $keyword) {
+                $query->where('fakultas.nama_fakultas', 'like', "%{$keyword}%");
+            })
             ->addColumn('role', function ($u) {
                 $roleLabel = ucfirst(str_replace('_', ' ', $u->role));
                 return '<span class="badge badge-' . ($u->role === 'admin' ? 'success' : 'primary') . '">' . $roleLabel . '</span>';

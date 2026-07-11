@@ -77,6 +77,12 @@ class TugasAkhirController extends Controller
         }
 
         return DataTables::of($query)
+            ->filterColumn('nama_mahasiswa', function($query, $keyword) {
+                $query->where('mahasiswa.nama_lengkap', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('nim', function($query, $keyword) {
+                $query->where('mahasiswa.nim', 'like', "%{$keyword}%");
+            })
             ->addColumn('pembimbing', function($row) {
                 // Eager loading should ideally be done in the query, but since we are joining,
                 // we can just fetch the related model instances.

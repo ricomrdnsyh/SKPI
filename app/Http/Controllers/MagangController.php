@@ -185,6 +185,12 @@ class MagangController extends Controller
         if ($request->filled('status')) $query->where('magang_mahasiswa.status', $request->status);
 
         return DataTables::of($query)
+            ->filterColumn('nama_mahasiswa', function($query, $keyword) {
+                $query->where('mahasiswa.nama_lengkap', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('nim', function($query, $keyword) {
+                $query->where('mahasiswa.nim', 'like', "%{$keyword}%");
+            })
             ->addColumn('mitra', fn($row) => $row->tempat_magang ?? '-')
             ->addColumn('tanggal_mulai', fn($row) => DataTableHelper::tanggal($row->tanggal_mulai))
             ->addColumn('tanggal_selesai', fn($row) => DataTableHelper::tanggal($row->tanggal_selesai))

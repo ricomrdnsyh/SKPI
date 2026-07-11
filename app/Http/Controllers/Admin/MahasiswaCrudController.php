@@ -201,6 +201,9 @@ class MahasiswaCrudController extends Controller
         }
 
         return DataTables::of($query)
+            ->filterColumn('prodi', function($query, $keyword) {
+                $query->where('program_studi.nama_prodi', 'like', "%{$keyword}%");
+            })
             ->addColumn('prodi', fn($m) => $m->prodi_nama ?? '-')
             ->addColumn('status', fn($m) => '<span class="badge badge-success">' . ($m->status ?? 'Aktif') . '</span>')
             ->addColumn('action', function ($row) {
