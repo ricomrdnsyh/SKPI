@@ -21,6 +21,22 @@
             height: 28px;
         }
     }
+    
+    /* Header Transparency and Sticky Styling */
+    #kt_app_header {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    body[data-kt-app-header-minimize="on"] #kt_app_header {
+        background-color: #ffffff !important;
+        box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05) !important;
+    }
+    
+    [data-bs-theme="dark"] body[data-kt-app-header-minimize="on"] #kt_app_header {
+        background-color: #1e1e2d !important;
+    }
 </style>
 @php
     $currentUser = auth()->user();
@@ -36,7 +52,7 @@
     }
 @endphp
 <div id="kt_app_header" class="app-header" data-kt-sticky="true" data-kt-sticky-activate="{default: true, lg: true}"
-    data-kt-sticky-name="app-header-minimize" data-kt-sticky-offset="{default: '200px', lg: '0'}"
+    data-kt-sticky-name="app-header-minimize" data-kt-sticky-offset="{default: '10px', lg: '0'}"
     data-kt-sticky-animation="false">
     <div class="app-container container-fluid d-flex align-items-stretch justify-content-between"
         id="kt_app_header_container">

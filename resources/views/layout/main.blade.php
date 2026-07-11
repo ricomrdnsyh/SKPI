@@ -17,12 +17,17 @@
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .app-container {
+            max-width: 100% !important;
+        }
+    </style>
     @yield('css')
 </head>
-<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
+<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true" data-kt-app-header-fixed-mobile="true"
     data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
     data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
-    data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
+    data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default" style="overflow-x: hidden;">
     <script>
         var defaultThemeMode = "light";
         var themeMode;
@@ -42,7 +47,7 @@
             document.documentElement.setAttribute("data-bs-theme", themeMode);
         }
     </script>
-    <div class="d-flex flex-column flex-root app-root" id="kt_app_root" style="overflow-x: hidden;">
+    <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
         <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
             @include('layout.header')
             <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
