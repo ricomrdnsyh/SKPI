@@ -107,7 +107,41 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="separator my-5"></div>
+                        <div class="card-body py-4 px-8 filter-container mt-4">
+                            <div class="border border-dashed rounded p-5 mb-5" style="border-color: #b5b5c3 !important;">
+                                <h5 class="text-primary mb-4"><i class="fas fa-filter text-primary me-2"></i>Filter Data</h5>
+                                <div class="row g-5">
+                                    @if(auth()->user()->role == 'admin')
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold mb-2">Fakultas:</label>
+                                            <select class="form-select form-select-sm" data-control="select2"
+                                                data-placeholder="Semua Fakultas" data-allow-clear="true" data-filter="fakultas"
+                                                id="filter-fakultas">
+                                                <option value="">Semua Fakultas</option>
+                                                @if(isset($fakultas) && count($fakultas) > 0)
+                                                    @foreach ($fakultas as $fak)
+                                                        <option value="{{ $fak->id_fakultas }}">{{ $fak->nama_fakultas }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                    @else
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                    @endif
+                                        <label class="form-label fw-bold mb-2">Program Studi:</label>
+                                        <select class="form-select form-select-sm" data-control="select2"
+                                            data-placeholder="Semua Prodi" data-allow-clear="true" data-filter="prodi"
+                                            id="filter-prodi">
+                                            <option value="">Semua Prodi</option>
+                                            @foreach ($prodi as $pr)
+                                                <option value="{{ $pr->id_prodi }}" data-fakultas="{{ $pr->id_fakultas ?? '' }}">{{ $pr->nama_prodi }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card-body pt-0">
                             <table class="table align-middle table-row-dashed fs-6 gy-5" id="table-kurikulum">
                                 <thead class="">

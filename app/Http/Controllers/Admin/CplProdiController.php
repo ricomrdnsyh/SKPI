@@ -35,13 +35,15 @@ class CplProdiController extends Controller
 
         $user = Auth::user();
         if ($allowedProdis === null) {
-            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
+            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi', 'id_fakultas')->get();
+            $fakultas = DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get();
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
                 ->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
+            $fakultas = [];
             $kurikulums = DB::table('kurikulum')
                 ->leftJoin('program_studi', 'kurikulum.id_prodi', '=', 'program_studi.id_prodi')
                 ->select('kurikulum.*', 'program_studi.nama_prodi as prodi_nama')
@@ -50,7 +52,7 @@ class CplProdiController extends Controller
         }
         $kategori = DB::table('kategori_cpl')->select('id_kategori', 'kode_kategori', 'nama_kategori', 'urutan')->orderBy('urutan')->get();
 
-        return view('admin.cpl.index', compact('prodiList', 'kurikulumList', 'prodi', 'kurikulums', 'kategori'));
+        return view('admin.cpl.index', compact('prodiList', 'kurikulumList', 'prodi', 'kurikulums', 'kategori', 'fakultas'));
     }
 
 
@@ -204,6 +206,9 @@ class CplProdiController extends Controller
         }
         if ($request->filled('id_kurikulum')) {
             $query->where('cpl_prodi.id_kurikulum', $request->id_kurikulum);
+        }
+        if ($request->filled('id_fakultas')) {
+            $query->where('program_studi.id_fakultas', $request->id_fakultas);
         }
 
         return DataTables::of($query)

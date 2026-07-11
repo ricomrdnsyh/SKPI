@@ -51,6 +51,9 @@
                 url: '{{ route('kurikulum.datatable') }}',
                 data: function(d) {
                     d.id_prodi = $('#filter-prodi').val();
+                    if ($('#filter-fakultas').length) {
+                        d.id_fakultas = $('#filter-fakultas').val();
+                    }
                 }
             },
             columns: [{
@@ -78,6 +81,33 @@
         table.on('draw', function() {
             $('#table-kurikulum [data-bs-toggle="tooltip"]').tooltip();
         });
+        let originalProdiOptions = $('#filter-prodi option').clone();
+        
+        $('#filter-fakultas').on('change', function() {
+            let selectedFakultas = $(this).val();
+            let prodiSelect = $('#filter-prodi');
+            let currentSelected = prodiSelect.val();
+            
+            prodiSelect.empty();
+            
+            originalProdiOptions.each(function() {
+                let fakId = $(this).data('fakultas');
+                if (!selectedFakultas || fakId == selectedFakultas || !$(this).val()) {
+                    prodiSelect.append($(this).clone());
+                }
+            });
+            
+            if (prodiSelect.find('option[value="' + currentSelected + '"]').length) {
+                prodiSelect.val(currentSelected);
+            } else {
+                prodiSelect.val('');
+            }
+            
+            // Prevent recursive trigger loop by reloading table manually instead of trigger('change')
+            prodiSelect.trigger('change.select2');
+            table.ajax.reload(null, false);
+        });
+
         $('#filter-prodi').on('change', function() {
             table.ajax.reload(null, false);
         });

@@ -50,7 +50,9 @@
             ajax: {
                 url: '{{ route('prodi.datatable') }}',
                 data: function(d) {
-                    d.id_fakultas = $('#filter-fakultas').val();
+                    if ($('#filter-fakultas').length) {
+                        d.id_fakultas = $('#filter-fakultas').val();
+                    }
                 }
             },
             columns: [{

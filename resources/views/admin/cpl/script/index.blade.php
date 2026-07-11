@@ -52,6 +52,9 @@
                 data: function(d) {
                     d.id_prodi = $('#filter-prodi').val();
                     d.id_kurikulum = $('#filter-kurikulum').val();
+                    if ($('#filter-fakultas').length) {
+                        d.id_fakultas = $('#filter-fakultas').val();
+                    }
                 }
             },
             columns: [{
@@ -91,7 +94,58 @@
         table.on('draw', function() {
             $('#table-cpl [data-bs-toggle="tooltip"]').tooltip();
         });
-        $('#filter-prodi, #filter-kurikulum').on('change', function() {
+        let originalProdiOptions = $('#filter-prodi option').clone();
+        let originalKurikulumOptions = $('#filter-kurikulum option').clone();
+        
+        $('#filter-fakultas').on('change', function() {
+            let selectedFakultas = $(this).val();
+            let prodiSelect = $('#filter-prodi');
+            let currentSelected = prodiSelect.val();
+            
+            prodiSelect.empty();
+            
+            originalProdiOptions.each(function() {
+                let fakId = $(this).data('fakultas');
+                if (!selectedFakultas || fakId == selectedFakultas || !$(this).val()) {
+                    prodiSelect.append($(this).clone());
+                }
+            });
+            
+            if (prodiSelect.find('option[value="' + currentSelected + '"]').length) {
+                prodiSelect.val(currentSelected);
+            } else {
+                prodiSelect.val('');
+            }
+            
+            prodiSelect.trigger('change.select2');
+            $('#filter-prodi').trigger('change');
+        });
+
+        $('#filter-prodi').on('change', function() {
+            let selectedProdi = $(this).val();
+            let kurikulumSelect = $('#filter-kurikulum');
+            let currentSelected = kurikulumSelect.val();
+            
+            kurikulumSelect.empty();
+            
+            originalKurikulumOptions.each(function() {
+                let prodiId = $(this).data('prodi');
+                if (!selectedProdi || prodiId == selectedProdi || !$(this).val()) {
+                    kurikulumSelect.append($(this).clone());
+                }
+            });
+            
+            if (kurikulumSelect.find('option[value="' + currentSelected + '"]').length) {
+                kurikulumSelect.val(currentSelected);
+            } else {
+                kurikulumSelect.val('');
+            }
+            
+            kurikulumSelect.trigger('change.select2');
+            table.ajax.reload(null, false);
+        });
+
+        $('#filter-kurikulum').on('change', function() {
             table.ajax.reload(null, false);
         });
     });

@@ -21,12 +21,14 @@ class KurikulumController extends Controller
         $allowedProdis = $this->getAllowedProdiIds();
         $prodiList = $this->getProdiOptions($allowedProdis);
         if ($allowedProdis === null) {
-            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
+            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi', 'id_fakultas')->get();
+            $fakultas = DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get();
         } else {
             $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
+            $fakultas = [];
         }
 
-        return view('admin.kurikulum.index', compact('prodiList', 'prodi'));
+        return view('admin.kurikulum.index', compact('prodiList', 'prodi', 'fakultas'));
     }
 
     public function create()
@@ -166,6 +168,10 @@ class KurikulumController extends Controller
 
         if ($request->filled('id_prodi')) {
             $query->where('kurikulum.id_prodi', $request->id_prodi);
+        }
+
+        if ($request->filled('id_fakultas')) {
+            $query->where('program_studi.id_fakultas', $request->id_fakultas);
         }
 
         return DataTables::of($query)

@@ -165,7 +165,7 @@ class ProgramStudiController extends Controller
         }
 
         if ($request->filled('id_fakultas')) {
-            $query->where('fakultas.nama_fakultas', $request->id_fakultas);
+            $query->where('program_studi.id_fakultas', $request->id_fakultas);
         }
 
         return DataTables::of($query)
