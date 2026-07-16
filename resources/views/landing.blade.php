@@ -83,17 +83,14 @@
 
 <body class="font-sans antialiased text-slate-800 bg-white">
 
-    <!-- Navbar -->
     <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 relative">
-                <!-- Logo -->
                 <a href="#beranda" class="flex-shrink-0 flex items-center">
                     <img class="h-8 md:h-9 w-auto" src="{{ asset('assets/media/logos/skpi-dark.png') }}"
                         alt="Logo SKPI">
                 </a>
 
-                <!-- Centered Desktop Menu -->
                 <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center space-x-8">
                     <a href="#beranda"
                         class="text-sm font-semibold text-slate-600 hover:text-blue-700 transition">Beranda</a>
@@ -103,15 +100,12 @@
                         class="text-sm font-semibold text-slate-600 hover:text-blue-700 transition">Alur</a>
                 </div>
 
-                <!-- Right Side Actions -->
                 <div class="flex items-center gap-4">
-                    <!-- CTA Button Desktop -->
                     <a href="{{ route('login') }}"
                         class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-blue-700 hover:bg-blue-800 shadow-lg shadow-blue-700/30 hover:shadow-blue-700/50 transition-all duration-200 hover:-translate-y-0.5">
                         Masuk Portal
                     </a>
 
-                    <!-- Mobile menu button -->
                     <button id="mobile-menu-btn"
                         class="md:hidden p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none">
                         <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -122,7 +116,6 @@
                 </div>
             </div>
         </div>
-        <!-- Mobile Menu Panel -->
         <div id="mobile-menu-panel" class="md:hidden hidden bg-white border-t border-slate-100">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 shadow-lg">
                 <a href="#beranda"
@@ -138,10 +131,8 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section id="beranda"
         class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-unujablue-950 clip-diagonal">
-        <!-- Abstract Background Shapes -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div
                 class="absolute -top-40 -right-40 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[120px] opacity-60 animate-blob">
@@ -156,7 +147,6 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- Text Content -->
                 <div>
                     <div
                         class="inline-flex items-center px-4 py-2 rounded-full bg-blue-900/50 border border-blue-400/20 mb-6 backdrop-blur-sm opacity-0 animate-fade-in-up">
@@ -192,12 +182,9 @@
                         </a>
                     </div>
                 </div>
-
-                <!-- Illustration -->
                 <div class="hidden lg:flex justify-end relative opacity-0 animate-fade-in-up"
                     style="animation-delay: 800ms;">
                     <div class="relative w-full max-w-lg hover:z-20">
-                        <!-- Glass Card 1 -->
                         <div
                             class="group absolute -top-10 -right-4 w-72 bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-2xl transform rotate-3 animate-[float_6s_ease-in-out_infinite] hover:bg-white/20 hover:border-white/40 hover:shadow-blue-400/20 transition-all duration-300 cursor-default">
                             <div
@@ -229,7 +216,6 @@
                             </div>
                         </div>
 
-                        <!-- Glass Card 2 -->
                         <div
                             class="group relative mt-20 w-80 bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl shadow-2xl border border-white z-10 animate-[float_7s_ease-in-out_infinite_reverse] hover:shadow-blue-500/20 hover:border-blue-200 transition-all duration-300 cursor-default">
                             <div
@@ -281,7 +267,6 @@
         </div>
     </section>
 
-    <!-- Tentang Section -->
     <section id="tentang" class="py-24 bg-white relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -301,7 +286,6 @@
                     </p>
                 </div>
 
-                <!-- Features List Right Side -->
                 <div class="space-y-6">
                     <div
                         class="group flex items-start bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
@@ -366,7 +350,6 @@
         </div>
     </section>
 
-    <!-- Dokumen / Alur Section (Timeline) -->
     <section id="alur" class="py-24 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
@@ -376,21 +359,16 @@
                     memvalidasi portofolio dokumen SKPI sebelum diterbitkan.</p>
             </div>
 
-            <!-- Horizontal Timeline -->
             <div class="relative max-w-5xl mx-auto flex justify-center">
-                <!-- Line -->
                 <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-1 bg-slate-200 z-0 rounded-full">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 w-full relative z-10">
-
-                    <!-- Step 1 -->
                     <div
                         class="group flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
                             class="w-24 h-24 rounded-full bg-white border-4 border-slate-50 shadow-xl text-blue-600 flex items-center justify-center text-3xl font-extrabold mb-6 relative group-hover:scale-110 transition-transform duration-300">
                             1
-                            <!-- Active indicator -->
                             <div
                                 class="absolute -inset-1 rounded-full border-2 border-blue-500 border-dashed animate-[spin_10s_linear_infinite]">
                             </div>
@@ -400,8 +378,6 @@
                         <p class="text-slate-600 text-sm">Masuk ke portal, pada data pendukung, unggah berkas
                             sertifikat prestasi atau pengalaman yang Anda miliki.</p>
                     </div>
-
-                    <!-- Step 2 -->
                     <div
                         class="group flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
@@ -414,8 +390,6 @@
                         <p class="text-slate-600 text-sm">Data yang diunggah akan diverifikasi kebenarannya oleh
                             BAAK Fakultas secara sistem.</p>
                     </div>
-
-                    <!-- Step 3 -->
                     <div
                         class="group flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
