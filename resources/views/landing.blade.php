@@ -35,6 +35,22 @@
                             900: '#1e3a5f',
                             950: '#0f2744'
                         }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
                     }
                 }
             }
@@ -56,10 +72,10 @@
     <!-- Navbar -->
     <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20 relative">
+            <div class="flex justify-between items-center h-16 relative">
                 <!-- Logo -->
                 <a href="#beranda" class="flex-shrink-0 flex items-center">
-                    <img class="h-9 md:h-10 w-auto" src="{{ asset('assets/media/logos/skpi-dark.png') }}"
+                    <img class="h-8 md:h-9 w-auto" src="{{ asset('assets/media/logos/skpi-dark.png') }}"
                         alt="Logo SKPI">
                 </a>
 
@@ -114,13 +130,13 @@
         <!-- Abstract Background Shapes -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
             <div
-                class="absolute -top-40 -right-40 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[120px] opacity-60">
+                class="absolute -top-40 -right-40 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[120px] opacity-60 animate-blob">
             </div>
             <div
-                class="absolute top-40 -left-20 w-72 h-72 bg-emerald-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-40">
+                class="absolute top-40 -left-20 w-72 h-72 bg-emerald-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-40 animate-blob" style="animation-delay: 2s">
             </div>
             <div
-                class="absolute bottom-0 right-1/4 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-[120px] opacity-50">
+                class="absolute bottom-0 right-1/4 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-[120px] opacity-50 animate-blob" style="animation-delay: 4s">
             </div>
         </div>
 
@@ -129,44 +145,44 @@
                 <!-- Text Content -->
                 <div>
                     <div
-                        class="inline-flex items-center px-4 py-2 rounded-full bg-blue-900/50 border border-blue-400/20 mb-6 backdrop-blur-sm">
+                        class="inline-flex items-center px-4 py-2 rounded-full bg-blue-900/50 border border-blue-400/20 mb-6 backdrop-blur-sm opacity-0 animate-fade-in-up">
                         <span class="flex w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
                         <span class="text-sm font-semibold text-blue-200">Terintegrasi dengan SSO UNUJA</span>
                     </div>
                     <h1
-                        class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
+                        class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 opacity-0 animate-fade-in-up" style="animation-delay: 200ms;">
                         Surat Keterangan <br />
                         <span
                             class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Pendamping
                             Ijazah</span>
                     </h1>
-                    <p class="text-lg text-slate-300 mb-8 max-w-xl leading-relaxed">
+                    <p class="text-lg text-slate-300 mb-8 max-w-xl leading-relaxed opacity-0 animate-fade-in-up" style="animation-delay: 400ms;">
                         Dokumen resmi yang memuat informasi tentang pencapaian akademik dan kualifikasi lulusan
                         Universitas Nurul Jadid, selaras dengan Kerangka Kualifikasi Nasional Indonesia (KKNI).
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in-up" style="animation-delay: 600ms;">
                         <a href="{{ route('login') }}"
-                            class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-unujablue-950 bg-white rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105">
+                            class="group inline-flex items-center justify-center px-8 py-4 text-base font-bold text-unujablue-950 bg-white rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 hover:-translate-y-1">
                             Akses Dashboard
-                            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
                         </a>
                         <a href="#tentang"
-                            class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-transparent border border-white/30 rounded-xl hover:bg-white/10 transition-all duration-300">
+                            class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-transparent border border-white/30 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                             Pelajari SKPI
                         </a>
                     </div>
                 </div>
 
                 <!-- Illustration -->
-                <div class="hidden lg:flex justify-end relative">
-                    <div class="relative w-full max-w-lg">
+                <div class="hidden lg:flex justify-end relative opacity-0 animate-fade-in-up" style="animation-delay: 800ms;">
+                    <div class="relative w-full max-w-lg hover:z-20">
                         <!-- Glass Card 1 -->
                         <div
-                            class="absolute -top-10 -right-4 w-72 bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-2xl transform rotate-3 animate-[float_6s_ease-in-out_infinite]">
-                            <div class="flex items-center gap-4 mb-4">
+                            class="group absolute -top-10 -right-4 w-72 bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-2xl transform rotate-3 animate-[float_6s_ease-in-out_infinite] hover:bg-white/20 hover:border-white/40 hover:shadow-blue-400/20 transition-all duration-300 cursor-default">
+                            <div class="flex items-center gap-4 mb-4 group-hover:scale-105 group-hover:translate-x-2 transition-all duration-300">
                                 <div
                                     class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-400/30">
                                     <svg class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor"
@@ -180,26 +196,28 @@
                                     <p class="text-blue-200 text-xs">Standar Nasional</p>
                                 </div>
                             </div>
-                            <div class="w-full bg-white/20 h-2 rounded-full mb-2">
-                                <div class="w-full h-full bg-blue-400 rounded-full"></div>
+                            <div class="w-full bg-white/20 h-2 rounded-full mb-2 overflow-hidden">
+                                <div class="w-full h-full bg-blue-400 rounded-full group-hover:bg-blue-300 group-hover:translate-x-full transition-all duration-1000 -translate-x-full"></div>
+                                <div class="w-full h-full bg-blue-400 rounded-full -mt-2"></div>
                             </div>
-                            <div class="w-3/4 bg-white/20 h-2 rounded-full">
-                                <div class="w-full h-full bg-blue-400 rounded-full"></div>
+                            <div class="w-3/4 bg-white/20 h-2 rounded-full overflow-hidden">
+                                <div class="w-full h-full bg-blue-400 rounded-full group-hover:bg-blue-300 group-hover:translate-x-full transition-all duration-1000 delay-100 -translate-x-full"></div>
+                                <div class="w-full h-full bg-blue-400 rounded-full -mt-2"></div>
                             </div>
                         </div>
 
                         <!-- Glass Card 2 -->
                         <div
-                            class="relative mt-20 w-80 bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl shadow-2xl border border-white z-10 animate-[float_7s_ease-in-out_infinite_reverse]">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-slate-800 font-extrabold text-lg">Sertifikat SKPI</h3>
+                            class="group relative mt-20 w-80 bg-gradient-to-br from-white to-blue-50 p-6 rounded-2xl shadow-2xl border border-white z-10 animate-[float_7s_ease-in-out_infinite_reverse] hover:shadow-blue-500/20 hover:border-blue-200 transition-all duration-300 cursor-default">
+                            <div class="flex items-center justify-between mb-6 group-hover:scale-105 transition-transform duration-300">
+                                <h3 class="text-slate-800 font-extrabold text-lg group-hover:text-blue-700 transition-colors">Sertifikat SKPI</h3>
                                 <span
                                     class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">Terverifikasi</span>
                             </div>
                             <div class="space-y-4">
-                                <div class="flex items-start gap-3">
+                                <div class="flex items-start gap-3 p-2 -mx-2 rounded-xl hover:bg-blue-100/50 transition-colors group-hover:translate-x-1 duration-300">
                                     <div
-                                        class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                                        class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 group-hover:bg-blue-200 group-hover:rotate-12 transition-all">
                                         <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -212,9 +230,9 @@
                                         <p class="text-slate-500 text-xs">3 Sertifikat tercatat</p>
                                     </div>
                                 </div>
-                                <div class="flex items-start gap-3">
+                                <div class="flex items-start gap-3 p-2 -mx-2 rounded-xl hover:bg-indigo-100/50 transition-colors group-hover:translate-x-1 duration-300 delay-75">
                                     <div
-                                        class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                                        class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 group-hover:bg-indigo-200 group-hover:rotate-12 transition-all">
                                         <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -258,9 +276,9 @@
                 <!-- Features List Right Side -->
                 <div class="space-y-6">
                     <div
-                        class="flex items-start bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-200 hover:bg-white hover:shadow-lg transition-all duration-300">
+                        class="group flex items-start bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-blue-200 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
-                            class="w-14 h-14 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0 mr-5">
+                            class="w-14 h-14 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0 mr-5 group-hover:scale-110 transition-transform duration-300">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
@@ -269,16 +287,16 @@
                             </svg>
                         </div>
                         <div>
-                            <h4 class="text-xl font-bold text-slate-900 mb-2">Standar KKNI</h4>
+                            <h4 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">Standar KKNI</h4>
                             <p class="text-slate-600 text-sm leading-relaxed">Disusun berdasarkan pedoman Kerangka
                                 Kualifikasi Nasional Indonesia yang diakui secara nasional maupun internasional.</p>
                         </div>
                     </div>
 
                     <div
-                        class="flex items-start bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-emerald-200 hover:bg-white hover:shadow-lg transition-all duration-300">
+                        class="group flex items-start bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-emerald-200 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
-                            class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0 mr-5">
+                            class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0 mr-5 group-hover:scale-110 transition-transform duration-300">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -286,16 +304,16 @@
                             </svg>
                         </div>
                         <div>
-                            <h4 class="text-xl font-bold text-slate-900 mb-2">Tanda Tangan Elektronik</h4>
+                            <h4 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors">Tanda Tangan Elektronik</h4>
                             <p class="text-slate-600 text-sm leading-relaxed">Dokumen terbit dilengkapi dengan QR Code
                                 dan sertifikasi elektronik (TTE) sehingga keasliannya terjamin 100%.</p>
                         </div>
                     </div>
 
                     <div
-                        class="flex items-start bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-indigo-200 hover:bg-white hover:shadow-lg transition-all duration-300">
+                        class="group flex items-start bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-indigo-200 hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
-                            class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center shrink-0 mr-5">
+                            class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center shrink-0 mr-5 group-hover:scale-110 transition-transform duration-300">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -303,7 +321,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h4 class="text-xl font-bold text-slate-900 mb-2">SSO Terintegrasi</h4>
+                            <h4 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-700 transition-colors">SSO Terintegrasi</h4>
                             <p class="text-slate-600 text-sm leading-relaxed">Login mudah menggunakan Single Sign-On
                                 (SSO) UNUJA. Data profil dan akademik otomatis tersinkronisasi.</p>
                         </div>
@@ -333,38 +351,38 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12 w-full relative z-10">
 
                     <!-- Step 1 -->
-                    <div class="flex flex-col items-center text-center">
+                    <div class="group flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
-                            class="w-24 h-24 rounded-full bg-white border-4 border-slate-50 shadow-xl text-blue-600 flex items-center justify-center text-3xl font-extrabold mb-6 relative">
+                            class="w-24 h-24 rounded-full bg-white border-4 border-slate-50 shadow-xl text-blue-600 flex items-center justify-center text-3xl font-extrabold mb-6 relative group-hover:scale-110 transition-transform duration-300">
                             1
                             <!-- Active indicator -->
                             <div
                                 class="absolute -inset-1 rounded-full border-2 border-blue-500 border-dashed animate-[spin_10s_linear_infinite]">
                             </div>
                         </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-3">Pengisian Data</h4>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-700 transition-colors">Pengisian Data</h4>
                         <p class="text-slate-600 text-sm">Masuk ke portal, pada data pendukung, unggah berkas
                             sertifikat prestasi atau pengalaman yang Anda miliki.</p>
                     </div>
 
                     <!-- Step 2 -->
-                    <div class="flex flex-col items-center text-center">
+                    <div class="group flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
-                            class="w-24 h-24 rounded-full bg-white border-4 border-slate-50 shadow-xl text-emerald-600 flex items-center justify-center text-3xl font-extrabold mb-6">
+                            class="w-24 h-24 rounded-full bg-white border-4 border-slate-50 shadow-xl text-emerald-600 flex items-center justify-center text-3xl font-extrabold mb-6 group-hover:scale-110 transition-transform duration-300">
                             2
                         </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-3">Verifikasi BAAK Fakultas</h4>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition-colors">Verifikasi BAAK Fakultas</h4>
                         <p class="text-slate-600 text-sm">Data yang diunggah akan diverifikasi kebenarannya oleh
                             BAAK Fakultas secara sistem.</p>
                     </div>
 
                     <!-- Step 3 -->
-                    <div class="flex flex-col items-center text-center">
+                    <div class="group flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                         <div
-                            class="w-24 h-24 rounded-full bg-blue-700 border-4 border-slate-50 shadow-xl shadow-blue-700/30 text-white flex items-center justify-center text-3xl font-extrabold mb-6">
+                            class="w-24 h-24 rounded-full bg-blue-700 border-4 border-slate-50 shadow-xl shadow-blue-700/30 text-white flex items-center justify-center text-3xl font-extrabold mb-6 group-hover:scale-110 transition-transform duration-300">
                             3
                         </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-3">Penerbitan</h4>
+                        <h4 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-700 transition-colors">Penerbitan</h4>
                         <p class="text-slate-600 text-sm">SKPI resmi terbit bersamaan dengan ijazah kelulusan dan siap
                             diunduh dalam bentuk file digital ber-TTE.</p>
                     </div>
