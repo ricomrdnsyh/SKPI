@@ -101,9 +101,9 @@
                             </div>
                             <div class="card-toolbar">
                                 <div class="d-flex justify-content-end gap-2" data-kt-customer-table-toolbar="base">
-                                    <button type="button" class="btn btn-sm btn-info" id="btn_sync_kurikulum"><i class="fas fa-sync"></i> Sinkronisasi API</button>
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah Kurikulum</button>
+                                    @if(Auth::user()->role === 'admin')
+                                        <button type="button" class="btn btn-sm btn-primary" id="btn_sync_kurikulum"><i class="fas fa-sync"></i> Sinkronisasi Data Kurikulum</button>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -161,7 +161,7 @@
             </div>
         </div>
     </div>
-    @include('admin.kurikulum.create')
+
     @include('admin.kurikulum.edit')
     @include('admin.kurikulum.show')
 @endsection
@@ -179,7 +179,7 @@
     <script src="{{ asset('assets/plugins/custom/datatables/print.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.js') }}"></script>
     @include('admin.kurikulum.script.index')
-    @include('admin.kurikulum.script.create')
+
     @include('admin.kurikulum.script.edit')
     @include('admin.kurikulum.script.show')
 @endsection

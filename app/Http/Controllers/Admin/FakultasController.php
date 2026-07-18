@@ -22,53 +22,7 @@ class FakultasController extends Controller
         return view('admin.fakultas.index');
     }
 
-    public function create()
-    {
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak.');
-        }
-        return view('admin.fakultas.create');
-    }
-
-    public function store(Request $request)
-    {
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak.');
-        }
-
-        $messages = [
-            'nama_fakultas.required' => 'Nama fakultas wajib diisi.',
-            'kode_fakultas.max' => 'Kode fakultas maksimal 10 karakter.',
-            'no_telepon.max' => 'Nomor telepon maksimal 15 karakter.',
-            'status.required' => 'Status wajib dipilih.',
-            'status.in' => 'Status tidak valid.'
-        ];
-
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'nama_fakultas' => 'required|string|max:255',
-            'kode_fakultas' => 'nullable|string|max:10',
-            'dekan' => 'nullable|string|max:100',
-            'nidn_dekan' => 'nullable|string|max:50',
-            'no_telepon' => 'nullable|string|max:15',
-            'status' => 'required|in:aktif,nonaktif',
-        ], $messages);
-
-        if ($validator->fails()) {
-            if ($request->ajax()) {
-                return response()->json(['errors' => $validator->errors()], 422);
-            }
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $data = $request->only(['nama_fakultas', 'kode_fakultas', 'dekan', 'nidn_dekan', 'no_telepon', 'status']);
-        Fakultas::create($data);
-
-        Cache::forget('master:fakultas');
-        if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Data fakultas berhasil ditambahkan.']);
-        }
-        return redirect()->route('fakultas.index')->with('success', 'Data fakultas berhasil ditambahkan.');
-    }
+    // Tambah (create/store) dihapus karena sudah disinkronkan dari API
 
     public function edit($id)
     {
@@ -161,7 +115,12 @@ class FakultasController extends Controller
             ->addColumn('status', fn($f) => '<span class="badge ' . ($f->status === 'aktif' ? 'badge-success' : 'badge-danger') . '">' . ucfirst($f->status) . '</span>')
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_fakultas . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                $btn = '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>';
+                if (Auth::user()->role === 'admin') {
+                    $btn .= ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_fakultas . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>';
+                }
+                $btn .= '</div>';
+                return $btn;
             })
             ->rawColumns(['action', 'status'])
             ->make(true);

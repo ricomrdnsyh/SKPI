@@ -85,11 +85,11 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::resource('mahasiswa', MahasiswaCrudController::class);
         Route::resource('cpl', CplProdiController::class);
         Route::post('kurikulum/sync', [KurikulumController::class, 'sync'])->name('kurikulum.sync');
-        Route::resource('kurikulum', KurikulumController::class);
+        Route::resource('kurikulum', KurikulumController::class)->except(['create', 'store']);
         Route::post('fakultas/sync', [FakultasController::class, 'sync'])->name('fakultas.sync');
-        Route::resource('fakultas', FakultasController::class);
+        Route::resource('fakultas', FakultasController::class)->except(['create', 'store']);
         Route::post('prodi/sync', [ProgramStudiController::class, 'sync'])->name('prodi.sync');
-        Route::resource('prodi', ProgramStudiController::class);
+        Route::resource('prodi', ProgramStudiController::class)->except(['create', 'store']);
         Route::resource('kategori-cpl', KategoriCplController::class);
     });
     Route::prefix('admin')->middleware('role:admin')->group(function () {

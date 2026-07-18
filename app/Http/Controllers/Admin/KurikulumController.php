@@ -31,50 +31,7 @@ class KurikulumController extends Controller
         return view('admin.kurikulum.index', compact('prodiList', 'prodi', 'fakultas'));
     }
 
-    public function create()
-    {
-        $user = Auth::user();
-        $allowedProdis = $this->getAllowedProdiIds($user);
-
-        if ($allowedProdis === null) {
-            $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
-        } else {
-            $prodi = DB::table('program_studi')->whereIn('id_prodi', $allowedProdis)->get();
-        }
-
-        return view('admin.kurikulum.create', compact('prodi'));
-    }
-
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-        $allowedProdis = $this->getAllowedProdiIds($user);
-
-        if ($allowedProdis !== null && !in_array($request->id_prodi, $allowedProdis)) {
-            abort(403, 'Akses prodi tidak diizinkan.');
-        }
-
-        $request->validate([
-            'id_prodi' => 'required|exists:program_studi,id_prodi',
-            'nama_kurikulum' => 'required|string|max:255',
-        ]);
-
-        $existing = DB::table('kurikulum')->where('id_prodi', $request->id_prodi)
-            ->where('nama_kurikulum', $request->nama_kurikulum)
-            ->first();
-
-        if ($existing) {
-            return back()->withInput()->with('error', 'Kurikulum dengan nama ' . $request->nama_kurikulum . ' sudah ada untuk prodi ini.');
-        }
-
-        Kurikulum::create([
-            'id_kurikulum' => \Illuminate\Support\Str::random(7),
-            'id_prodi' => $request->id_prodi,
-            'nama_kurikulum' => $request->nama_kurikulum,
-        ]);
-
-        return redirect()->route('kurikulum.index')->with('success', 'Data kurikulum berhasil ditambahkan.');
-    }
+    // Tambah kurikulum dihapus karena sinkronisasi dari API
 
     public function edit($id)
     {
@@ -182,7 +139,12 @@ class KurikulumController extends Controller
             ->addColumn('prodi', fn($k) => $k->prodi_nama ?? '-')
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_kurikulum . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                $btn = '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>';
+                if (Auth::user()->role === 'admin') {
+                    $btn .= ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_kurikulum . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>';
+                }
+                $btn .= '</div>';
+                return $btn;
             })
             ->rawColumns(['action'])
             ->make(true);

@@ -101,10 +101,9 @@
                             </div>
                             <div class="card-toolbar">
                                 <div class="d-flex justify-content-end gap-2" data-kt-customer-table-toolbar="base">
-                                    <button type="button" class="btn btn-sm btn-info" id="btn_sync_prodi"><i class="fas fa-sync"></i> Sinkronisasi API</button>
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah Program
-                                        Studi</button>
+                                    @if(Auth::user()->role === 'admin')
+                                        <button type="button" class="btn btn-sm btn-primary" id="btn_sync_prodi"><i class="fas fa-sync"></i> Sinkronisasi Data Program Studi</button>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -153,7 +152,6 @@
             </div>
         </div>
     </div>
-    @include('admin.prodi.create')
     @include('admin.prodi.edit')
     @include('admin.prodi.show')
 @endsection
@@ -171,7 +169,6 @@
     <script src="{{ asset('assets/plugins/custom/datatables/print.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/datatables/responsive.bootstrap.min.js') }}"></script>
     @include('admin.prodi.script.index')
-    @include('admin.prodi.script.create')
     @include('admin.prodi.script.edit')
     @include('admin.prodi.script.show')
 @endsection

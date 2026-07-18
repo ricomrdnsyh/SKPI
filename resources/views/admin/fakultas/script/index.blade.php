@@ -91,13 +91,13 @@
         $('#btn_sync_fakultas').on('click', function() {
             Swal.fire({
                 title: "Sinkronisasi Fakultas?",
-                text: "Proses ini akan mengambil data dari API SSO dan memperbarui database lokal.",
+                text: "Proses ini akan mengambil data dari API SSO dan memperbarui database.",
                 icon: "info",
                 showCancelButton: true,
                 confirmButtonText: "Ya, Sinkronkan!",
                 cancelButtonText: "Batal",
                 customClass: {
-                    confirmButton: "btn btn-info",
+                    confirmButton: "btn btn-primary",
                     cancelButton: 'btn btn-secondary'
                 }
             }).then((result) => {

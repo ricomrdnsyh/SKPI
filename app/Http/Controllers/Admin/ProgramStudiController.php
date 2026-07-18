@@ -41,48 +41,7 @@ class ProgramStudiController extends Controller
         return view('admin.prodi.index', compact('jenjangOptions', 'fakultasOptions', 'fakultas'));
     }
 
-    public function create()
-    {
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak.');
-        }
-        $fakultas = DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get();
-        return view('admin.prodi.create', compact('fakultas'));
-    }
-
-    public function store(Request $request)
-    {
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Akses ditolak.');
-        }
-        $request->validate([
-            'id_fakultas' => 'required|exists:fakultas,id_fakultas',
-            'nama_prodi' => 'required|string|max:255',
-            'kode_prodi' => 'nullable|string|max:10',
-            'jenjang' => 'required|in:D3,S1,S2,S3',
-            'gelar' => 'nullable|string|max:50',
-            'sk_akreditasi' => 'nullable|string|max:100',
-            'tanggal_sk_akreditasi' => 'nullable|date',
-            'masa_berlaku_akreditasi' => 'nullable|date',
-            'jenjang_kkni' => 'nullable|string|max:10',
-            'bahasa_pengantar' => 'nullable|string|max:50',
-            'lama_studi' => 'nullable|string|max:50',
-            'jenis_pendidikan' => 'nullable|string|max:100',
-            'jenis_pendidikan_lanjutan' => 'nullable|string|max:100',
-            'persyaratan_penerimaan' => 'nullable|string',
-            'alamat_prodi' => 'nullable|string',
-            'telepon_prodi' => 'nullable|string|max:20',
-            'email_prodi' => 'nullable|email|max:100',
-        ]);
-
-        $data = $request->all();
-        $data['id_prodi'] = (string) \Illuminate\Support\Str::uuid();
-        ProgramStudi::create($data);
-
-        Cache::forget('master:program_studi');
-        Cache::forget('master:prodi_options');
-        return redirect()->route('prodi.index')->with('success', 'Data program studi berhasil ditambahkan.');
-    }
+    // Tambah prodi dihapus karena sinkron dari API
 
     public function edit($id)
     {
@@ -190,7 +149,12 @@ class ProgramStudiController extends Controller
             ->addColumn('status', fn($p) => '<span class="badge ' . ($p->status === 'aktif' || $p->status === 'active' ? 'badge-success' : 'badge-danger') . '">' . ucfirst($p->status === 'active' ? 'Aktif' : $p->status) . '</span>')
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_prodi . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                $btn = '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>';
+                if (Auth::user()->role === 'admin') {
+                    $btn .= ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_prodi . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>';
+                }
+                $btn .= '</div>';
+                return $btn;
             })
             ->rawColumns(['action', 'status'])
             ->make(true);
