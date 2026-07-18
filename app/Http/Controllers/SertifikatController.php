@@ -37,11 +37,11 @@ class SertifikatController extends Controller
             }
             return view('mahasiswa.sertifikat.index', compact('filterOptions', 'mahasiswas'));
         } else {
-            $id_mahasiswa = $user->id_mahasiswa;
+            $nim = $user->nim;
             $filterOptions = [
-                'jenis_sertifikat' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('jenis_sertifikat')->distinct()->pluck('jenis_sertifikat'),
-                'bidang' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('bidang')->distinct()->orderBy('bidang')->pluck('bidang'),
-                'status' => DB::table('sertifikat_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('status')->distinct()->pluck('status'),
+                'jenis_sertifikat' => DB::table('sertifikat_mahasiswa')->where('nim', $nim)->select('jenis_sertifikat')->distinct()->pluck('jenis_sertifikat'),
+                'bidang' => DB::table('sertifikat_mahasiswa')->where('nim', $nim)->select('bidang')->distinct()->orderBy('bidang')->pluck('bidang'),
+                'status' => DB::table('sertifikat_mahasiswa')->where('nim', $nim)->select('status')->distinct()->pluck('status'),
             ];
             return view('mahasiswa.sertifikat.index', compact('filterOptions'));
         }
@@ -63,10 +63,10 @@ class SertifikatController extends Controller
 
         $data = $request->validated();
         if (in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
-            $request->validate(['id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa']);
-            $data['id_mahasiswa'] = $request->id_mahasiswa;
+            $request->validate(['nim' => 'required|exists:mahasiswa,nim']);
+            $data['nim'] = $request->nim;
         } else {
-            $data['id_mahasiswa'] = Auth::user()->id_mahasiswa;
+            $data['nim'] = Auth::user()->nim;
         }
         $data['status'] = 'pending';
 
@@ -88,12 +88,12 @@ class SertifikatController extends Controller
 
         $user = Auth::user();
         if (in_array($user->role, ['bak_fakultas', 'admin'])) {
-            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $sertifikat->id_mahasiswa)->first();
+            $pengajuan = DB::table('pengajuan_skpi')->where('nim', $sertifikat->nim)->first();
             $isLocked = false;
             $readonly = false;
         } else {
-            $id_mahasiswa = $user->id_mahasiswa;
-            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+            $nim = $user->nim;
+            $pengajuan = DB::table('pengajuan_skpi')->where('nim', $nim)->first();
 
             $isRejected = $sertifikat->status === 'rejected';
             $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
@@ -101,7 +101,7 @@ class SertifikatController extends Controller
             $readonly = $isLocked || $isApproved;
         }
 
-        $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $sertifikat->id_mahasiswa)->first();
+        $mahasiswaRow = DB::table('mahasiswa')->where('nim', $sertifikat->nim)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
 
         $itemSteps = $this->buildItemSteps($sertifikat);
@@ -172,7 +172,7 @@ class SertifikatController extends Controller
         $query = DB::table('sertifikat_mahasiswa');
         
         if (in_array($user->role, ['bak_fakultas', 'admin'])) {
-            $query->join('mahasiswa', 'sertifikat_mahasiswa.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+            $query->join('mahasiswa', 'sertifikat_mahasiswa.nim', '=', 'mahasiswa.nim')
                   ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
                   ->select('sertifikat_mahasiswa.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
             
@@ -181,7 +181,7 @@ class SertifikatController extends Controller
                 $query->where('program_studi.id_fakultas', $id_fakultas);
             }
         } else {
-            $query->where('id_mahasiswa', $user->id_mahasiswa);
+            $query->where('nim', $user->nim);
         }
 
         if ($request->filled('jenis')) $query->where('jenis_sertifikat', $request->jenis);
@@ -214,7 +214,7 @@ class SertifikatController extends Controller
         if (!$row) {
             abort(404, 'Sertifikat tidak ditemukan.');
         }
-        if (!in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
+        if (!in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $row->nim !== Auth::user()->nim) {
             abort(403, 'Akses ditolak.');
         }
         return SertifikatMahasiswa::hydrate([(array) $row])->first();
@@ -228,8 +228,8 @@ class SertifikatController extends Controller
         if ($item && $item->status === 'rejected') {
             return false;
         }
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+        $nim = Auth::user()->nim;
+        $pengajuan = DB::table('pengajuan_skpi')->where('nim', $nim)->first();
         return $pengajuan && in_array($pengajuan->status, ['dicetak']);
     }
 }

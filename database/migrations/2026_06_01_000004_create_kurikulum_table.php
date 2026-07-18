@@ -11,10 +11,9 @@ return new class extends Migration
         if (Schema::hasTable('kurikulum')) return;
 
         Schema::create('kurikulum', function (Blueprint $table) {
-            $table->smallIncrements('id_kurikulum');
-            $table->string('id_prodi', 50);
-            $table->string('nama_kurikulum', 255);
-            $table->year('tahun');
+            $table->char('id_kurikulum', 7)->primary();
+            $table->string('id_prodi', 36);
+            $table->string('nama_kurikulum', 100);
             $table->timestamps();
 
             $table->index('id_prodi', 'idx_kurikulum_prodi');

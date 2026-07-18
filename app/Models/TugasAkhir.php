@@ -12,7 +12,7 @@ class TugasAkhir extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_mahasiswa',
+        'nim',
         'judul',
         'status',
         'approved_by',
@@ -34,7 +34,7 @@ class TugasAkhir extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
     }
 
     public function pembimbing()

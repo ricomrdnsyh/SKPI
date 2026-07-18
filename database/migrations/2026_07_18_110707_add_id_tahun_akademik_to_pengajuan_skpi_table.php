@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pengajuan_skpi', function (Blueprint $table) {
-            $table->string('id_tahun_akademik', 20)->nullable()->after('id_mahasiswa');
+            $table->string('id_tahun_akademik', 20)->nullable()->after('nim');
             $table->foreign('id_tahun_akademik')->references('id_tahun_akademik')->on('tahun_akademik')->onDelete('set null');
         });
     }

@@ -12,7 +12,7 @@ class SertifikatMahasiswa extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_mahasiswa',
+        'nim',
         'nama_sertifikat',
         'jenis_sertifikat',
         'bidang',
@@ -39,6 +39,6 @@ class SertifikatMahasiswa extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
     }
 }

@@ -24,7 +24,7 @@ class ApprovalService
     private function flushRelatedCaches(int $mahasiswaId, ?int $pengajuanId = null): void
     {
         if (!$pengajuanId && $mahasiswaId) {
-            $pengajuanId = DB::table('pengajuan_skpi')->where('id_mahasiswa', $mahasiswaId)->value('id_pengajuan');
+            $pengajuanId = DB::table('pengajuan_skpi')->where('nim', $mahasiswaId)->value('id_pengajuan');
         }
         $this->cache->flushDashboard($mahasiswaId);
         if ($pengajuanId) {
@@ -48,9 +48,9 @@ class ApprovalService
                 'organisasi' => 'id_organisasi_mhs',
                 'sertifikat' => 'id_sertifikat',
                 'magang' => 'id_magang',
-            }, $id)->first(['id_mahasiswa']);
+            }, $id)->first(['nim']);
             if ($item) {
-                $this->flushRelatedCaches($item->id_mahasiswa);
+                $this->flushRelatedCaches($item->nim);
             }
         }
     }
@@ -135,7 +135,7 @@ class ApprovalService
             ]);
         });
 
-        $this->flushRelatedCaches($item->id_mahasiswa);
+        $this->flushRelatedCaches($item->nim);
     }
 
     public function baakRejectTugasAkhir($id, string $reason, User $user): void
@@ -163,7 +163,7 @@ class ApprovalService
             ]);
         });
 
-        $this->flushRelatedCaches($item->id_mahasiswa);
+        $this->flushRelatedCaches($item->nim);
     }
 
     public function baakApprovePengajuanCetak($idPengajuan, User $user): void
@@ -189,7 +189,7 @@ class ApprovalService
             ]);
         });
 
-        $this->flushRelatedCaches($pengajuan->id_mahasiswa, $idPengajuan);
+        $this->flushRelatedCaches($pengajuan->nim, $idPengajuan);
     }
 
     public function baakRejectPengajuanCetak($idPengajuan, string $reason, User $user): void
@@ -217,7 +217,7 @@ class ApprovalService
             ]);
         });
 
-        $this->flushRelatedCaches($pengajuan->id_mahasiswa, $idPengajuan);
+        $this->flushRelatedCaches($pengajuan->nim, $idPengajuan);
     }
 
     private function resolveGrupA(string $type, $id): mixed

@@ -15,7 +15,7 @@
             }
         }
         $(form).find('select').trigger('change.select2');
-        form.action = '/akademik/mahasiswa/' + data.id_mahasiswa;
+        form.action = '/akademik/mahasiswa/' + data.nim;
         $('#form_edit').modal('show');
     }
     document.addEventListener('DOMContentLoaded', function() {

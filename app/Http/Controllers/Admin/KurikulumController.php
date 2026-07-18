@@ -68,6 +68,7 @@ class KurikulumController extends Controller
         }
 
         Kurikulum::create([
+            'id_kurikulum' => \Illuminate\Support\Str::random(7),
             'id_prodi' => $request->id_prodi,
             'nama_kurikulum' => $request->nama_kurikulum,
         ]);
@@ -212,12 +213,17 @@ class KurikulumController extends Controller
                 }
 
                 foreach ($data as $item) {
+                    $idKurikulum = $item['id_kurikulum'] ?? null;
                     $namaKurikulum = $item['nm_kurikulum'] ?? $item['nama_kurikulum'] ?? null;
+                    $idProdiApi = $item['id_sms'] ?? $prodi->id_prodi;
 
-                    if ($namaKurikulum) {
+                    if ($idKurikulum && $namaKurikulum) {
                         $kurikulum = Kurikulum::updateOrCreate(
                             [
-                                'id_prodi' => $prodi->id_prodi,
+                                'id_kurikulum' => $idKurikulum,
+                            ],
+                            [
+                                'id_prodi' => $idProdiApi,
                                 'nama_kurikulum' => $namaKurikulum,
                             ]
                         );

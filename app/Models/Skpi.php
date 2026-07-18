@@ -13,7 +13,7 @@ class Skpi extends Model
 
     protected $fillable = [
         'nomor_skpi',
-        'id_mahasiswa',
+        'nim',
         'id_pengajuan',
         'nim_ijazah',
         'tanggal_terbit',

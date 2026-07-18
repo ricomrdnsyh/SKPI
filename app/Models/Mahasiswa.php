@@ -12,7 +12,9 @@ class Mahasiswa extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $table = 'mahasiswa';
-    protected $primaryKey = 'id_mahasiswa';
+    protected $primaryKey = 'nim';
+    public $incrementing = false;
+    protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
@@ -41,7 +43,15 @@ class Mahasiswa extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'tanggal_lahir' => 'date',
+            'tanggal_lulus' => 'date',
+            'ipk' => 'decimal:2',
         ];
+    }
+
+    public function getAuthIdentifierName()
+    {
+        return 'nim';
     }
 
     public function getRoleAttribute(): string
@@ -59,39 +69,44 @@ class Mahasiswa extends Authenticatable
         return $this->belongsTo(ProgramStudi::class, 'id_prodi', 'id_prodi');
     }
 
+    public function kurikulum()
+    {
+        return $this->belongsTo(Kurikulum::class, 'id_kurikulum', 'id_kurikulum');
+    }
+
     public function prestasi()
     {
-        return $this->hasMany(PrestasiMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(PrestasiMahasiswa::class, 'nim', 'nim');
     }
 
     public function organisasi()
     {
-        return $this->hasMany(OrganisasiMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(OrganisasiMahasiswa::class, 'nim', 'nim');
     }
 
     public function sertifikat()
     {
-        return $this->hasMany(SertifikatMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(SertifikatMahasiswa::class, 'nim', 'nim');
     }
 
     public function magang()
     {
-        return $this->hasMany(MagangMahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasMany(MagangMahasiswa::class, 'nim', 'nim');
     }
 
     public function tugasAkhir()
     {
-        return $this->hasOne(TugasAkhir::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasOne(TugasAkhir::class, 'nim', 'nim');
     }
 
     public function pengajuanSkpi()
     {
-        return $this->hasOne(PengajuanSkpi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasOne(PengajuanSkpi::class, 'nim', 'nim');
     }
 
     public function skpi()
     {
-        return $this->hasOne(Skpi::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->hasOne(Skpi::class, 'nim', 'nim');
     }
 
     private array $progressStepsCache = [];

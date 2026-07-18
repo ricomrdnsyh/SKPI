@@ -35,58 +35,58 @@ return new class extends Migration
         // prestasi_mahasiswa
         if (!Schema::hasIndex('prestasi_mahasiswa', 'idx_prestasi_mahasiswa')) {
             Schema::table('prestasi_mahasiswa', function (Blueprint $table) {
-                $table->index('id_mahasiswa', 'idx_prestasi_mahasiswa');
+                $table->index('nim', 'idx_prestasi_mahasiswa');
                 $table->index('status', 'idx_prestasi_status');
                 $table->index('approved_by', 'idx_prestasi_approved_by');
-                $table->index(['id_mahasiswa', 'status'], 'idx_prestasi_mhs_status');
+                $table->index(['nim', 'status'], 'idx_prestasi_mhs_status');
             });
         }
 
         // organisasi_mahasiswa
         if (!Schema::hasIndex('organisasi_mahasiswa', 'idx_organisasi_mahasiswa')) {
             Schema::table('organisasi_mahasiswa', function (Blueprint $table) {
-                $table->index('id_mahasiswa', 'idx_organisasi_mahasiswa');
+                $table->index('nim', 'idx_organisasi_mahasiswa');
                 $table->index('status', 'idx_organisasi_status');
                 $table->index('approved_by', 'idx_organisasi_approved_by');
-                $table->index(['id_mahasiswa', 'status'], 'idx_organisasi_mhs_status');
+                $table->index(['nim', 'status'], 'idx_organisasi_mhs_status');
             });
         }
 
         // sertifikat_mahasiswa
         if (!Schema::hasIndex('sertifikat_mahasiswa', 'idx_sertifikat_mahasiswa')) {
             Schema::table('sertifikat_mahasiswa', function (Blueprint $table) {
-                $table->index('id_mahasiswa', 'idx_sertifikat_mahasiswa');
+                $table->index('nim', 'idx_sertifikat_mahasiswa');
                 $table->index('status', 'idx_sertifikat_status');
                 $table->index('approved_by', 'idx_sertifikat_approved_by');
-                $table->index(['id_mahasiswa', 'status'], 'idx_sertifikat_mhs_status');
+                $table->index(['nim', 'status'], 'idx_sertifikat_mhs_status');
             });
         }
 
         // magang_mahasiswa
         if (!Schema::hasIndex('magang_mahasiswa', 'idx_magang_mahasiswa')) {
             Schema::table('magang_mahasiswa', function (Blueprint $table) {
-                $table->index('id_mahasiswa', 'idx_magang_mahasiswa');
+                $table->index('nim', 'idx_magang_mahasiswa');
                 $table->index('id_tempat_magang', 'idx_magang_tempat');
                 $table->index('status', 'idx_magang_status');
                 $table->index('approved_by', 'idx_magang_approved_by');
-                $table->index(['id_mahasiswa', 'status'], 'idx_magang_mhs_status');
+                $table->index(['nim', 'status'], 'idx_magang_mhs_status');
             });
         }
 
         // tugas_akhir
         if (!Schema::hasIndex('tugas_akhir', 'idx_ta_mhs_status')) {
             Schema::table('tugas_akhir', function (Blueprint $table) {
-                $table->index(['id_mahasiswa', 'status'], 'idx_ta_mhs_status');
+                $table->index(['nim', 'status'], 'idx_ta_mhs_status');
             });
         }
 
         // pengajuan_skpi
         if (!Schema::hasIndex('pengajuan_skpi', 'idx_pengajuan_mahasiswa')) {
             Schema::table('pengajuan_skpi', function (Blueprint $table) {
-                $table->index('id_mahasiswa', 'idx_pengajuan_mahasiswa');
+                $table->index('nim', 'idx_pengajuan_mahasiswa');
                 $table->index('status', 'idx_pengajuan_status');
                 $table->index('diverifikasi_oleh', 'idx_pengajuan_verifikasi_oleh');
-                $table->index(['id_mahasiswa', 'status'], 'idx_pengajuan_mhs_status');
+                $table->index(['nim', 'status'], 'idx_pengajuan_mhs_status');
                 $table->index(['permohonan_cetak', 'status'], 'idx_pengajuan_permohonan');
             });
         }

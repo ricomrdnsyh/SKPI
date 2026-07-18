@@ -12,7 +12,7 @@ return new class extends Migration
 
         Schema::create('organisasi_mahasiswa', function (Blueprint $table) {
             $table->increments('id_organisasi_mhs');
-            $table->integer('id_mahasiswa')->unsigned();
+            $table->char('nim', 10);
             $table->string('nama_organisasi', 255);
             $table->enum('tingkat', ['Internasional', 'Nasional', 'Universitas', 'Fakultas']);
             $table->string('jabatan', 100)->nullable();
@@ -24,12 +24,12 @@ return new class extends Migration
             $table->datetime('approved_at')->nullable();
             $table->text('keterangan')->nullable();
 
-            $table->index('id_mahasiswa', 'idx_organisasi_mahasiswa');
+            $table->index('nim', 'idx_organisasi_mahasiswa');
             $table->index('status', 'idx_organisasi_status');
             $table->index('approved_by', 'idx_organisasi_approved_by');
-            $table->index(['id_mahasiswa', 'status'], 'idx_organisasi_mhs_status');
-            $table->foreign('id_mahasiswa', 'fk_organisasi_mahasiswa')
-                ->references('id_mahasiswa')->on('mahasiswa')
+            $table->index(['nim', 'status'], 'idx_organisasi_mhs_status');
+            $table->foreign('nim', 'fk_organisasi_mahasiswa')
+                ->references('nim')->on('mahasiswa')
                 ->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('approved_by', 'fk_organisasi_approved_by')
                 ->references('id_user')->on('users')

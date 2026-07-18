@@ -16,7 +16,7 @@ return new class extends Migration
             }
             // Add tempat_magang string column
             if (!Schema::hasColumn('magang_mahasiswa', 'tempat_magang')) {
-                $table->string('tempat_magang', 255)->nullable()->after('id_mahasiswa');
+                $table->string('tempat_magang', 255)->nullable()->after('nim');
             }
         });
 
@@ -39,7 +39,7 @@ return new class extends Migration
 
         Schema::table('magang_mahasiswa', function (Blueprint $table) {
             if (!Schema::hasColumn('magang_mahasiswa', 'id_tempat_magang')) {
-                $table->smallInteger('id_tempat_magang')->unsigned()->nullable()->after('id_mahasiswa');
+                $table->smallInteger('id_tempat_magang')->unsigned()->nullable()->after('nim');
                 $table->foreign('id_tempat_magang', 'fk_magang_tempat')
                     ->references('id_tempat_magang')->on('tempat_magang')
                     ->onDelete('set null')->onUpdate('cascade');

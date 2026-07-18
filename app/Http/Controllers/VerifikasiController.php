@@ -43,7 +43,7 @@ class VerifikasiController extends Controller
 
         $statusCounts = $this->cache->rememberStats('bak:' . ($user->id_user ?? 'guest'), function () use ($allowedProdis) {
             $query = DB::table('pengajuan_skpi')
-                ->leftJoin('mahasiswa', 'pengajuan_skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa');
+                ->leftJoin('mahasiswa', 'pengajuan_skpi.nim', '=', 'mahasiswa.nim');
 
             if ($allowedProdis !== null) {
                 $query->whereIn('mahasiswa.id_prodi', $allowedProdis);
@@ -65,8 +65,8 @@ class VerifikasiController extends Controller
                 ->where('permohonan_cetak', true);
 
             if ($allowedProdis !== null) {
-                $query->whereIn('id_mahasiswa', function ($q) use ($allowedProdis) {
-                    $q->select('id_mahasiswa')->from('mahasiswa')->whereIn('id_prodi', $allowedProdis);
+                $query->whereIn('nim', function ($q) use ($allowedProdis) {
+                    $q->select('nim')->from('mahasiswa')->whereIn('id_prodi', $allowedProdis);
                 });
             }
 
@@ -74,7 +74,7 @@ class VerifikasiController extends Controller
         });
 
         $pendingCountQuery = PengajuanSkpi::query()
-            ->leftJoin('mahasiswa', 'pengajuan_skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa');
+            ->leftJoin('mahasiswa', 'pengajuan_skpi.nim', '=', 'mahasiswa.nim');
         if ($allowedProdis !== null) {
             $pendingCountQuery->whereIn('mahasiswa.id_prodi', $allowedProdis);
         }
@@ -133,7 +133,7 @@ class VerifikasiController extends Controller
             'magang',
             'tugasAkhir.pembimbing',
             'skpi'
-        ])->find($pengajuan->id_mahasiswa);
+        ])->find($pengajuan->nim);
 
         if (!$mahasiswa) {
             abort(404, 'Mahasiswa tidak ditemukan.');
@@ -189,7 +189,7 @@ class VerifikasiController extends Controller
     private function flushRelatedCaches(int $pengajuanId, int $mahasiswaId): void
     {
         if (!$pengajuanId && $mahasiswaId) {
-            $pengajuanId = DB::table('pengajuan_skpi')->where('id_mahasiswa', $mahasiswaId)->value('id_pengajuan') ?? 0;
+            $pengajuanId = DB::table('pengajuan_skpi')->where('nim', $mahasiswaId)->value('id_pengajuan') ?? 0;
         }
         $this->cache->flushDetail($pengajuanId);
         $this->cache->flushDashboard($mahasiswaId);
@@ -210,7 +210,7 @@ class VerifikasiController extends Controller
             return back()->with('error', 'Pengajuan belum dicetak.');
         }
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $pengajuanRow->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $pengajuanRow->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
@@ -242,7 +242,7 @@ class VerifikasiController extends Controller
             ]);
         });
 
-        $this->flushRelatedCaches($id_pengajuan, $pengajuanRow->id_mahasiswa);
+        $this->flushRelatedCaches($id_pengajuan, $pengajuanRow->nim);
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
@@ -262,13 +262,13 @@ class VerifikasiController extends Controller
         $allowedProdis = $this->getAllowedProdiIds($user);
         $item = $this->resolveItem($type, $id);
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $item->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $item->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
         try {
             $this->approvalService->baakApproveGrupA($type, $id, $user);
-            $this->flushRelatedCaches($item->id_pengajuan ?? 0, $item->id_mahasiswa);
+            $this->flushRelatedCaches($item->id_pengajuan ?? 0, $item->nim);
             return back()->with('success', 'Data ' . $type . ' berhasil disetujui.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
@@ -281,13 +281,13 @@ class VerifikasiController extends Controller
         $allowedProdis = $this->getAllowedProdiIds($user);
         $item = $this->resolveItem($type, $id);
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $item->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $item->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
         try {
             $this->approvalService->baakRejectGrupA($type, $id, $request->keterangan, $user);
-            $this->flushRelatedCaches($item->id_pengajuan ?? 0, $item->id_mahasiswa);
+            $this->flushRelatedCaches($item->id_pengajuan ?? 0, $item->nim);
             return back()->with('success', 'Data ' . $type . ' berhasil ditolak.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
@@ -302,13 +302,13 @@ class VerifikasiController extends Controller
         if (!$itemRow) abort(404);
         $item = \App\Models\TugasAkhir::hydrate([(array) $itemRow])->first();
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $item->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $item->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
         try {
             $this->approvalService->baakApproveTugasAkhir($id, $user);
-            $this->flushRelatedCaches(0, $item->id_mahasiswa);
+            $this->flushRelatedCaches(0, $item->nim);
             return back()->with('success', 'Tugas Akhir berhasil disetujui.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
@@ -323,13 +323,13 @@ class VerifikasiController extends Controller
         if (!$itemRow) abort(404);
         $item = \App\Models\TugasAkhir::hydrate([(array) $itemRow])->first();
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $item->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $item->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
         try {
             $this->approvalService->baakRejectTugasAkhir($id, $request->keterangan, $user);
-            $this->flushRelatedCaches(0, $item->id_mahasiswa);
+            $this->flushRelatedCaches(0, $item->nim);
             return back()->with('success', 'Tugas Akhir berhasil ditolak.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
@@ -344,13 +344,13 @@ class VerifikasiController extends Controller
         if (!$pengajuanRow) abort(404);
         $pengajuan = PengajuanSkpi::hydrate([(array) $pengajuanRow])->first();
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $pengajuan->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $pengajuan->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
         try {
             $this->approvalService->baakApprovePengajuanCetak($id_pengajuan, $user);
-            $this->flushRelatedCaches($id_pengajuan, $pengajuan->id_mahasiswa);
+            $this->flushRelatedCaches($id_pengajuan, $pengajuan->nim);
             return back()->with('success', 'Pengajuan cetak berhasil disetujui.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
@@ -365,13 +365,13 @@ class VerifikasiController extends Controller
         if (!$pengajuanRow) abort(404);
         $pengajuan = PengajuanSkpi::hydrate([(array) $pengajuanRow])->first();
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $pengajuan->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $pengajuan->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
         try {
             $this->approvalService->baakRejectPengajuanCetak($id_pengajuan, $request->keterangan, $user);
-            $this->flushRelatedCaches($id_pengajuan, $pengajuan->id_mahasiswa);
+            $this->flushRelatedCaches($id_pengajuan, $pengajuan->nim);
             return back()->with('error', 'Pengajuan cetak berhasil ditolak.');
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
@@ -401,7 +401,7 @@ class VerifikasiController extends Controller
     public function publish(Request $request, int $id_pengajuan)
     {
         $pengajuanRow = DB::table('pengajuan_skpi')
-            ->select(['id_pengajuan', 'id_mahasiswa', 'status', 'permohonan_cetak', 'diverifikasi_oleh'])
+            ->select(['id_pengajuan', 'nim', 'status', 'permohonan_cetak', 'diverifikasi_oleh'])
             ->where('id_pengajuan', $id_pengajuan)->first();
         if (!$pengajuanRow) abort(404);
         $pengajuan = PengajuanSkpi::hydrate([(array) $pengajuanRow])->first();
@@ -409,8 +409,8 @@ class VerifikasiController extends Controller
         $allowedProdis = $this->getAllowedProdiIds($user);
 
         $mahasiswaRow = DB::table('mahasiswa')
-            ->select(['id_mahasiswa', 'id_prodi', 'id_kurikulum', 'nim', 'nama_lengkap', 'ipk', 'tahun_masuk', 'tahun_lulus', 'tanggal_lulus', 'status'])
-            ->where('id_mahasiswa', $pengajuan->id_mahasiswa)->first();
+            ->select(['nim', 'id_prodi', 'id_kurikulum', 'nim', 'nama_lengkap', 'ipk', 'tahun_masuk', 'tahun_lulus', 'tanggal_lulus', 'status'])
+            ->where('nim', $pengajuan->nim)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
         if (!$mahasiswa) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($mahasiswa->id_prodi, $allowedProdis)) abort(403, 'Akses ditolak.');
@@ -437,7 +437,7 @@ class VerifikasiController extends Controller
             $pengajuan->update(['status' => 'dicetak']);
         });
 
-        $this->flushRelatedCaches($id_pengajuan, $pengajuan->id_mahasiswa);
+        $this->flushRelatedCaches($id_pengajuan, $pengajuan->nim);
 
         return redirect()->route('bak_fakultas.verifikasi.detail', $pengajuan->id_pengajuan)
             ->with('success', 'SKPI berhasil diterbitkan.');
@@ -451,7 +451,7 @@ class VerifikasiController extends Controller
         if (!$pengajuanRow) abort(404);
         $pengajuan = PengajuanSkpi::hydrate([(array) $pengajuanRow])->first();
 
-        $idProdi = DB::table('mahasiswa')->where('id_mahasiswa', $pengajuan->id_mahasiswa)->value('id_prodi');
+        $idProdi = DB::table('mahasiswa')->where('nim', $pengajuan->nim)->value('id_prodi');
         if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
         if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
 
@@ -462,7 +462,7 @@ class VerifikasiController extends Controller
 
         $this->verifikasiService->submitChecklist($pengajuan, $request->only(['hasil_verifikasi', 'catatan']), $user);
 
-        $this->flushRelatedCaches($id_pengajuan, $pengajuan->id_mahasiswa);
+        $this->flushRelatedCaches($id_pengajuan, $pengajuan->nim);
 
         return redirect()->route('bak_fakultas.verifikasi.detail', $pengajuan->id_pengajuan)
             ->with('success', 'Checklist verifikasi berhasil disimpan.');
@@ -474,13 +474,13 @@ class VerifikasiController extends Controller
         $allowedProdis = $this->getAllowedProdiIds($user);
 
         $query = DB::table('pengajuan_skpi')
-            ->leftJoin('mahasiswa', 'pengajuan_skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+            ->leftJoin('mahasiswa', 'pengajuan_skpi.nim', '=', 'mahasiswa.nim')
             ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
             ->leftJoin('checklist_verifikasi_skpi', 'pengajuan_skpi.id_pengajuan', '=', 'checklist_verifikasi_skpi.id_pengajuan')
             ->leftJoin('skpi', 'pengajuan_skpi.id_pengajuan', '=', 'skpi.id_pengajuan')
             ->select(
                 'pengajuan_skpi.id_pengajuan',
-                'pengajuan_skpi.id_mahasiswa',
+                'pengajuan_skpi.nim',
                 'pengajuan_skpi.status',
                 'pengajuan_skpi.diverifikasi_oleh',
                 'pengajuan_skpi.tanggal_pengajuan',
@@ -510,13 +510,13 @@ class VerifikasiController extends Controller
         $tab = $request->tab;
         if ($tab === 'belum' || $tab === 'bypass') {
             $query = PengajuanSkpi::query()
-                ->leftJoin('mahasiswa', 'pengajuan_skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+                ->leftJoin('mahasiswa', 'pengajuan_skpi.nim', '=', 'mahasiswa.nim')
                 ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
                 ->leftJoin('checklist_verifikasi_skpi', 'pengajuan_skpi.id_pengajuan', '=', 'checklist_verifikasi_skpi.id_pengajuan')
                 ->leftJoin('skpi', 'pengajuan_skpi.id_pengajuan', '=', 'skpi.id_pengajuan')
                 ->select(
                     'pengajuan_skpi.id_pengajuan',
-                    'pengajuan_skpi.id_mahasiswa',
+                    'pengajuan_skpi.nim',
                     'pengajuan_skpi.status',
                     'pengajuan_skpi.diverifikasi_oleh',
                     'pengajuan_skpi.tanggal_pengajuan',
@@ -561,13 +561,13 @@ class VerifikasiController extends Controller
             $query->where('pengajuan_skpi.id_tahun_akademik', $request->tahun_akademik);
         }
 
-        $studentIds = (clone $query)->pluck('pengajuan_skpi.id_mahasiswa')->unique()->toArray();
+        $studentIds = (clone $query)->pluck('pengajuan_skpi.nim')->unique()->toArray();
         $mahasiswas = collect();
         if (!empty($studentIds)) {
             $mahasiswas = Mahasiswa::with(['prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir'])
-                ->whereIn('id_mahasiswa', $studentIds)
+                ->whereIn('nim', $studentIds)
                 ->get()
-                ->keyBy('id_mahasiswa');
+                ->keyBy('nim');
         }
 
         return DataTables::of($query)
@@ -586,7 +586,7 @@ class VerifikasiController extends Controller
             ->addColumn('dosen_wali', fn($p) => '-')
             ->addColumn('tanggal', fn($p) => DataTableHelper::tanggal($p->tanggal_pengajuan))
             ->addColumn('verifikasi', function ($p) use ($mahasiswas) {
-                $mhs = $mahasiswas->get($p->id_mahasiswa);
+                $mhs = $mahasiswas->get($p->nim);
                 if (!$mhs) return '-';
                 
                 $mhs->loadMissing(['prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir']);
@@ -615,7 +615,7 @@ class VerifikasiController extends Controller
                 return '<span class="badge badge-light-'.$color.' fw-bold px-3 py-2">'.$checked.' / '.$total.'</span>';
             })
             ->addColumn('progress', function ($p) use ($mahasiswas) {
-                $mhs = $mahasiswas->get($p->id_mahasiswa);
+                $mhs = $mahasiswas->get($p->nim);
                 if (!$mhs) return DataTableHelper::progressBar(0);
                 $steps = $this->progressService->getSteps($mhs, $p);
                 $completed = collect($steps)->where('status', 'sudah')->count();

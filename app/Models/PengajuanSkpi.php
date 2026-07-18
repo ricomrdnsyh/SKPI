@@ -11,7 +11,8 @@ class PengajuanSkpi extends Model
     protected $primaryKey = 'id_pengajuan';
 
     protected $fillable = [
-        'id_mahasiswa',
+        'nim',
+        'id_tahun_akademik',
         'tanggal_pengajuan',
         'status',
         'catatan_mahasiswa',
@@ -29,7 +30,7 @@ class PengajuanSkpi extends Model
 
     public function mahasiswa()
     {
-        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa', 'id_mahasiswa');
+        return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
     }
 
     public function skpi()

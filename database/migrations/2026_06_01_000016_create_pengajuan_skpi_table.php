@@ -12,7 +12,7 @@ return new class extends Migration
 
         Schema::create('pengajuan_skpi', function (Blueprint $table) {
             $table->increments('id_pengajuan');
-            $table->integer('id_mahasiswa')->unsigned();
+            $table->char('nim', 10);
             $table->datetime('tanggal_pengajuan')->useCurrent()->comment('Tanggal mahasiswa mengajukan SKPI');
             $table->enum('status', ['draft', 'diajukan', 'verifikasi', 'dicetak', 'ditolak'])->default('draft');
             $table->text('catatan_mahasiswa')->nullable()->comment('Keterangan tambahan dari mahasiswa saat pengajuan');
@@ -23,13 +23,13 @@ return new class extends Migration
             $table->boolean('permohonan_cetak')->default(false);
             $table->timestamps();
 
-            $table->index('id_mahasiswa', 'idx_pengajuan_mahasiswa');
+            $table->index('nim', 'idx_pengajuan_mahasiswa');
             $table->index('status', 'idx_pengajuan_status');
             $table->index('diverifikasi_oleh', 'idx_pengajuan_verifikasi_oleh');
-            $table->index(['id_mahasiswa', 'status'], 'idx_pengajuan_mhs_status');
+            $table->index(['nim', 'status'], 'idx_pengajuan_mhs_status');
             $table->index(['permohonan_cetak', 'status'], 'idx_pengajuan_permohonan');
-            $table->foreign('id_mahasiswa', 'fk_pengajuan_mahasiswa')
-                ->references('id_mahasiswa')->on('mahasiswa')
+            $table->foreign('nim', 'fk_pengajuan_mahasiswa')
+                ->references('nim')->on('mahasiswa')
                 ->onUpdate('cascade');
             $table->foreign('diverifikasi_oleh', 'fk_pengajuan_verifikasi_oleh')
                 ->references('id_user')->on('users')

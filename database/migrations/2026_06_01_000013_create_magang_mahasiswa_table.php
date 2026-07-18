@@ -12,7 +12,7 @@ return new class extends Migration
 
         Schema::create('magang_mahasiswa', function (Blueprint $table) {
             $table->increments('id_magang');
-            $table->integer('id_mahasiswa')->unsigned();
+            $table->char('nim', 10);
             $table->smallInteger('id_tempat_magang')->unsigned()->nullable();
             $table->string('posisi', 100)->nullable();
             $table->date('tanggal_mulai')->nullable();
@@ -23,13 +23,13 @@ return new class extends Migration
             $table->datetime('approved_at')->nullable();
             $table->text('keterangan')->nullable();
 
-            $table->index('id_mahasiswa', 'idx_magang_mahasiswa');
+            $table->index('nim', 'idx_magang_mahasiswa');
             $table->index('id_tempat_magang', 'idx_magang_tempat');
             $table->index('status', 'idx_magang_status');
             $table->index('approved_by', 'idx_magang_approved_by');
-            $table->index(['id_mahasiswa', 'status'], 'idx_magang_mhs_status');
-            $table->foreign('id_mahasiswa', 'fk_magang_mahasiswa')
-                ->references('id_mahasiswa')->on('mahasiswa')
+            $table->index(['nim', 'status'], 'idx_magang_mhs_status');
+            $table->foreign('nim', 'fk_magang_mahasiswa')
+                ->references('nim')->on('mahasiswa')
                 ->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('id_tempat_magang', 'fk_magang_tempat')
                 ->references('id_tempat_magang')->on('tempat_magang')

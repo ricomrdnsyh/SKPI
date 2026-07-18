@@ -27,7 +27,7 @@ class TugasAkhirController extends Controller
 
             $filterOptions = [
                 'status' => DB::table('tugas_akhir')
-                    ->join('mahasiswa', 'tugas_akhir.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+                    ->join('mahasiswa', 'tugas_akhir.nim', '=', 'mahasiswa.nim')
                     ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
                     ->where('program_studi.id_fakultas', $id_fakultas)
                     ->select('tugas_akhir.status')->distinct()->pluck('status'),
@@ -48,7 +48,7 @@ class TugasAkhirController extends Controller
     {
         if (!$tugasAkhir) return false;
         
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $tugasAkhir->id_mahasiswa)->first();
+        $pengajuan = DB::table('pengajuan_skpi')->where('nim', $tugasAkhir->nim)->first();
         $isRejected = $tugasAkhir->status === 'rejected';
         $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['diajukan', 'verifikasi', 'dicetak']);
         $isApproved = $tugasAkhir->status === 'approved';
@@ -63,7 +63,7 @@ class TugasAkhirController extends Controller
             abort(403);
         }
 
-        $query = TugasAkhir::join('mahasiswa', 'tugas_akhir.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+        $query = TugasAkhir::join('mahasiswa', 'tugas_akhir.nim', '=', 'mahasiswa.nim')
             ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
             ->select('tugas_akhir.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
 
@@ -113,7 +113,7 @@ class TugasAkhirController extends Controller
                 
                 $data = htmlspecialchars(json_encode([
                     'id_tugas_akhir' => $row->id_tugas_akhir,
-                    'id_mahasiswa' => $row->id_mahasiswa,
+                    'nim' => $row->nim,
                     'judul' => $row->judul,
                     'pembimbing_1' => $pembimbing1,
                     'pembimbing_2' => $pembimbing2
@@ -154,7 +154,7 @@ class TugasAkhirController extends Controller
         }
 
         $request->validate([
-            'id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa',
+            'nim' => 'required|exists:mahasiswa,nim',
             'judul' => 'required|string',
             'pembimbing' => 'required|array',
             'pembimbing.0' => 'required|string', // Pembimbing 1 is required
@@ -162,7 +162,7 @@ class TugasAkhirController extends Controller
 
         DB::transaction(function () use ($request) {
             $tugasAkhir = TugasAkhir::updateOrCreate(
-                ['id_mahasiswa' => $request->id_mahasiswa],
+                ['nim' => $request->nim],
                 [
                     'judul' => $request->judul,
                     'status' => 'pending',
@@ -205,7 +205,7 @@ class TugasAkhirController extends Controller
         }
 
         $request->validate([
-            'id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa',
+            'nim' => 'required|exists:mahasiswa,nim',
             'judul' => 'required|string',
             'pembimbing' => 'required|array',
             'pembimbing.0' => 'required|string',
@@ -219,7 +219,7 @@ class TugasAkhirController extends Controller
 
         DB::transaction(function () use ($request, $tugasAkhir) {
             $tugasAkhir->update([
-                'id_mahasiswa' => $request->id_mahasiswa,
+                'nim' => $request->nim,
                 'judul' => $request->judul,
                 // Status remains unchanged when editing by admin? Or reset to pending? Let's keep existing status.
             ]);

@@ -14,7 +14,7 @@ class PengajuanService
         
         return DB::transaction(function () use ($idMahasiswa, $catatan, $activeTahun) {
             return PengajuanSkpi::create([
-                'id_mahasiswa' => $idMahasiswa,
+                'nim' => $idMahasiswa,
                 'status' => 'diajukan',
                 'tanggal_pengajuan' => now(),
                 'catatan_mahasiswa' => $catatan,
@@ -27,7 +27,7 @@ class PengajuanService
     public function hasTugasAkhir(Mahasiswa $mahasiswa): bool
     {
         return DB::table('tugas_akhir')
-            ->where('id_mahasiswa', $mahasiswa->id_mahasiswa)
+            ->where('nim', $mahasiswa->nim)
             ->whereNotNull('judul')
             ->where('judul', '!=', '')
             ->exists();

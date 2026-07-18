@@ -11,12 +11,12 @@
                 <input type="hidden" name="id_tugas_akhir" id="edit_id_tugas_akhir">
                 <div class="modal-body">
                     <div class="fv-row mb-5">
-                        <label for="edit_id_mahasiswa" class="form-label required fw-bold fs-6">Pilih Mahasiswa</label>
-                        <select name="id_mahasiswa" id="edit_id_mahasiswa" required class="form-select"
+                        <label for="edit_nim" class="form-label required fw-bold fs-6">Pilih Mahasiswa</label>
+                        <select name="nim" id="edit_nim" required class="form-select"
                             data-control="select2" data-placeholder="Pilih Mahasiswa" data-dropdown-parent="#form_edit">
                             <option value=""></option>
                             @foreach ($mahasiswas as $mhs)
-                                <option value="{{ $mhs->id_mahasiswa }}">{{ $mhs->nim }} - {{ $mhs->nama_lengkap }}
+                                <option value="{{ $mhs->nim }}">{{ $mhs->nim }} - {{ $mhs->nama_lengkap }}
                                 </option>
                             @endforeach
                         </select>

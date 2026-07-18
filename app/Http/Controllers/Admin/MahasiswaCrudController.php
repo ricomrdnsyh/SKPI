@@ -95,7 +95,7 @@ class MahasiswaCrudController extends Controller
 
     public function edit($id)
     {
-        $row = DB::table('mahasiswa')->where('id_mahasiswa', $id)->first();
+        $row = DB::table('mahasiswa')->where('nim', $id)->first();
         if (!$row) abort(404);
         $mahasiswa = Mahasiswa::hydrate([(array) $row])->first();
         $user = Auth::user();
@@ -124,7 +124,7 @@ class MahasiswaCrudController extends Controller
 
     public function update(Request $request, $id)
     {
-        $row = DB::table('mahasiswa')->where('id_mahasiswa', $id)->first();
+        $row = DB::table('mahasiswa')->where('nim', $id)->first();
         if (!$row) abort(404);
         $mahasiswa = Mahasiswa::hydrate([(array) $row])->first();
         $user = Auth::user();
@@ -140,7 +140,7 @@ class MahasiswaCrudController extends Controller
         }
 
         $request->validate([
-            'nim' => 'required|string|max:20|unique:mahasiswa,nim,' . $id . ',id_mahasiswa',
+            'nim' => 'required|string|max:20|unique:mahasiswa,nim,' . $id . ',nim',
             'id_prodi' => 'required|exists:program_studi,id_prodi',
             'id_kurikulum' => 'required|exists:kurikulum,id_kurikulum',
             'nama_lengkap' => 'required|string|max:255',
@@ -163,7 +163,7 @@ class MahasiswaCrudController extends Controller
 
     public function destroy($id)
     {
-        $row = DB::table('mahasiswa')->where('id_mahasiswa', $id)->first();
+        $row = DB::table('mahasiswa')->where('nim', $id)->first();
         if (!$row) abort(404);
         $mahasiswa = Mahasiswa::hydrate([(array) $row])->first();
         $user = Auth::user();
@@ -208,7 +208,7 @@ class MahasiswaCrudController extends Controller
             ->addColumn('status', fn($m) => '<span class="badge badge-success">' . ($m->status ?? 'Aktif') . '</span>')
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_mahasiswa . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->nim . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action', 'status'])
             ->make(true);

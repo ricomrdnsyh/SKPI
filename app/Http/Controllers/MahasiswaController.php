@@ -25,11 +25,11 @@ class MahasiswaController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        if (!$user->id_mahasiswa) {
+        if (!$user->nim) {
             abort(403, 'User tidak terhubung ke data mahasiswa.');
         }
 
-        $mahasiswaId = $user->id_mahasiswa;
+        $mahasiswaId = $user->nim;
 
         return $this->cache->rememberDashboard("mahasiswa:{$mahasiswaId}", function () use ($mahasiswaId) {
             $mahasiswa = Mahasiswa::with([
@@ -81,11 +81,11 @@ class MahasiswaController extends Controller
     public function editTugasAkhir()
     {
         $user = Auth::user();
-        if (!$user->id_mahasiswa) {
+        if (!$user->nim) {
             abort(403);
         }
 
-        $mahasiswaId = $user->id_mahasiswa;
+        $mahasiswaId = $user->nim;
 
         $mahasiswa = Mahasiswa::with(['tugasAkhir.pembimbing', 'pengajuanSkpi'])->find($mahasiswaId);
 
@@ -166,11 +166,11 @@ class MahasiswaController extends Controller
     public function updateTugasAkhir(StoreTugasAkhirRequest $request)
     {
         $user = Auth::user();
-        if (!$user->id_mahasiswa) {
+        if (!$user->nim) {
             abort(403);
         }
 
-        $mahasiswaId = $user->id_mahasiswa;
+        $mahasiswaId = $user->nim;
 
         $mahasiswa = Mahasiswa::with(['tugasAkhir', 'pengajuanSkpi'])->find($mahasiswaId);
 
@@ -195,7 +195,7 @@ class MahasiswaController extends Controller
 
         DB::transaction(function () use ($mahasiswa, $request, $mahasiswaId) {
             $tugasAkhir = TugasAkhir::updateOrCreate(
-                ['id_mahasiswa' => $mahasiswaId],
+                ['nim' => $mahasiswaId],
                 [
                     'judul' => $request->judul,
                     'status' => 'pending',

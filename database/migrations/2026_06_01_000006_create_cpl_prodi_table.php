@@ -12,8 +12,8 @@ return new class extends Migration
 
         Schema::create('cpl_prodi', function (Blueprint $table) {
             $table->increments('id_cpl');
-            $table->string('id_prodi', 50);
-            $table->smallInteger('id_kurikulum')->unsigned();
+            $table->string('id_prodi', 36);
+            $table->char('id_kurikulum', 7);
             $table->tinyInteger('id_kategori')->unsigned();
             $table->string('kode_cpl', 20);
             $table->text('deskripsi_cpl');

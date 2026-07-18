@@ -36,10 +36,10 @@ class OrganisasiController extends Controller
             }
             return view('mahasiswa.organisasi.index', compact('filterOptions', 'mahasiswas'));
         } else {
-            $id_mahasiswa = $user->id_mahasiswa;
+            $nim = $user->nim;
             $filterOptions = [
-                'tingkat' => DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('tingkat')->distinct()->orderBy('tingkat')->pluck('tingkat'),
-                'status' => DB::table('organisasi_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('status')->distinct()->pluck('status'),
+                'tingkat' => DB::table('organisasi_mahasiswa')->where('nim', $nim)->select('tingkat')->distinct()->orderBy('tingkat')->pluck('tingkat'),
+                'status' => DB::table('organisasi_mahasiswa')->where('nim', $nim)->select('status')->distinct()->pluck('status'),
             ];
             return view('mahasiswa.organisasi.index', compact('filterOptions'));
         }
@@ -61,10 +61,10 @@ class OrganisasiController extends Controller
 
         $data = $request->validated();
         if (in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
-            $request->validate(['id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa']);
-            $data['id_mahasiswa'] = $request->id_mahasiswa;
+            $request->validate(['nim' => 'required|exists:mahasiswa,nim']);
+            $data['nim'] = $request->nim;
         } else {
-            $data['id_mahasiswa'] = Auth::user()->id_mahasiswa;
+            $data['nim'] = Auth::user()->nim;
         }
         $data['status'] = 'pending';
 
@@ -86,12 +86,12 @@ class OrganisasiController extends Controller
 
         $user = Auth::user();
         if (in_array($user->role, ['bak_fakultas', 'admin'])) {
-            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $organisasi->id_mahasiswa)->first();
+            $pengajuan = DB::table('pengajuan_skpi')->where('nim', $organisasi->nim)->first();
             $isLocked = false;
             $readonly = false;
         } else {
-            $id_mahasiswa = $user->id_mahasiswa;
-            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+            $nim = $user->nim;
+            $pengajuan = DB::table('pengajuan_skpi')->where('nim', $nim)->first();
 
             $isRejected = $organisasi->status === 'rejected';
             $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
@@ -99,7 +99,7 @@ class OrganisasiController extends Controller
             $readonly = $isLocked || $isApproved;
         }
 
-        $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $organisasi->id_mahasiswa)->first();
+        $mahasiswaRow = DB::table('mahasiswa')->where('nim', $organisasi->nim)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
 
         $itemSteps = $this->buildItemSteps($organisasi);
@@ -170,7 +170,7 @@ class OrganisasiController extends Controller
         $query = DB::table('organisasi_mahasiswa');
         
         if (in_array($user->role, ['bak_fakultas', 'admin'])) {
-            $query->join('mahasiswa', 'organisasi_mahasiswa.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+            $query->join('mahasiswa', 'organisasi_mahasiswa.nim', '=', 'mahasiswa.nim')
                   ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
                   ->select('organisasi_mahasiswa.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
             
@@ -179,7 +179,7 @@ class OrganisasiController extends Controller
                 $query->where('program_studi.id_fakultas', $id_fakultas);
             }
         } else {
-            $query->where('id_mahasiswa', $user->id_mahasiswa);
+            $query->where('nim', $user->nim);
         }
 
         if ($request->filled('tingkat')) $query->where('tingkat', $request->tingkat);
@@ -209,7 +209,7 @@ class OrganisasiController extends Controller
         if (!$row) {
             abort(404, 'Organisasi tidak ditemukan.');
         }
-        if (!in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
+        if (!in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $row->nim !== Auth::user()->nim) {
             abort(403, 'Akses ditolak.');
         }
         return OrganisasiMahasiswa::hydrate([(array) $row])->first();
@@ -223,8 +223,8 @@ class OrganisasiController extends Controller
         if ($item && $item->status === 'rejected') {
             return false;
         }
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+        $nim = Auth::user()->nim;
+        $pengajuan = DB::table('pengajuan_skpi')->where('nim', $nim)->first();
         return $pengajuan && in_array($pengajuan->status, ['dicetak']);
     }
 }

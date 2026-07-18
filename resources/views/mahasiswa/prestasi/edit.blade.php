@@ -11,11 +11,11 @@
                 <div class="modal-body">
                     @if(in_array(Auth::user()->role, ['bak_fakultas', 'admin']))
                     <div class="fv-row mb-5">
-                        <label for="id_mahasiswa_edit" class="form-label required fw-bold fs-6">Pilih Mahasiswa</label>
-                        <select name="id_mahasiswa" id="id_mahasiswa_edit" required class="form-select" data-control="select2" data-placeholder="Pilih Mahasiswa" data-dropdown-parent="#form_edit">
+                        <label for="nim_edit" class="form-label required fw-bold fs-6">Pilih Mahasiswa</label>
+                        <select name="nim" id="nim_edit" required class="form-select" data-control="select2" data-placeholder="Pilih Mahasiswa" data-dropdown-parent="#form_edit">
                             <option value=""></option>
                             @foreach($mahasiswas as $mhs)
-                                <option value="{{ $mhs->id_mahasiswa }}">{{ $mhs->nim }} - {{ $mhs->nama_lengkap }}</option>
+                                <option value="{{ $mhs->nim }}">{{ $mhs->nim }} - {{ $mhs->nama_lengkap }}</option>
                             @endforeach
                         </select>
                     </div>

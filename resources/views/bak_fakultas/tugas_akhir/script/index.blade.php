@@ -119,7 +119,7 @@
     function editTugasAkhir(id, data) {
         $('#kt_modal_edit_form').attr('action', '/bak-fakultas/tugas-akhir/' + id);
         $('#edit_id_tugas_akhir').val(data.id_tugas_akhir);
-        $('#edit_id_mahasiswa').val(data.id_mahasiswa).trigger('change');
+        $('#edit_nim').val(data.nim).trigger('change');
         $('#edit_judul').val(data.judul);
         $('#edit_pembimbing_1').val(data.pembimbing_1);
         $('#edit_pembimbing_2').val(data.pembimbing_2);

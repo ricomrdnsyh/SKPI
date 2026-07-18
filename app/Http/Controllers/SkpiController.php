@@ -35,7 +35,7 @@ class SkpiController extends Controller
         $mahasiswaRow = DB::table('mahasiswa')
             ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
             ->leftJoin('fakultas', 'program_studi.id_fakultas', '=', 'fakultas.id_fakultas')
-            ->where('mahasiswa.id_mahasiswa', $pengajuan->id_mahasiswa)
+            ->where('mahasiswa.nim', $pengajuan->nim)
             ->select(
                 'mahasiswa.*',
                 'program_studi.nama_prodi',
@@ -53,7 +53,7 @@ class SkpiController extends Controller
         }
 
         $mahasiswa = (object) [
-            'id_mahasiswa' => $mahasiswaRow->id_mahasiswa,
+            'nim' => $mahasiswaRow->nim,
             'nim' => $mahasiswaRow->nim,
             'nama_lengkap' => $mahasiswaRow->nama_lengkap,
             'tempat_lahir' => $mahasiswaRow->tempat_lahir,
@@ -66,7 +66,7 @@ class SkpiController extends Controller
         ];
 
         if ($user->role === 'mahasiswa') {
-            if ($user->id_mahasiswa !== $pengajuan->id_mahasiswa) {
+            if ($user->nim !== $pengajuan->nim) {
                 abort(403, 'Anda tidak memiliki akses ke halaman ini.');
             }
         } elseif ($user->role !== 'admin') {
@@ -85,7 +85,7 @@ class SkpiController extends Controller
                 return back()->with('error', 'SKPI hanya bisa dicetak jika status pengajuan sudah "dicetak".');
             }
 
-            $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $pengajuan->id_mahasiswa)->first();
+            $mahasiswaRow = DB::table('mahasiswa')->where('nim', $pengajuan->nim)->first();
             $mhs = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
             if (!$mhs || !$mhs->tugasAkhirApproved()) {
                 return back()->with('error', 'SKPI tidak dapat dicetak karena Tugas Akhir belum disetujui.');
@@ -107,7 +107,7 @@ class SkpiController extends Controller
 
                 $draftSkpi = new Skpi([
                     'nomor_skpi' => $nomorSkpi . ' (DRAFT)',
-                    'id_mahasiswa' => $mahasiswa->id_mahasiswa,
+                    'nim' => $mahasiswa->nim,
                     'id_pengajuan' => $pengajuan->id_pengajuan,
                     'nim_ijazah' => 'BELUM DITERBITKAN',
                     'tanggal_terbit' => now(),
@@ -164,14 +164,14 @@ class SkpiController extends Controller
     {
         $data = Cache::remember("skpi:verify:{$id_skpi}", 300, function () use ($id_skpi) {
             $skpi = DB::table('skpi')
-                ->leftJoin('mahasiswa', 'skpi.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+                ->leftJoin('mahasiswa', 'skpi.nim', '=', 'mahasiswa.nim')
                 ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
                 ->leftJoin('fakultas', 'program_studi.id_fakultas', '=', 'fakultas.id_fakultas')
                 ->where('skpi.id_skpi', $id_skpi)
                 ->select(
                     'skpi.*',
                     'skpi.niy_penandatangan as nidn_penandatangan',
-                    'mahasiswa.id_mahasiswa',
+                    'mahasiswa.nim',
                     'mahasiswa.nim',
                     'mahasiswa.nama_lengkap as mahasiswa_nama',
                     'mahasiswa.tempat_lahir',
@@ -197,7 +197,7 @@ class SkpiController extends Controller
             }
 
             $mahasiswa = (object) [
-                'id_mahasiswa' => $skpi->id_mahasiswa,
+                'nim' => $skpi->nim,
                 'nim' => $skpi->nim,
                 'nama_lengkap' => $skpi->mahasiswa_nama,
                 'tempat_lahir' => $skpi->tempat_lahir,
@@ -222,25 +222,25 @@ class SkpiController extends Controller
                 'nidn_dekan' => $skpi->nidn_dekan,
             ];
 
-            $mhsId = $skpi->id_mahasiswa;
+            $mhsId = $skpi->nim;
 
             $prestasi = DB::table('prestasi_mahasiswa')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->where('status', 'approved')
                 ->get();
 
             $organisasi = DB::table('organisasi_mahasiswa')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->where('status', 'approved')
                 ->get();
 
             $sertifikat = DB::table('sertifikat_mahasiswa')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->where('status', 'approved')
                 ->get();
 
             $magangCollection = DB::table('magang_mahasiswa')
-                ->where('magang_mahasiswa.id_mahasiswa', $mhsId)
+                ->where('magang_mahasiswa.nim', $mhsId)
                 ->where('magang_mahasiswa.status', 'approved')
                 ->select('magang_mahasiswa.*')
                 ->get();
@@ -254,7 +254,7 @@ class SkpiController extends Controller
             });
 
             $taRaw = DB::table('tugas_akhir')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->first();
 
             $tugasAkhir = null;

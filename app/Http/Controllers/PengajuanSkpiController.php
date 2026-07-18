@@ -21,12 +21,12 @@ class PengajuanSkpiController extends Controller
 
     public function submit(PengajuanSkpiRequest $request)
     {
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        if (!$id_mahasiswa) {
+        $nim = Auth::user()->nim;
+        if (!$nim) {
             abort(403, 'Akses ditolak.');
         }
 
-        $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->first();
+        $mahasiswaRow = DB::table('mahasiswa')->where('nim', $nim)->first();
         if (!$mahasiswaRow) abort(404);
         $mahasiswa = Mahasiswa::hydrate([(array) $mahasiswaRow])->first();
 
@@ -35,7 +35,7 @@ class PengajuanSkpiController extends Controller
         }
 
         $existing = DB::table('pengajuan_skpi')
-            ->where('id_mahasiswa', $id_mahasiswa)
+            ->where('nim', $nim)
             ->first();
 
         if ($existing) {
@@ -46,7 +46,7 @@ class PengajuanSkpiController extends Controller
                 return back()->with('error', 'Anda sudah memiliki pengajuan cetak SKPI yang sedang diproses.');
             }
             if (in_array($existing->status, ['ditolak', 'draft'])) {
-                DB::transaction(function () use ($existing, $request, $id_mahasiswa) {
+                DB::transaction(function () use ($existing, $request, $nim) {
                     $activeTahun = DB::table('tahun_akademik')->where('is_active', true)->first();
                     
                     DB::table('pengajuan_skpi')
@@ -66,39 +66,39 @@ class PengajuanSkpiController extends Controller
                         ->delete();
                 });
 
-                $this->cache->flushDashboard($id_mahasiswa);
+                $this->cache->flushDashboard($nim);
 
                 return redirect()->route('mahasiswa.dashboard')->with('success', 'Pengajuan cetak SKPI berhasil diajukan ulang.');
             }
         }
 
         try {
-            $this->pengajuanService->submitCetak($id_mahasiswa, $request->catatan_mahasiswa);
+            $this->pengajuanService->submitCetak($nim, $request->catatan_mahasiswa);
         } catch (\RuntimeException $e) {
             return back()->with('error', $e->getMessage());
         }
 
-        $this->cache->flushDashboard($id_mahasiswa);
+        $this->cache->flushDashboard($nim);
 
         return redirect()->route('mahasiswa.dashboard')->with('success', 'Pengajuan cetak SKPI berhasil diajukan dan sedang menunggu proses verifikasi.');
     }
 
     public function requestPrint(Request $request)
     {
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        if (!$id_mahasiswa) {
+        $nim = Auth::user()->nim;
+        if (!$nim) {
             abort(403, 'Akses ditolak.');
         }
 
         $pengajuan = DB::table('pengajuan_skpi')
-            ->where('id_mahasiswa', $id_mahasiswa)
+            ->where('nim', $nim)
             ->firstOrFail();
 
         if ($pengajuan->status !== 'verifikasi') {
             return back()->with('error', 'Permohonan cetak hanya dapat diajukan jika pengajuan SKPI Anda sudah masuk tahap verifikasi.');
         }
 
-        $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->first();
+        $mahasiswaRow = DB::table('mahasiswa')->where('nim', $nim)->first();
         if (!$mahasiswaRow) abort(404);
         $mahasiswa = Mahasiswa::hydrate([(array) $mahasiswaRow])->first();
         if (!$mahasiswa->tugasAkhirApproved()) {
@@ -109,7 +109,7 @@ class PengajuanSkpiController extends Controller
             ->where('id_pengajuan', $pengajuan->id_pengajuan)
             ->update(['permohonan_cetak' => true]);
 
-        $this->cache->flushDashboard($id_mahasiswa);
+        $this->cache->flushDashboard($nim);
 
         return redirect()->route('mahasiswa.dashboard')->with('success', 'Permohonan cetak SKPI berhasil diajukan ke BAAK Fakultas.');
     }

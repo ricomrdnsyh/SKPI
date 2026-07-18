@@ -10,17 +10,17 @@ trait AutoResubmitPengajuan
 {
     protected function autoResubmitIfNeeded(): void
     {
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        if (!$id_mahasiswa) return;
+        $nim = Auth::user()->nim;
+        if (!$nim) return;
 
         $pengajuan = DB::table('pengajuan_skpi')
-            ->where('id_mahasiswa', $id_mahasiswa)
+            ->where('nim', $nim)
             ->first();
 
         if (!$pengajuan) {
             return;
         }
 
-        app(CacheService::class)->flushDashboard($id_mahasiswa);
+        app(CacheService::class)->flushDashboard($nim);
     }
 }

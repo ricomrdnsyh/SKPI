@@ -66,7 +66,7 @@ class SkpiService
 
     public function createSkpi(PengajuanSkpi $pengajuan, string $nimIjazah, ?string $statusProfesi, User $user): Skpi
     {
-        $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->id_mahasiswa);
+        $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->nim);
         $prodi = $mahasiswa->programStudi;
         $fakultas = $prodi->fakultas ?? null;
         $nidn = $fakultas->nidn_dekan ?? null;
@@ -78,7 +78,7 @@ class SkpiService
         return DB::transaction(function () use ($nomorSkpi, $mahasiswa, $pengajuan, $nimIjazah, $statusProfesi, $user, $nidn, $namaDekan) {
             $skpi = Skpi::create([
                 'nomor_skpi' => $nomorSkpi,
-                'id_mahasiswa' => $mahasiswa->id_mahasiswa,
+                'nim' => $mahasiswa->nim,
                 'id_pengajuan' => $pengajuan->id_pengajuan,
                 'nim_ijazah' => $nimIjazah,
                 'tanggal_terbit' => now(),
@@ -108,33 +108,33 @@ class SkpiService
 
     public function generatePdf(PengajuanSkpi $pengajuan, Skpi $skpi): \Barryvdh\DomPDF\PDF
     {
-        $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->id_mahasiswa);
+        $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->nim);
         $prodi = $mahasiswa->programStudi;
         $fakultas = $prodi->fakultas ?? null;
 
         $cplList = $this->getCplList($mahasiswa);
         $penilaian = $this->cache->getSistemPenilaian();
 
-        $mhsId = $mahasiswa->id_mahasiswa;
+        $mhsId = $mahasiswa->nim;
 
         $data = (function () use ($mhsId) {
             $prestasi = DB::table('prestasi_mahasiswa')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->where('status', 'approved')
                 ->get();
 
             $organisasi = DB::table('organisasi_mahasiswa')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->where('status', 'approved')
                 ->get();
 
             $sertifikat = DB::table('sertifikat_mahasiswa')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->where('status', 'approved')
                 ->get();
 
             $magang = DB::table('magang_mahasiswa')
-                ->where('magang_mahasiswa.id_mahasiswa', $mhsId)
+                ->where('magang_mahasiswa.nim', $mhsId)
                 ->where('magang_mahasiswa.status', 'approved')
                 ->select('magang_mahasiswa.*')
                 ->get()
@@ -147,7 +147,7 @@ class SkpiService
                 });
 
             $tugasAkhir = DB::table('tugas_akhir')
-                ->where('id_mahasiswa', $mhsId)
+                ->where('nim', $mhsId)
                 ->first();
 
             if ($tugasAkhir) {

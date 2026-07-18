@@ -56,12 +56,12 @@ class VerifikasiService
 
     public function getHistoryTimeline(PengajuanSkpi $pengajuan): \Illuminate\Support\Collection
     {
-        $mahasiswaId = $pengajuan->id_mahasiswa;
+        $mahasiswaId = $pengajuan->nim;
 
-        $prestasi = \App\Models\PrestasiMahasiswa::where('id_mahasiswa', $mahasiswaId)->get();
-        $organisasi = \App\Models\OrganisasiMahasiswa::where('id_mahasiswa', $mahasiswaId)->get();
-        $sertifikat = \App\Models\SertifikatMahasiswa::where('id_mahasiswa', $mahasiswaId)->get();
-        $magang = \App\Models\MagangMahasiswa::where('id_mahasiswa', $mahasiswaId)->get()
+        $prestasi = \App\Models\PrestasiMahasiswa::where('nim', $mahasiswaId)->get();
+        $organisasi = \App\Models\OrganisasiMahasiswa::where('nim', $mahasiswaId)->get();
+        $sertifikat = \App\Models\SertifikatMahasiswa::where('nim', $mahasiswaId)->get();
+        $magang = \App\Models\MagangMahasiswa::where('nim', $mahasiswaId)->get()
             ->map(function ($item) {
                 $item->tempatMagang = (object) [
                     'nama_perusahaan' => $item->tempat_magang,
@@ -70,7 +70,7 @@ class VerifikasiService
                 return $item;
             });
 
-        $ta = \App\Models\TugasAkhir::where('id_mahasiswa', $mahasiswaId)->first();
+        $ta = \App\Models\TugasAkhir::where('nim', $mahasiswaId)->first();
         $skpi = \App\Models\Skpi::where('id_pengajuan', $pengajuan->id_pengajuan)->first();
 
         $history = collect();

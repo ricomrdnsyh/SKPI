@@ -11,11 +11,9 @@ return new class extends Migration
         if (Schema::hasTable('mahasiswa')) return;
 
         Schema::create('mahasiswa', function (Blueprint $table) {
-            $table->increments('id_mahasiswa');
-            $table->string('nim', 20);
-            $table->string('id_prodi', 50);
-            $table->smallInteger('id_kurikulum')->unsigned();
-            $table->smallInteger('id_dosen_wali')->unsigned()->nullable();
+            $table->char('nim', 10)->primary();
+            $table->string('id_prodi', 36);
+            $table->char('id_kurikulum', 7);
             $table->string('nama_lengkap', 255);
             $table->string('tempat_lahir', 100)->nullable();
             $table->date('tanggal_lahir')->nullable();
@@ -29,10 +27,8 @@ return new class extends Migration
             $table->string('nomor_telepon', 20)->nullable();
             $table->string('password', 255)->nullable();
 
-            $table->unique('nim', 'uq_mahasiswa_nim');
             $table->index('id_prodi', 'idx_mahasiswa_prodi');
             $table->index('id_kurikulum', 'idx_mahasiswa_kurikulum');
-            $table->index('id_dosen_wali', 'idx_mahasiswa_dosen_wali');
             $table->index('status', 'idx_mahasiswa_status');
             $table->foreign('id_prodi', 'fk_mahasiswa_prodi')
                 ->references('id_prodi')->on('program_studi')
@@ -40,9 +36,6 @@ return new class extends Migration
             $table->foreign('id_kurikulum', 'fk_mahasiswa_kurikulum')
                 ->references('id_kurikulum')->on('kurikulum')
                 ->onUpdate('cascade');
-            $table->foreign('id_dosen_wali', 'fk_mahasiswa_dosen_wali')
-                ->references('id_dosen')->on('dosen')
-                ->onDelete('set null')->onUpdate('cascade');
         });
     }
 

@@ -36,9 +36,9 @@ class MagangController extends Controller
             }
             return view('mahasiswa.magang.index', compact('filterOptions', 'mahasiswas'));
         } else {
-            $id_mahasiswa = $user->id_mahasiswa;
+            $nim = $user->nim;
             $filterOptions = [
-                'status' => DB::table('magang_mahasiswa')->where('id_mahasiswa', $id_mahasiswa)->select('status')->distinct()->pluck('status'),
+                'status' => DB::table('magang_mahasiswa')->where('nim', $nim)->select('status')->distinct()->pluck('status'),
             ];
             return view('mahasiswa.magang.index', compact('filterOptions'));
         }
@@ -60,10 +60,10 @@ class MagangController extends Controller
 
         $data = $request->validated();
         if (in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
-            $request->validate(['id_mahasiswa' => 'required|exists:mahasiswa,id_mahasiswa']);
-            $data['id_mahasiswa'] = $request->id_mahasiswa;
+            $request->validate(['nim' => 'required|exists:mahasiswa,nim']);
+            $data['nim'] = $request->nim;
         } else {
-            $data['id_mahasiswa'] = Auth::user()->id_mahasiswa;
+            $data['nim'] = Auth::user()->nim;
         }
         $data['status'] = 'pending';
 
@@ -85,12 +85,12 @@ class MagangController extends Controller
 
         $user = Auth::user();
         if (in_array($user->role, ['bak_fakultas', 'admin'])) {
-            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $magang->id_mahasiswa)->first();
+            $pengajuan = DB::table('pengajuan_skpi')->where('nim', $magang->nim)->first();
             $isLocked = false;
             $readonly = false;
         } else {
-            $id_mahasiswa = $user->id_mahasiswa;
-            $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+            $nim = $user->nim;
+            $pengajuan = DB::table('pengajuan_skpi')->where('nim', $nim)->first();
 
             $isRejected = $magang->status === 'rejected';
             $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['dicetak']);
@@ -98,7 +98,7 @@ class MagangController extends Controller
             $readonly = $isLocked || $isApproved;
         }
 
-        $mahasiswaRow = DB::table('mahasiswa')->where('id_mahasiswa', $magang->id_mahasiswa)->first();
+        $mahasiswaRow = DB::table('mahasiswa')->where('nim', $magang->nim)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
 
         $itemSteps = $this->buildItemSteps($magang);
@@ -169,7 +169,7 @@ class MagangController extends Controller
         $query = DB::table('magang_mahasiswa');
         
         if (in_array($user->role, ['bak_fakultas', 'admin'])) {
-            $query->join('mahasiswa', 'magang_mahasiswa.id_mahasiswa', '=', 'mahasiswa.id_mahasiswa')
+            $query->join('mahasiswa', 'magang_mahasiswa.nim', '=', 'mahasiswa.nim')
                   ->join('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
                   ->select('magang_mahasiswa.*', 'mahasiswa.nama_lengkap as nama_mahasiswa', 'mahasiswa.nim');
             
@@ -178,7 +178,7 @@ class MagangController extends Controller
                 $query->where('program_studi.id_fakultas', $id_fakultas);
             }
         } else {
-            $query->where('magang_mahasiswa.id_mahasiswa', $user->id_mahasiswa)
+            $query->where('magang_mahasiswa.nim', $user->nim)
                   ->select('magang_mahasiswa.*');
         }
 
@@ -211,7 +211,7 @@ class MagangController extends Controller
         if (!$row) {
             abort(404, 'Magang tidak ditemukan.');
         }
-        if (!in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $row->id_mahasiswa !== Auth::user()->id_mahasiswa) {
+        if (!in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $row->nim !== Auth::user()->nim) {
             abort(403, 'Akses ditolak.');
         }
         return MagangMahasiswa::hydrate([(array) $row])->first();
@@ -225,8 +225,8 @@ class MagangController extends Controller
         if ($item && $item->status === 'rejected') {
             return false;
         }
-        $id_mahasiswa = Auth::user()->id_mahasiswa;
-        $pengajuan = DB::table('pengajuan_skpi')->where('id_mahasiswa', $id_mahasiswa)->first();
+        $nim = Auth::user()->nim;
+        $pengajuan = DB::table('pengajuan_skpi')->where('nim', $nim)->first();
         return $pengajuan && in_array($pengajuan->status, ['dicetak']);
     }
 }
