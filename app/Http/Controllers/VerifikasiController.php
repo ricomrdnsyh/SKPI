@@ -90,8 +90,11 @@ class VerifikasiController extends Controller
 
         $statuses = $this->getStatusesCached();
         $prodis = $this->getProdiListCached($allowedProdis);
+        $tahun_akademiks = Cache::remember('master:tahun_akademik', 7200, function () {
+            return DB::table('tahun_akademik')->pluck('nama', 'id_tahun_akademik')->toArray();
+        });
 
-        return view('bak_fakultas.dashboard.index', compact('stats', 'statuses', 'prodis'));
+        return view('bak_fakultas.dashboard.index', compact('stats', 'statuses', 'prodis', 'tahun_akademiks'));
     }
 
     private function getStatusesCached(): \Illuminate\Support\Collection
@@ -553,6 +556,9 @@ class VerifikasiController extends Controller
         }
         if ($request->filled('status')) {
             $query->where('pengajuan_skpi.status', $request->status);
+        }
+        if ($request->filled('tahun_akademik')) {
+            $query->where('pengajuan_skpi.id_tahun_akademik', $request->tahun_akademik);
         }
 
         $studentIds = (clone $query)->pluck('pengajuan_skpi.id_mahasiswa')->unique()->toArray();

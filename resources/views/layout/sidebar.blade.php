@@ -400,6 +400,13 @@
                                 <span class="menu-title">Mahasiswa</span>
                             </a>
                         </div>
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('admin/tahun-akademik*') ? 'active' : '' }}"
+                                href="{{ route('tahun-akademik.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-calendar-days fs-4"></i></span>
+                                <span class="menu-title">Tahun Akademik</span>
+                            </a>
+                        </div>
                     @endif
                 </div>
             </div>

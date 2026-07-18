@@ -21,6 +21,11 @@ class ClientSSO
         return $this->fetchData('kurikulum', ['id_sms' => $idSms]);
     }
 
+    public function getTahunAkademikFromApi(): array
+    {
+        return $this->fetchData('tahun_ajaran');
+    }
+
     public function getProdiByFakultas(string $idFakultas): array
     {
         return $this->fetchData('program_studi', ['id_fakultas' => $idFakultas]);

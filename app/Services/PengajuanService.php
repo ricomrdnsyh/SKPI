@@ -10,13 +10,16 @@ class PengajuanService
 {
     public function submitCetak($idMahasiswa, ?string $catatan): PengajuanSkpi
     {
-        return DB::transaction(function () use ($idMahasiswa, $catatan) {
+        $activeTahun = DB::table('tahun_akademik')->where('is_active', true)->first();
+        
+        return DB::transaction(function () use ($idMahasiswa, $catatan, $activeTahun) {
             return PengajuanSkpi::create([
                 'id_mahasiswa' => $idMahasiswa,
                 'status' => 'diajukan',
                 'tanggal_pengajuan' => now(),
                 'catatan_mahasiswa' => $catatan,
                 'permohonan_cetak' => true,
+                'id_tahun_akademik' => $activeTahun?->id_tahun_akademik,
             ]);
         });
     }

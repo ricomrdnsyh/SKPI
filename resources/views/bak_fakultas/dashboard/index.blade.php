@@ -114,6 +114,15 @@
                             <div class="card-toolbar w-100 w-md-auto mt-4 mt-md-0">
                                 <div class="d-flex flex-row justify-content-end gap-3 w-100" data-kt-customer-table-toolbar="base">
                                     <div class="w-50 w-md-200px">
+                                        <select id="filter-tahun" class="form-select form-select-sm w-100 fw-bold"
+                                            data-control="select2" data-placeholder="Semua Tahun Akademik">
+                                            <option value="">Semua Tahun Akademik</option>
+                                            @foreach ($tahun_akademiks as $id => $nama)
+                                                <option value="{{ $id }}">{{ $nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="w-50 w-md-200px">
                                         <select id="filter-prodi" class="form-select form-select-sm w-100 fw-bold"
                                             data-control="select2" data-placeholder="Semua Prodi">
                                             <option value="">Semua Prodi</option>
@@ -197,6 +206,7 @@
                     data: function(d) {
                         d.prodi = $('#filter-prodi').val();
                         d.status = $('#filter-status').val();
+                        d.tahun_akademik = $('#filter-tahun').val();
                         d.tab = activeTab;
                     }
                 },
@@ -240,7 +250,7 @@
                     })
                 }
             });
-            $('#filter-prodi, #filter-status').on('change', function() {
+            $('#filter-prodi, #filter-status, #filter-tahun').on('change', function() {
                 table.draw();
             });
             $('.tab-btn').on('click', function(e) {

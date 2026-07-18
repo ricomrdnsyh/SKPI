@@ -96,6 +96,9 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('/dashboard', [MasterDataController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('penilaian/data', [SistemPenilaianController::class, 'datatable'])->name('penilaian.datatable');
         Route::get('users/data', [UserController::class, 'datatable'])->name('users.datatable');
+        Route::get('tahun-akademik/data', [\App\Http\Controllers\Admin\TahunAkademikController::class, 'datatable'])->name('tahun-akademik.datatable');
+        Route::post('tahun-akademik/sync', [\App\Http\Controllers\Admin\TahunAkademikController::class, 'sync'])->name('tahun-akademik.sync');
+        Route::get('tahun-akademik', [\App\Http\Controllers\Admin\TahunAkademikController::class, 'index'])->name('tahun-akademik.index');
         Route::resource('penilaian', SistemPenilaianController::class);
         Route::resource('users', UserController::class);
     });

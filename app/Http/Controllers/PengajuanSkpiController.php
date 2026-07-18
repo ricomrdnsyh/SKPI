@@ -47,6 +47,8 @@ class PengajuanSkpiController extends Controller
             }
             if (in_array($existing->status, ['ditolak', 'draft'])) {
                 DB::transaction(function () use ($existing, $request, $id_mahasiswa) {
+                    $activeTahun = DB::table('tahun_akademik')->where('is_active', true)->first();
+                    
                     DB::table('pengajuan_skpi')
                         ->where('id_pengajuan', $existing->id_pengajuan)
                         ->update([
@@ -56,6 +58,7 @@ class PengajuanSkpiController extends Controller
                             'diverifikasi_oleh' => null,
                             'tanggal_verifikasi' => null,
                             'catatan_bak' => null,
+                            'id_tahun_akademik' => $activeTahun?->id_tahun_akademik,
                         ]);
 
                     DB::table('checklist_verifikasi_skpi')
