@@ -31,6 +31,11 @@ class ClientSSO
         return $this->fetchData('program_studi', ['id_fakultas' => $idFakultas]);
     }
 
+    public function getDosenByProdi(string $idSms): array
+    {
+        return $this->fetchData('dosen', ['id_sms' => $idSms]);
+    }
+
     private function fetchData(string $filter, array $additionalPayload = []): array
     {
         $auth = $this->auth->getAuth();

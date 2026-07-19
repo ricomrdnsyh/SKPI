@@ -121,8 +121,8 @@
         $('#edit_id_tugas_akhir').val(data.id_tugas_akhir);
         $('#edit_nim').val(data.nim).trigger('change');
         $('#edit_judul').val(data.judul);
-        $('#edit_pembimbing_1').val(data.pembimbing_1);
-        $('#edit_pembimbing_2').val(data.pembimbing_2);
+        $('#edit_pembimbing_1').val(data.pembimbing_1).trigger('change');
+        $('#edit_pembimbing_2').val(data.pembimbing_2).trigger('change');
         $('#form_edit').modal('show');
     }
 </script>

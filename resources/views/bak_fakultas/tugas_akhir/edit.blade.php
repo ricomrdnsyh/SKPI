@@ -31,16 +31,22 @@
 
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
-                            <label for="edit_pembimbing_1" class="form-label required fw-bold fs-6">Dosen Pembimbing 1
-                                (Utama)</label>
-                            <input type="text" name="pembimbing[0]" id="edit_pembimbing_1" required
-                                class="form-control" placeholder="Nama Pembimbing 1">
+                            <label for="edit_pembimbing_1" class="form-label required fw-bold fs-6">Dosen Pembimbing 1 (Utama)</label>
+                            <select name="pembimbing[0]" id="edit_pembimbing_1" required class="form-select" data-control="select2" data-placeholder="Pilih Pembimbing 1" data-dropdown-parent="#form_edit">
+                                <option value=""></option>
+                                @foreach($dosens as $dosen)
+                                    <option value="{{ $dosen->nama_dosen }}">{{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="fv-row">
-                            <label for="edit_pembimbing_2" class="form-label fw-bold fs-6">Dosen Pembimbing 2
-                                (Pendamping)</label>
-                            <input type="text" name="pembimbing[1]" id="edit_pembimbing_2" class="form-control"
-                                placeholder="Nama Pembimbing 2 (Opsional)">
+                            <label for="edit_pembimbing_2" class="form-label fw-bold fs-6">Dosen Pembimbing 2 (Pendamping)</label>
+                            <select name="pembimbing[1]" id="edit_pembimbing_2" class="form-select" data-control="select2" data-placeholder="Pilih Pembimbing 2 (Opsional)" data-allow-clear="true" data-dropdown-parent="#form_edit">
+                                <option value=""></option>
+                                @foreach($dosens as $dosen)
+                                    <option value="{{ $dosen->nama_dosen }}">{{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }}</option>
+                                @endforeach
+                            </select>
                             <div class="text-muted mt-2">Biarkan kosong jika tidak ada pembimbing pendamping.</div>
                         </div>
                     </div>

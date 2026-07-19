@@ -62,7 +62,7 @@
                             <thead class="">
                                 <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                     <th class="text-center min-w-100px">Actions</th>
-                                    <th class="min-w-125px">ID Tahun Akademik</th>
+                                    <th class="min-w-125px">Kode Tahun Akademik</th>
                                     <th class="min-w-125px">Nama Tahun Akademik</th>
                                     <th class="min-w-125px">Status</th>
                                 </tr>
@@ -103,7 +103,7 @@
 
         $(document).ready(function() {
             var table = $('#table-tahun-akademik').DataTable({
-                processing: true,
+                processing: false,
                 serverSide: true,
                 responsive: true,
                 lengthMenu: [

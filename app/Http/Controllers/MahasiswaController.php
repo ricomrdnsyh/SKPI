@@ -159,8 +159,15 @@ class MahasiswaController extends Controller
         }
 
         $overallSteps = $this->progressService->getSteps($mahasiswa);
+        
+        $idFakultas = $mahasiswa->programStudi->id_fakultas ?? null;
+        $dosenQuery = \App\Models\Dosen::orderBy('nama_dosen', 'asc');
+        if ($idFakultas) {
+            $dosenQuery->where('id_fakultas', $idFakultas);
+        }
+        $dosens = $dosenQuery->get();
 
-        return view('mahasiswa.tugas_akhir.edit', compact('mahasiswa', 'itemSteps', 'overallSteps', 'isLocked', 'readonly'));
+        return view('mahasiswa.tugas_akhir.edit', compact('mahasiswa', 'itemSteps', 'overallSteps', 'isLocked', 'readonly', 'dosens'));
     }
 
     public function updateTugasAkhir(StoreTugasAkhirRequest $request)

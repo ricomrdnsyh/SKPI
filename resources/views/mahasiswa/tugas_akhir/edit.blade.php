@@ -85,23 +85,26 @@
                                 <div class="row g-8 mb-8">
                                     <div class="col-md-6 fv-row">
                                         <label class="form-label required fw-bold fs-6">Dosen Pembimbing 1 (Utama)</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fa-solid fa-user-tie"></i></span>
-                                            <input type="text" name="pembimbing[0]" class="form-control"
-                                                value="{{ old('pembimbing.0', $pembimbingNames[0] ?? '') }}" required
-                                                {{ $readonly ? 'disabled' : '' }}>
-                                        </div>
+                                        <select name="pembimbing[0]" class="form-select" data-control="select2" data-placeholder="Pilih Dosen Pembimbing 1" required {{ $readonly ? 'disabled' : '' }}>
+                                            <option value=""></option>
+                                            @foreach($dosens as $dosen)
+                                                <option value="{{ $dosen->nama_dosen }}" {{ (old('pembimbing.0', $pembimbingNames[0] ?? '')) == $dosen->nama_dosen ? 'selected' : '' }}>
+                                                    {{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="col-md-6 fv-row">
                                         <label class="form-label fw-bold fs-6">Dosen Pembimbing 2 (Pendamping)</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fa-solid fa-user-group"></i></span>
-                                            <input type="text" name="pembimbing[1]" class="form-control"
-                                                value="{{ old('pembimbing.1', $pembimbingNames[1] ?? '') }}"
-                                                {{ $readonly ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="form-text mt-2 text-muted">Opsional, biarkan kosong jika tidak ada
-                                            pembimbing pendamping.</div>
+                                        <select name="pembimbing[1]" class="form-select" data-control="select2" data-placeholder="Pilih Dosen Pembimbing 2" data-allow-clear="true" {{ $readonly ? 'disabled' : '' }}>
+                                            <option value=""></option>
+                                            @foreach($dosens as $dosen)
+                                                <option value="{{ $dosen->nama_dosen }}" {{ (old('pembimbing.1', $pembimbingNames[1] ?? '')) == $dosen->nama_dosen ? 'selected' : '' }}>
+                                                    {{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <div class="form-text mt-2 text-muted">Opsional, biarkan kosong jika tidak ada pembimbing pendamping.</div>
                                     </div>
                                 </div>
                                 @if (!$readonly)
