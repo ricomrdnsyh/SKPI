@@ -5,7 +5,7 @@
                 <h5 class="modal-title">Edit Data Mahasiswa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="form_edit_mahasiswa" action="" method="POST">
+            <form id="form_edit_mahasiswa" action="" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body">
@@ -46,7 +46,10 @@
                         </div>
                         <div class="fv-row">
                             <label for="edit_tanggal_lahir" class="form-label fw-bolder text-dark">Tanggal Lahir</label>
-                            <input type="date" name="tanggal_lahir" id="edit_tanggal_lahir" class="form-control form-control-sm">
+                            <div class="position-relative d-flex align-items-center">
+                                <i class="fas fa-calendar-alt position-absolute ms-4 fs-5 text-gray-500"></i>
+                                <input class="form-control form-control-sm ps-12" placeholder="Pilih tanggal" id="edit_tanggal_lahir" name="tanggal_lahir" type="text">
+                            </div>
                         </div>
                     </div>
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
@@ -57,6 +60,43 @@
                         <div class="fv-row">
                             <label for="edit_nomor_telepon" class="form-label fw-bolder text-dark">Nomor Telepon</label>
                             <input type="text" name="nomor_telepon" id="edit_nomor_telepon" class="form-control form-control-sm" placeholder="08xxxxxxxxxx">
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="edit_tahun_masuk" class="form-label fw-bolder text-dark">Tahun Masuk</label>
+                            <input type="number" name="tahun_masuk" id="edit_tahun_masuk" class="form-control form-control-sm" placeholder="Contoh: 2023">
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_status" class="form-label fw-bolder text-dark">Status</label>
+                            <select name="status" id="edit_status" class="form-select form-select-sm" data-control="select2" data-dropdown-parent="#form_edit" data-placeholder="Pilih Status">
+                                <option value="Aktif">Aktif</option>
+                                <option value="Lulus">Lulus</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="edit_tahun_lulus" class="form-label fw-bolder text-dark">Tahun Lulus</label>
+                            <input type="number" name="tahun_lulus" id="edit_tahun_lulus" class="form-control form-control-sm" placeholder="Contoh: 2027">
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_tanggal_lulus" class="form-label fw-bolder text-dark">Tanggal Lulus</label>
+                            <div class="position-relative d-flex align-items-center">
+                                <i class="fas fa-calendar-alt position-absolute ms-4 fs-5 text-gray-500"></i>
+                                <input class="form-control form-control-sm ps-12" placeholder="Pilih tanggal" id="edit_tanggal_lulus" name="tanggal_lulus" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <div class="fv-row">
+                            <label for="edit_ipk" class="form-label fw-bolder text-dark">IPK</label>
+                            <input type="number" step="0.01" max="4.00" name="ipk" id="edit_ipk" class="form-control form-control-sm" placeholder="Contoh: 3.85">
+                        </div>
+                        <div class="fv-row">
+                            <label for="edit_foto" class="form-label fw-bolder text-dark">Foto (Opsional)</label>
+                            <input type="file" name="foto" id="edit_foto" class="form-control form-control-sm" accept="image/*">
+                            <div class="text-muted mt-2">Biarkan kosong jika tidak ingin mengubah foto.</div>
                         </div>
                     </div>
                     <div class="fv-row mb-6">

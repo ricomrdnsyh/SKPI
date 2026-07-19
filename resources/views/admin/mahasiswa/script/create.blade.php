@@ -22,6 +22,15 @@
                 if(progress) progress.style.display = 'inline-block';
             }
         });
+        
+        $("#tanggal_lahir").flatpickr({
+            dateFormat: "Y-m-d"
+        });
+        
+        $("#tanggal_lulus").flatpickr({
+            dateFormat: "Y-m-d"
+        });
+
         const modalEl = document.getElementById('form_create');
         if (modalEl) {
             modalEl.addEventListener('hidden.bs.modal', function () {

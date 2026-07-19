@@ -3,12 +3,24 @@
         let data = JSON.parse($(element).attr('data-row'));
         let form = document.getElementById('form_edit_mahasiswa');
         for (let key in data) {
-            if (key === 'password') continue; // Jangan masukkan hash password ke input field
+            if (key === 'password' || key === 'foto') continue; // Jangan masukkan hash password atau path foto ke input field
             
             let input = form.querySelector('[name="' + key + '"]');
             if (input) {
                 if (input.type === 'checkbox' || input.type === 'radio') {
                     if(input.value == data[key]) input.checked = true;
+                } else if (key === 'tanggal_lahir' || key === 'tanggal_lulus') {
+                    if (data[key]) {
+                        input.value = data[key];
+                        if (input._flatpickr) {
+                            input._flatpickr.setDate(data[key]);
+                        }
+                    } else {
+                        input.value = '';
+                        if (input._flatpickr) {
+                            input._flatpickr.clear();
+                        }
+                    }
                 } else {
                     input.value = data[key];
                 }
@@ -41,6 +53,15 @@
                 if(progress) progress.style.display = 'inline-block';
             }
         });
+
+        $("#edit_tanggal_lahir").flatpickr({
+            dateFormat: "Y-m-d"
+        });
+        
+        $("#edit_tanggal_lulus").flatpickr({
+            dateFormat: "Y-m-d"
+        });
+
         const modalEl = document.getElementById('form_edit');
         if (modalEl) {
             modalEl.addEventListener('hidden.bs.modal', function () {
