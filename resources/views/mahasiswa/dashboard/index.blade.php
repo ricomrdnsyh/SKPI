@@ -500,7 +500,7 @@
                                                 <div class="mt-auto pt-6">
                                                     <form action="{{ route('mahasiswa.pengajuan.submit') }}"
                                                         method="POST"
-                                                        onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
+                                                        onsubmit="event.preventDefault(); confirmAjukan(this);">
                                                         @csrf
                                                         <button type="submit"
                                                             class="btn btn-warning w-100 fw-bold d-flex align-items-center justify-content-center">
@@ -543,7 +543,7 @@
                                                     </div>
                                                     <form action="{{ route('mahasiswa.pengajuan.submit') }}"
                                                         method="POST"
-                                                        onsubmit="const b=this.querySelector('button');b.setAttribute('data-kt-indicator','on');b.disabled=true;">
+                                                        onsubmit="event.preventDefault(); confirmAjukan(this);">
                                                         @csrf
                                                         <button type="submit"
                                                             class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
@@ -613,4 +613,40 @@
             });
         </script>
     @endif
+
+    <script>
+        function confirmAjukan(form) {
+            Swal.fire({
+                title: 'Ajukan SKPI?',
+                text: 'Apakah Anda yakin ingin mengajukan permohonan cetak SKPI? Pastikan semua data sudah benar.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Ajukan',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Tunggu Sebentar...',
+                        icon: 'info',
+                        text: 'Sedang mengajukan permohonan...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    const btn = form.querySelector('button[type="submit"]');
+                    if (btn) {
+                        btn.setAttribute('data-kt-indicator', 'on');
+                        btn.disabled = true;
+                    }
+                    form.submit();
+                }
+            });
+        }
+    </script>
 @endsection

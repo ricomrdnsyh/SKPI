@@ -224,10 +224,20 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Tunggu Sebentar...',
+                        icon: 'info',
+                        text: 'Sedang memproses...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
                     document.getElementById(inputId).value = result.value;
                     const form = document.getElementById(formId);
                     const btn = form.querySelector('button');
-                    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memproses...';
                     btn.disabled = true;
                     form.submit();
                 }
@@ -264,8 +274,96 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Tunggu Sebentar...',
+                        icon: 'info',
+                        text: 'Sedang memproses...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
                     const form = document.getElementById('formSetujui');
                     const btn = form.querySelector('button[type="button"]');
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memproses...';
+                    btn.disabled = true;
+                    form.submit();
+                }
+            });
+        }
+        function confirmTerbitkan() {
+            const form = document.getElementById('formTerbitkan');
+            const nimIjazah = document.getElementById('nim_ijazah').value;
+            
+            if (!nimIjazah || nimIjazah.trim() === '') {
+                Swal.fire({
+                    title: 'Peringatan',
+                    text: 'Nomor Ijazah Nasional (NIM Ijazah) harus diisi!',
+                    icon: 'warning',
+                    confirmButtonText: 'Ok, Mengerti',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    }
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Terbitkan SKPI?',
+                text: "Anda yakin ingin menerbitkan dan mencetak dokumen SKPI ini? Pastikan Nomor Ijazah sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Terbitkan & Cetak',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Tunggu Sebentar...',
+                        icon: 'info',
+                        text: 'Sedang memproses...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    const btn = form.querySelector('button[type="button"]');
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memproses...';
+                    btn.disabled = true;
+                    form.submit();
+                }
+            });
+        }
+        function confirmBatalkanCetak(form) {
+            Swal.fire({
+                title: 'Batalkan Cetak SKPI?',
+                text: 'Apakah Anda yakin ingin membatalkan cetak SKPI ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Batalkan',
+                cancelButtonText: 'Tutup',
+                customClass: {
+                    confirmButton: 'btn btn-danger',
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Tunggu Sebentar...',
+                        icon: 'info',
+                        text: 'Sedang memproses...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    const btn = form.querySelector('button[type="submit"]');
                     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Memproses...';
                     btn.disabled = true;
                     form.submit();

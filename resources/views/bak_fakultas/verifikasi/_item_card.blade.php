@@ -54,7 +54,7 @@
                     </button>
                 </form>
                 <form action="{{ route('bak_fakultas.tugas_akhir.approve', $itemId) }}" method="POST" class="m-0"
-                    onsubmit="const b=this.querySelector('button');b.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span>';b.disabled=true;">
+                    onsubmit="const b=this.querySelector('button');b.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span>';b.disabled=true;Swal.fire({title: 'Tunggu Sebentar...', icon: 'info', text: 'Sedang memproses...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => { Swal.showLoading(); }});">
                     @csrf
                     <button type="submit"
                         class="btn btn-success btn-sm fw-bolder px-4 py-2 shadow-sm d-flex align-items-center justify-content-center"
@@ -81,7 +81,7 @@
                 </form>
                 <form action="{{ route('bak_fakultas.data.approve', ['type' => $itemType, 'id' => $itemId]) }}"
                     method="POST" class="m-0"
-                    onsubmit="const b=this.querySelector('button');b.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span>';b.disabled=true;">
+                    onsubmit="const b=this.querySelector('button');b.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span>';b.disabled=true;Swal.fire({title: 'Tunggu Sebentar...', icon: 'info', text: 'Sedang memproses...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => { Swal.showLoading(); }});">
                     @csrf
                     <button type="submit"
                         class="btn btn-success btn-sm fw-bolder px-4 py-2 shadow-sm d-flex align-items-center justify-content-center"

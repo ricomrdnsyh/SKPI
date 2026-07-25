@@ -17,7 +17,7 @@
             </div>
         </div>
     @endif
-    @if (in_array($pengajuan->status, ['diajukan', 'verifikasi']) && !$pengajuan->skpi)
+    @if ($pengajuan->status === 'verifikasi' && !$pengajuan->skpi)
         <div class="card border border-success border-dashed mb-5">
             <div class="card-body p-6">
                 <h4 class="mb-3 text-success"><i class="ki-duotone ki-printer fs-2 text-success me-2"><span
@@ -25,7 +25,7 @@
                             class="path4"></span><span class="path5"></span></i> Proses & Terbitkan SKPI</h4>
                 <p class="text-muted fs-6 mb-5">Mahasiswa telah mengajukan permohonan cetak. Masukkan nomor ijazah
                     nasional dan status profesi (opsional) untuk menerbitkan SKPI.</p>
-                <form action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST">
+                <form id="formTerbitkan" action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST">
                     @csrf
                     <div class="row mb-5">
                         <div class="col-md-6 mb-5 mb-md-0">
@@ -40,7 +40,7 @@
                                 value="{{ old('status_profesi', 'Belum ada keanggotaan profesi') }}">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success w-100 fw-bolder">
+                    <button type="button" class="btn btn-success w-100 fw-bolder" onclick="confirmTerbitkan()">
                         <i class="ki-duotone ki-badge fs-2"><span class="path1"></span><span
                                 class="path2"></span><span class="path3"></span><span class="path4"></span><span
                                 class="path5"></span></i> Terbitkan & Cetak SKPI
@@ -69,8 +69,8 @@
                         Batalkan Cetak SKPI</h5>
                     <p class="text-danger fw-semibold fs-7 mb-4">Jika dibatalkan, status akan dikembalikan ke Draft agar
                         mahasiswa dapat menambah/mengubah data. Dokumen SKPI yang sudah diterbitkan akan dihapus.</p>
-                    <form action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}"
-                        method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan cetak SKPI ini?')">
+                    <form id="formBatalkanCetak" action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}"
+                        method="POST" onsubmit="event.preventDefault(); confirmBatalkanCetak(this);">
                         @csrf
                         <textarea name="catatan" required class="form-control mb-4" rows="3"
                             placeholder="Alasan pembatalan cetak (wajib diisi)..."></textarea>
