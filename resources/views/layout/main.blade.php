@@ -76,7 +76,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.body.addEventListener('change', function(e) {
-                if (e.target && e.target.type === 'file') {
+                if (e.target && e.target.type === 'file' && !e.target.classList.contains('skip-global-validation')) {
                     let file = e.target.files[0];
                     if (!file) {
                         e.target.classList.remove('is-invalid');

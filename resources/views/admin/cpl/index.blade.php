@@ -101,6 +101,8 @@
                             </div>
                             <div class="card-toolbar">
                                 <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                                    <button type="button" class="btn btn-sm btn-success me-2" data-bs-toggle="modal"
+                                        data-bs-target="#form_import"><i class="fas fa-upload"></i> Import CPL</button>
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah CPL Prodi</button>
                                 </div>
@@ -206,6 +208,7 @@
     @include('admin.cpl.create')
     @include('admin.cpl.edit')
     @include('admin.cpl.show')
+    @include('admin.cpl.import')
 @endsection
 @section('js')
     <script src="{{ asset('assets/plugins/custom/datatables/jquery.dataTables.min.js') }}"></script>
@@ -224,4 +227,5 @@
     @include('admin.cpl.script.create')
     @include('admin.cpl.script.edit')
     @include('admin.cpl.script.show')
+    @include('admin.cpl.script.import')
 @endsection

@@ -84,6 +84,8 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('kategori-cpl/data', [KategoriCplController::class, 'datatable'])->name('kategori-cpl.datatable');
         
         Route::resource('mahasiswa', MahasiswaCrudController::class);
+        Route::get('cpl/import/template', [CplProdiController::class, 'downloadTemplate'])->name('cpl.import.template');
+        Route::post('cpl/import', [CplProdiController::class, 'import'])->name('cpl.import');
         Route::resource('cpl', CplProdiController::class);
         Route::post('kurikulum/sync', [KurikulumController::class, 'sync'])->name('kurikulum.sync');
         Route::resource('kurikulum', KurikulumController::class)->except(['create', 'store']);

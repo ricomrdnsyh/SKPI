@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Traits\FilterByProdi;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\CplProdiImport;
+use App\Exports\CplProdiTemplateExport;
 
 class CplProdiController extends Controller
 {
@@ -234,5 +237,40 @@ class CplProdiController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new CplProdiTemplateExport, 'Template_Import_CPL_Prodi.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $user = Auth::user();
+        $allowedProdis = $this->getAllowedProdiIds($user);
+
+        $request->validate([
+            'id_prodi' => 'required|exists:program_studi,id_prodi',
+            'id_kurikulum' => 'required|exists:kurikulum,id_kurikulum',
+            'file_excel' => 'required|mimes:xlsx,xls,csv|max:5120',
+        ], [
+            'file_excel.mimes' => 'File harus berformat Excel (.xlsx atau .xls) atau CSV.'
+        ]);
+
+        if ($allowedProdis !== null && !in_array($request->id_prodi, $allowedProdis)) {
+            abort(403, 'Akses prodi tidak diizinkan.');
+        }
+
+        try {
+            Excel::import(new CplProdiImport($request->id_prodi, $request->id_kurikulum), $request->file('file_excel'));
+            return response()->json(['success' => true, 'message' => 'Data CPL Prodi berhasil diimport.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Validasi gagal: <br>' . implode('<br>', $e->errors()['import_error'] ?? ['Terjadi kesalahan pada data.'])
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()], 500);
+        }
     }
 }
