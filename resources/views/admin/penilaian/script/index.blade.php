@@ -159,3 +159,16 @@
         });
     </script>
 @endif
+@if ($errors->any())
+    <script>
+        Swal.fire({
+            html: `{!! implode('<br>', $errors->all()) !!}`,
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+                confirmButton: "btn btn-danger"
+            }
+        });
+    </script>
+@endif
