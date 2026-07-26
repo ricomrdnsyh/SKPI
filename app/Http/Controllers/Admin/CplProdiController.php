@@ -262,14 +262,52 @@ class CplProdiController extends Controller
         }
 
         try {
-            Excel::import(new CplProdiImport($request->id_prodi, $request->id_kurikulum), $request->file('file_excel'));
+            // Suppress open_basedir warnings dari ZipArchive internal file_exists()
+            // Bug PHP: zip:// stream wrapper memanggil file_exists('/xl/worksheets/sheet1.xml')
+            // yang dianggap path filesystem absolut oleh open_basedir
+            $previousHandler = set_error_handler(function ($errno, $errstr) {
+                if (strpos($errstr, 'open_basedir') !== false) {
+                    return true; // Suppress warning, jangan convert ke exception
+                }
+                return false; // Biarkan error lain ditangani handler default
+            });
+
+            \PhpOffice\PhpSpreadsheet\Shared\File::setUseUploadTempDirectory(true);
+
+            $file = $request->file('file_excel');
+            $ext = strtolower($file->getClientOriginalExtension());
+
+            // Simpan file ke storage dengan ekstensi yang benar
+            $filename = 'import_' . uniqid() . '.' . $ext;
+            $path = $file->storeAs('temp', $filename);
+
+            $readerType = \Maatwebsite\Excel\Excel::XLSX;
+            if ($ext === 'xls') {
+                $readerType = \Maatwebsite\Excel\Excel::XLS;
+            } elseif ($ext === 'csv') {
+                $readerType = \Maatwebsite\Excel\Excel::CSV;
+            }
+
+            Excel::import(
+                new CplProdiImport($request->id_prodi, $request->id_kurikulum),
+                $path,
+                'local',
+                $readerType
+            );
+
+            // Restore error handler & cleanup temp file
+            restore_error_handler();
+            \Illuminate\Support\Facades\Storage::delete($path);
+
             return response()->json(['success' => true, 'message' => 'Data CPL Prodi berhasil diimport.']);
         } catch (\Illuminate\Validation\ValidationException $e) {
+            restore_error_handler();
             return response()->json([
                 'success' => false, 
                 'message' => 'Validasi gagal: <br>' . implode('<br>', $e->errors()['import_error'] ?? ['Terjadi kesalahan pada data.'])
             ], 422);
         } catch (\Exception $e) {
+            restore_error_handler();
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()], 500);
         }
     }

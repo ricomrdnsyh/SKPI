@@ -464,8 +464,15 @@ class VerifikasiController extends Controller
 
         $this->flushRelatedCaches($id_pengajuan, $pengajuan->nim);
 
+        $messages = [
+            'lulus' => 'SKPI berhasil disetujui dan siap untuk diterbitkan.',
+            'perlu_revisi' => 'SKPI berhasil dikembalikan untuk revisi ke mahasiswa.',
+            'ditolak' => 'Pengajuan SKPI berhasil ditolak.',
+        ];
+        $message = $messages[$request->hasil_verifikasi] ?? 'Checklist verifikasi berhasil disimpan.';
+
         return redirect()->route('bak_fakultas.verifikasi.detail', $pengajuan->id_pengajuan)
-            ->with('success', 'Checklist verifikasi berhasil disimpan.');
+            ->with('success', $message);
     }
 
     public function datatable(Request $request)

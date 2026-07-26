@@ -1,27 +1,32 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MahasiswaController;
-use App\Http\Controllers\PrestasiController;
-use App\Http\Controllers\OrganisasiController;
-use App\Http\Controllers\SertifikatController;
-use App\Http\Controllers\MagangController;
-use App\Http\Controllers\PengajuanSkpiController;
-use App\Http\Controllers\VerifikasiController;
-use App\Http\Controllers\SkpiController;
-use App\Http\Controllers\Admin\MasterDataController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\KurikulumController;
-use App\Http\Controllers\Admin\MahasiswaCrudController;
 use App\Http\Controllers\Admin\CplProdiController;
 use App\Http\Controllers\Admin\FakultasController;
+use App\Http\Controllers\Admin\KategoriCplController;
+use App\Http\Controllers\Admin\KurikulumController;
+use App\Http\Controllers\Admin\MahasiswaCrudController;
+use App\Http\Controllers\Admin\MasterDataController;
 use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\SistemPenilaianController;
-use App\Http\Controllers\Admin\KategoriCplController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MagangController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\OrganisasiController;
+use App\Http\Controllers\PengajuanSkpiController;
+use App\Http\Controllers\PrestasiController;
+use App\Http\Controllers\SertifikatController;
+use App\Http\Controllers\SkpiController;
 use App\Http\Controllers\TugasAkhirController;
+use App\Http\Controllers\VerifikasiController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+
+
+Route::get('log-viewer', [LogViewerController::class, 'index'])->middleware(['auth:web', 'role:admin']);
+
 Route::get('/', function () {
     return (Auth::guard('web')->check() || Auth::guard('mahasiswa')->check()) ? redirect()->route('dashboard') : view('landing');
 });
@@ -82,7 +87,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('prodi/data', [ProgramStudiController::class, 'datatable'])->name('prodi.datatable');
         Route::get('dosen/data', [\App\Http\Controllers\Admin\DosenController::class, 'datatable'])->name('dosen.datatable');
         Route::get('kategori-cpl/data', [KategoriCplController::class, 'datatable'])->name('kategori-cpl.datatable');
-        
+
         Route::resource('mahasiswa', MahasiswaCrudController::class);
         Route::get('cpl/import/template', [CplProdiController::class, 'downloadTemplate'])->name('cpl.import.template');
         Route::post('cpl/import', [CplProdiController::class, 'import'])->name('cpl.import');

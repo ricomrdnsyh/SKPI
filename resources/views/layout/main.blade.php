@@ -111,6 +111,46 @@
             });
         });
     </script>
+    <script>
+        // Global flash message handler — tampilkan SweetAlert pop-up untuk session flash
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: @json(session('success')),
+                    icon: 'success',
+                    confirmButtonText: 'Ok, Mengerti',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    }
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    title: 'Gagal!',
+                    text: @json(session('error')),
+                    icon: 'error',
+                    confirmButtonText: 'Ok, Mengerti',
+                    customClass: {
+                        confirmButton: 'btn btn-danger'
+                    }
+                });
+            @endif
+
+            @if(session('warning'))
+                Swal.fire({
+                    title: 'Perhatian!',
+                    text: @json(session('warning')),
+                    icon: 'warning',
+                    confirmButtonText: 'Ok, Mengerti',
+                    customClass: {
+                        confirmButton: 'btn btn-warning'
+                    }
+                });
+            @endif
+        });
+    </script>
     @yield('js')
 </body>
 </html>
