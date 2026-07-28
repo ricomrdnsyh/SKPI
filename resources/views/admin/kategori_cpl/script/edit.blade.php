@@ -13,7 +13,7 @@
             }
         }
         $(form).find('select').trigger('change.select2');
-        form.action = '/admin/kategori-cpl/' + data.id_kategori;
+        form.action = '/akademik/kategori-cpl/' + data.id_kategori;
         $('#form_edit').modal('show');
     }
     document.addEventListener('DOMContentLoaded', function() {

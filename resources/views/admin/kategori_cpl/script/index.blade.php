@@ -97,7 +97,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/admin/kategori-cpl/' + id,
+                    url: '/akademik/kategori-cpl/' + id,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
