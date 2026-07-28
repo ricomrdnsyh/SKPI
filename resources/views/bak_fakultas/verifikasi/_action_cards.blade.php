@@ -25,14 +25,13 @@
                             class="path4"></span><span class="path5"></span></i> Proses & Terbitkan SKPI</h4>
                 <p class="text-muted fs-6 mb-5">Mahasiswa telah mengajukan permohonan cetak. Masukkan nomor ijazah
                     nasional dan status profesi (opsional) untuk menerbitkan SKPI.</p>
-                <form id="formTerbitkan" action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST">
+                <form id="formTerbitkan"
+                    action="{{ route('bak_fakultas.verifikasi.publish', $pengajuan->id_pengajuan) }}" method="POST">
                     @csrf
                     <div class="row mb-5">
                         <div class="col-md-6 mb-5 mb-md-0">
-                            <label for="nim_ijazah" class="required form-label fw-bold">Nomor Ijazah Nasional (NIM
-                                Ijazah)</label>
-                            <input type="text" name="nim_ijazah" id="nim_ijazah" class="form-control"
-                                value="{{ old('nim_ijazah', $mahasiswa->nim ?? '') }}" required>
+                            <label for="nim_ijazah" class="required form-label fw-bold">Nomor Ijazah Nasional</label>
+                            <input type="text" name="nim_ijazah" id="nim_ijazah" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label for="status_profesi" class="form-label fw-bold">Status Profesi (Opsional)</label>
@@ -69,7 +68,8 @@
                         Batalkan Cetak SKPI</h5>
                     <p class="text-danger fw-semibold fs-7 mb-4">Jika dibatalkan, status akan dikembalikan ke Draft agar
                         mahasiswa dapat menambah/mengubah data. Dokumen SKPI yang sudah diterbitkan akan dihapus.</p>
-                    <form id="formBatalkanCetak" action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}"
+                    <form id="formBatalkanCetak"
+                        action="{{ route('bak_fakultas.verifikasi.cancel_print', $pengajuan->id_pengajuan) }}"
                         method="POST" onsubmit="event.preventDefault(); confirmBatalkanCetak(this);">
                         @csrf
                         <textarea name="catatan" required class="form-control mb-4" rows="3"

@@ -366,7 +366,7 @@
                 @endif
                 <strong
                     style="text-decoration: underline;">{{ $skpi->ditandatangani_oleh ?? $fakultas->dekan }}</strong><br>
-                NIY.{{ $skpi->nidn_penandatangan ?? $fakultas->nidn_dekan }}
+                NIY.{{ $skpi->nidn_penandatangan ?? $fakultas->niy_dekan }}
             </td>
             <td style="width: 50%;"></td>
         </tr>

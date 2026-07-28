@@ -130,8 +130,7 @@
                                     <th class="min-w-125px">Nama Fakultas</th>
                                     <th class="min-w-125px">Singkatan</th>
                                     <th class="min-w-125px">Nama Dekan</th>
-                                    <th class="min-w-125px">NIDN Dekan</th>
-                                    <th class="min-w-125px">Telepon Fakultas</th>
+                                    <th class="min-w-125px">NIY Dekan</th>
                                     <th class="min-w-125px">Status</th>
                                 </tr>
                             </thead>

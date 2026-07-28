@@ -43,7 +43,7 @@ class SkpiController extends Controller
                 'program_studi.jenjang',
                 'fakultas.nama_fakultas',
                 'fakultas.dekan',
-                'fakultas.nidn_dekan',
+                'fakultas.niy_dekan',
                 'fakultas.kode_fakultas'
             )
             ->first();
@@ -100,7 +100,7 @@ class SkpiController extends Controller
             if (!$isPublishRequest) {
                 $fakultas = (object) [
                     'dekan' => $mahasiswaRow->dekan,
-                    'nidn_dekan' => $mahasiswaRow->nidn_dekan,
+                    'niy_dekan' => $mahasiswaRow->niy_dekan,
                 ];
                 $kodeFakultas = $mahasiswaRow->kode_fakultas ?? 'FAKULTAS';
                 $nomorSkpi = $this->skpiService->generateNomorSkpi($kodeFakultas);
@@ -114,7 +114,7 @@ class SkpiController extends Controller
                     'status_profesi' => 'Belum ada keanggotaan profesi',
                     'tanggal_ttd_dekan' => now(),
                     'ditandatangani_oleh' => $fakultas->dekan ?? 'Dekan Fakultas',
-                    'nidn_penandatangan' => $fakultas->nidn_dekan ?? '',
+                    'nidn_penandatangan' => $fakultas->niy_dekan ?? '',
                 ]);
                 $draftSkpi->id_skpi = 0;
 
@@ -188,7 +188,7 @@ class SkpiController extends Controller
                     'program_studi.jenjang_kkni',
                     'fakultas.nama_fakultas',
                     'fakultas.dekan',
-                    'fakultas.nidn_dekan'
+                    'fakultas.niy_dekan'
                 )
                 ->first();
 
@@ -219,7 +219,7 @@ class SkpiController extends Controller
             $fakultas = (object) [
                 'nama_fakultas' => $skpi->nama_fakultas,
                 'dekan' => $skpi->dekan,
-                'nidn_dekan' => $skpi->nidn_dekan,
+                'niy_dekan' => $skpi->niy_dekan,
             ];
 
             $mhsId = $skpi->nim;

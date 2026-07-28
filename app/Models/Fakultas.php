@@ -11,11 +11,10 @@ class Fakultas extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nama_fakultas',
         'kode_fakultas',
+        'nama_fakultas',
         'dekan',
-        'nidn_dekan',
-        'no_telepon',
-        'status'
+        'niy_dekan',
+        'status',
     ];
 }

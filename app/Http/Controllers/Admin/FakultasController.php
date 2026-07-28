@@ -50,18 +50,17 @@ class FakultasController extends Controller
 
         $messages = [
             'nama_fakultas.required' => 'Nama fakultas wajib diisi.',
-            'kode_fakultas.max' => 'Kode fakultas maksimal 10 karakter.',
-            'no_telepon.max' => 'Nomor telepon maksimal 15 karakter.',
+            'dekan.max' => 'Nama dekan maksimal 255 karakter.',
+            'niy_dekan.max' => 'NIY dekan maksimal 50 karakter.',
             'status.required' => 'Status wajib dipilih.',
             'status.in' => 'Status tidak valid.'
         ];
 
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'nama_fakultas' => 'required|string|max:255',
-            'kode_fakultas' => 'nullable|string|max:10',
-            'dekan' => 'nullable|string|max:100',
-            'nidn_dekan' => 'nullable|string|max:50',
-            'no_telepon' => 'nullable|string|max:15',
+            'kode_fakultas' => 'required|string|max:10|unique:fakultas,kode_fakultas' . ($id ? ',' . $id . ',id_fakultas' : ''),
+            'dekan' => 'required|string|max:255',
+            'niy_dekan' => 'nullable|string|max:50',
             'status' => 'required|in:aktif,nonaktif',
         ], $messages);
 
@@ -72,7 +71,7 @@ class FakultasController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['nama_fakultas', 'kode_fakultas', 'dekan', 'nidn_dekan', 'no_telepon', 'status']);
+        $data = $request->only(['nama_fakultas', 'kode_fakultas', 'dekan', 'niy_dekan', 'status']);
         $fakultas->update($data);
 
         Cache::forget('master:fakultas');

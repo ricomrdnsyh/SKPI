@@ -72,10 +72,7 @@
                     data: 'dekan'
                 },
                 {
-                    data: 'nidn_dekan'
-                },
-                {
-                    data: 'no_telepon'
+                    data: 'niy_dekan'
                 },
                 {
                     data: 'status'

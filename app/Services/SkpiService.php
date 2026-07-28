@@ -30,7 +30,7 @@ class SkpiService
 
         $bulanTahun = date('m.Y');
         $tahun = date('Y');
-        
+
         $prefix = "NJ-T06/{$kodeFakultasAngka}/";
         $suffixPattern = "/SKPI/%.{$tahun}";
 
@@ -69,13 +69,13 @@ class SkpiService
         $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->nim);
         $prodi = $mahasiswa->programStudi;
         $fakultas = $prodi->fakultas ?? null;
-        $nidn = $fakultas->nidn_dekan ?? null;
+        $niy = $fakultas->niy_dekan ?? null;
         $namaDekan = $fakultas->dekan ?? $user->nama_lengkap;
 
         $kodeFakultas = $fakultas->kode_fakultas ?? 'FAKULTAS';
         $nomorSkpi = $this->generateNomorSkpi($kodeFakultas);
 
-        return DB::transaction(function () use ($nomorSkpi, $mahasiswa, $pengajuan, $nimIjazah, $statusProfesi, $user, $nidn, $namaDekan) {
+        return DB::transaction(function () use ($nomorSkpi, $mahasiswa, $pengajuan, $nimIjazah, $statusProfesi, $user, $niy, $namaDekan) {
             $skpi = Skpi::create([
                 'nomor_skpi' => $nomorSkpi,
                 'nim' => $mahasiswa->nim,
@@ -86,7 +86,7 @@ class SkpiService
                 'status_profesi' => $statusProfesi ?? 'Belum ada keanggotaan profesi',
                 'tanggal_ttd_dekan' => now(),
                 'ditandatangani_oleh' => $namaDekan,
-                'nidn_penandatangan' => $nidn,
+                'nidn_penandatangan' => $niy,
             ]);
 
             return $skpi;
