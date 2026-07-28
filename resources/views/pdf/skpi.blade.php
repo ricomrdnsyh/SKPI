@@ -6,516 +6,369 @@
     <title>Surat Keterangan Pendamping Ijazah</title>
     <style>
         @font-face {
-            font-family: 'Cambria';
-            src: url('{{ public_path('fonts/cambriab.ttf') }}') format('truetype');
-            font-weight: bold;
+            font-family: 'Garamond';
             font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'Cambria';
-            src: url('{{ public_path('fonts/cambriai.ttf') }}') format('truetype');
             font-weight: normal;
-            font-style: italic;
+            src: url('{{ public_path('fonts/garamond.ttf') }}') format('truetype');
         }
 
         @font-face {
-            font-family: 'Cambria';
-            src: url('{{ public_path('fonts/cambriaz.ttf') }}') format('truetype');
+            font-family: 'Garamond';
+            font-style: normal;
             font-weight: bold;
-            font-style: italic;
+            src: url('{{ public_path('fonts/garamond_bold.ttf') }}') format('truetype');
         }
 
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
-            font-size: 11px;
-            line-height: 1.4;
-            color: #333;
+            font-family: 'Garamond', serif;
+            font-size: 11pt;
+            line-height: 1.25;
+            color: #000;
         }
 
         @page {
-            margin: 0.5cm 2cm 2cm 2cm;
+            size: 210mm 330mm;
+            /* F4 / Folio */
+            margin: 1cm 2cm 2cm 2cm;
+            /* Atas 1cm, Kanan-Bawah-Kiri 2cm */
         }
 
-        .header-table {
-            width: 100%;
-            border-bottom: 3px double #000;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            width: 80px;
-            height: auto;
-        }
-
-        .title-uni {
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
+        .header-title-container {
             text-align: center;
-        }
-
-        .sub-uni {
-            font-size: 11px;
-            text-align: center;
-        }
-
-        .title-doc {
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            text-transform: uppercase;
-            margin-bottom: 40px;
-            line-height: 1.2;
-        }
-
-        .section-title {
-            font-size: 12px;
-            font-weight: bold;
-            background-color: #f2f2f2;
-            padding: 5px;
-            margin-top: 15px;
             margin-bottom: 10px;
-            border-left: 5px solid #163673;
-            text-transform: uppercase;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-        }
-
-        .data-table td {
-            padding: 4px;
-            vertical-align: top;
-        }
-
-        .data-table td.label {
-            width: 35%;
+        .header-text {
             font-weight: bold;
+            margin: 0;
+            line-height: 1.0;
         }
 
-        .data-table td.separator {
-            width: 2%;
+        .header-contact-wrapper {
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            margin-bottom: 25px;
+            margin-left: -25px;
+            margin-right: -25px;
         }
 
-        .data-table td.value {
-            width: 63%;
+        .header-contact {
+            text-align: center;
+            border-bottom: 3px solid #000;
+            padding-top: 0;
+            padding-bottom: 1px;
+            margin-top: -2px;
+            margin-bottom: 1px;
+            font-size: 10pt;
+            line-height: 1.0;
         }
 
-        .grid-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-        }
-
-        .grid-table th,
-        .grid-table td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            text-align: left;
-        }
-
-        .grid-table th {
-            background-color: #f9f9f9;
-            font-weight: bold;
-        }
-
-        .cpl-category {
-            font-weight: bold;
-            color: #163673;
-            margin-top: 10px;
+        .doc-title-container {
+            text-align: center;
             margin-bottom: 5px;
         }
 
-        .footer-table {
-            width: 100%;
-            margin-top: 30px;
+        .doc-number {
+            font-weight: bold;
+            font-size: 12pt;
+            margin-bottom: 2px;
         }
 
-        .footer-table td {
-            width: 50%;
+        .doc-desc {
+            font-size: 12pt;
+            line-height: 1.0;
+            color: #333;
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: -1px;
+            page-break-inside: auto;
+        }
+
+        .content-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        .content-table th,
+        .content-table td {
+            border: 1px solid #f4b084;
+            padding: 2px 4px;
             vertical-align: top;
+            line-height: 1.1;
+        }
+
+        .content-table .section-header {
+            background-color: #ed7d31;
+            font-weight: bold;
+            text-align: left;
+            padding-left: 30px;
+            font-size: 12pt;
+        }
+
+        .label-col {
+            width: 35%;
+        }
+
+        .signature-table {
+            width: 100%;
+            margin-top: 20px;
+            border: none;
+            page-break-inside: avoid;
+        }
+
+        .signature-table td {
+            border: none;
+            padding: 0;
         }
 
         .page-break {
             page-break-after: always;
         }
-
-        .logo-cell {
-            width: 17%;
-            text-align: center;
-            vertical-align: middle;
-            padding-top: 10px;
-            padding-bottom: 15px;
-        }
-
-        .title-cell {
-            width: 58%;
-            text-align: left;
-            vertical-align: middle;
-            padding-left: 20px;
-            padding-top: 10px;
-            padding-bottom: 15px;
-            font-family: 'Cambria', 'Times New Roman', Times, serif;
-        }
-
-        .contact-cell {
-            width: 25%;
-            text-align: right;
-            vertical-align: middle;
-            font-style: italic;
-            color: #777;
-            font-size: 10px;
-            font-family: 'Cambria', 'Times New Roman', Times, serif;
-            line-height: 1.2;
-            padding-top: 10px;
-            padding-bottom: 15px;
-        }
     </style>
 </head>
 
 <body>
-    <div
-        style="position: absolute; top: -2cm; left: -0.1cm; width: 18%; height: 200px; background-color: #264a85; z-index: -1;">
+    <div class="header-title-container">
+        <div class="header-text" style="font-size: 18pt;">YAYASAN NURUL JADID PAITON</div>
+        <div class="header-text" style="font-size: 20pt;">UNIVERSITAS NURUL JADID</div>
+        <div class="header-text" style="font-size: 16pt;">SURAT KETERANGAN PENDAMPING IJAZAH</div>
     </div>
-    <table class="header-table" style="width: 100%; border: none; margin-bottom: 25px; border-collapse: collapse;">
-        <tr>
-            <td class="logo-cell">
-                <img src="{{ public_path('unuja.png') }}" alt="Logo UNUJA" style="width: 100px; height: auto;">
-            </td>
-            <td class="title-cell">
-                <div
-                    style="font-size: 16px; color: #000; margin-bottom: 0px; font-family: 'Cambria', 'Times New Roman', Times, serif; line-height: 1;">
-                    YAYASAN NURUL JADID PAITON</div>
-                <div
-                    style="font-size: 20px; font-weight: bold; color: #000; margin-top: 0px; margin-bottom: 0px; font-family: 'Cambria', 'Times New Roman', Times, serif; text-transform: uppercase; line-height: 1;">
-                    FAKULTAS {{ $fakultas->nama_fakultas ?? 'FAKULTAS AGAMA ISLAM' }}</div>
-                <div
-                    style="font-size: 26px; font-weight: bold; color: #163673; margin-top: -2px; margin-bottom: 0px; font-family: 'Cambria', 'Times New Roman', Times, serif; line-height: 1;">
-                    UNIVERSITAS NURUL JADID</div>
-                <div
-                    style="font-size: 16px; color: #000; margin-top: 2px; font-family: 'Cambria', 'Times New Roman', Times, serif; line-height: 1;">
-                    PROBOLINGGO JAWA TIMUR</div>
-            </td>
-            <td class="contact-cell">
-                PP. Nurul Jadid<br>
-                Karanganyar Paiton<br>
-                Probolinggo 67291<br>
-                {{ $fakultas->no_telepon ?? '0888 30 77077' }}<br>
-                {{ strtolower($fakultas->kode_fakultas ?? 'info') }}@unuja.ac.id
-            </td>
-        </tr>
-    </table>
-    <div class="title-doc">
-        <u>Surat Keterangan Pendamping Ijazah</u><br>
-        <span style="font-size: 10px; font-weight: normal;">Nomor: {{ $skpi->nomor_skpi }}</span>
+
+    <div class="header-contact-wrapper">
+        <div class="header-contact">
+            PP. Nurul Jadid Karanganyar Paiton Probolinggo 67291 Telp. 08883077077 Email: unuja@unuja.ac.id
+        </div>
     </div>
-    <div class="section-title">1. Identitas Pemegang SKPI</div>
-    <table class="data-table">
+
+    <div class="doc-title-container">
+        <div class="doc-number"><u>Nomor : {{ $skpi->nomor_skpi }}</u></div>
+        <div class="doc-desc">
+            Surat Keterangan Pendamping Ijazah sebagai pelengkap Ijazah yang menerangkan capaian pembelajaran dan
+            prestasi dari pemegang Ijazah selama masa studi
+        </div>
+    </div>
+
+    <table class="content-table">
         <tr>
-            <td class="label">Nama Lengkap</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->nama_lengkap }}</td>
+            <td colspan="2" class="section-header">01. INFORMASI TENTANG IDENTITAS DIRI PEMEGANG SKPI</td>
         </tr>
         <tr>
-            <td class="label">Tempat dan Tanggal Lahir</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->tempat_lahir }},
+            <td class="label-col">Nama Lengkap</td>
+            <td>{{ $mahasiswa->nama_lengkap }}</td>
+        </tr>
+        <tr>
+            <td class="label-col">Tempat Dan Tanggal Lahir</td>
+            <td>{{ $mahasiswa->tempat_lahir }},
                 {{ \Carbon\Carbon::parse($mahasiswa->tanggal_lahir)->isoFormat('D MMMM YYYY') }}</td>
         </tr>
         <tr>
-            <td class="label">Nomor Induk Mahasiswa (NIM)</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->nim }}</td>
+            <td class="label-col">Nomer Induk Mahasiswa</td>
+            <td>{{ $mahasiswa->nim }}</td>
         </tr>
         <tr>
-            <td class="label">Nomor Ijazah Nasional (NIM Ijazah)</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $skpi->nim_ijazah }}</td>
+            <td class="label-col">Nomer Ijazah Nasional</td>
+            <td>{{ $skpi->nim_ijazah }}</td>
         </tr>
         <tr>
-            <td class="label">Tahun Masuk / Tahun Lulus</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->tahun_masuk }} / {{ $mahasiswa->tahun_lulus }}</td>
+            <td class="label-col">Tahun Masuk</td>
+            <td>{{ $mahasiswa->tahun_masuk }}</td>
         </tr>
         <tr>
-            <td class="label">Gelar yang Diberikan</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->gelar }}</td>
-        </tr>
-    </table>
-    <div class="section-title">2. Identitas Penyelenggara Program</div>
-    <table class="data-table">
-        <tr>
-            <td class="label">Nama Perguruan Tinggi</td>
-            <td class="separator">:</td>
-            <td class="value">Universitas Nurul Jadid</td>
+            <td class="label-col">Tahun Lulus</td>
+            <td>{{ $mahasiswa->tahun_lulus }}</td>
         </tr>
         <tr>
-            <td class="label">SK Akreditasi Perguruan Tinggi</td>
-            <td class="separator">:</td>
-            <td class="value">Terakreditasi Baik Sekali oleh BAN-PT</td>
+            <td class="label-col">Gelar</td>
+            <td>{{ $mahasiswa->programStudi->gelar }}</td>
         </tr>
         <tr>
-            <td class="label">Fakultas / Program Studi</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $fakultas->nama_fakultas }} / {{ $mahasiswa->programStudi->nama_prodi }}</td>
+            <td colspan="2" class="section-header">02. INFORMASI TENTANG IDENTITAS PENYELENGGARA PROGRAM</td>
         </tr>
         <tr>
-            <td class="label">SK Akreditasi Program Studi</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->sk_akreditasi }}</td>
+            <td class="label-col">SK Akreditasi Perguruan Tinggi</td>
+            <td>{{ $mahasiswa->programStudi->sk_akreditasi ?? 'Terakreditasi Baik Sekali oleh BAN-PT' }}</td>
         </tr>
         <tr>
-            <td class="label">Jenis & Jenjang Pendidikan</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->jenis_pendidikan }}</td>
+            <td class="label-col">Persyaratan Penerimaan</td>
+            <td>{{ $mahasiswa->programStudi->persyaratan_penerimaan }}</td>
         </tr>
         <tr>
-            <td class="label">Jenjang Kualifikasi KKNI</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->jenjang_kkni }}</td>
+            <td class="label-col">Nama Perguruan Tinggi</td>
+            <td>Universitas Nurul Jadid</td>
         </tr>
         <tr>
-            <td class="label">Bahasa Pengantar Kuliah</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->bahasa_pengantar }}</td>
+            <td class="label-col">Bahasa Pengantar Kuliah</td>
+            <td>{{ $mahasiswa->programStudi->bahasa_pengantar }}</td>
         </tr>
         <tr>
-            <td class="label">Lama Studi Reguler</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->lama_studi }}</td>
+            <td class="label-col">Fakultas</td>
+            <td>{{ $fakultas->nama_fakultas }}</td>
         </tr>
         <tr>
-            <td class="label">Persyaratan Penerimaan</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->persyaratan_penerimaan }}</td>
+            <td class="label-col">Program Studi</td>
+            <td>{{ $mahasiswa->programStudi->nama_prodi }}</td>
         </tr>
         <tr>
-            <td class="label">Jenis Pendidikan Lanjutan</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $mahasiswa->programStudi->jenis_pendidikan_lanjutan }}</td>
-        </tr>
-        <tr>
-            <td class="label">Status Profesi (Bila Ada)</td>
-            <td class="separator">:</td>
-            <td class="value">{{ $skpi->status_profesi ?? 'Belum ada keanggotaan profesi' }}</td>
-        </tr>
-    </table>
-    <div class="page-break"></div>
-    <div class="section-title">3. Capaian Pembelajaran Lulusan (CPL)</div>
-    <div style="font-size: 10px; margin-bottom: 10px; font-style: italic;">
-        Capaian Pembelajaran Lulusan merujuk pada Kerangka Kualifikasi Nasional Indonesia (KKNI):
-    </div>
-    @foreach ($cplList as $categoryName => $items)
-        <div class="cpl-category">{{ $categoryName }}</div>
-        <table class="grid-table" style="font-size: 10px; margin-bottom: 10px;">
-            <thead>
-                <tr>
-                    <th style="width: 15%;">Kode</th>
-                    <th style="width: 85%;">Deskripsi Kompetensi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($items as $item)
-                    <tr>
-                        <td style="font-weight: bold;">{{ $item->kode_cpl }}</td>
-                        <td>{{ $item->deskripsi_cpl }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endforeach
-    <div class="page-break"></div>
-    <div class="section-title">4. Informasi Tambahan (Prestasi & Aktivitas)</div>
-    <div style="font-weight: bold; margin-bottom: 5px;">A. Prestasi dan Penghargaan</div>
-    @if ($prestasi->isEmpty())
-        <div style="font-style: italic; margin-bottom: 10px; padding-left: 10px;">Tidak ada data prestasi yang
-            diverifikasi.</div>
-    @else
-        <table class="grid-table" style="font-size: 10px; margin-bottom: 15px;">
-            <thead>
-                <tr>
-                    <th>Nama Kegiatan / Prestasi</th>
-                    <th>Tingkat</th>
-                    <th>Peringkat</th>
-                    <th>Penyelenggara / Tahun</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($prestasi as $p)
-                    <tr>
-                        <td>{{ $p->nama_prestasi }}</td>
-                        <td>{{ $p->tingkat }}</td>
-                        <td>{{ $p->peringkat }}</td>
-                        <td>{{ $p->penyelenggara }} ({{ $p->tahun }})</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
-    <div style="font-weight: bold; margin-bottom: 5px;">B. Keikutsertaan Organisasi Mahasiswa</div>
-    @if ($organisasi->isEmpty())
-        <div style="font-style: italic; margin-bottom: 10px; padding-left: 10px;">Tidak ada data organisasi yang
-            diverifikasi.</div>
-    @else
-        <table class="grid-table" style="font-size: 10px; margin-bottom: 15px;">
-            <thead>
-                <tr>
-                    <th>Nama Organisasi</th>
-                    <th>Tingkat</th>
-                    <th>Jabatan</th>
-                    <th>Masa Bakti</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($organisasi as $o)
-                    <tr>
-                        <td>{{ $o->nama_organisasi }}</td>
-                        <td>{{ $o->tingkat }}</td>
-                        <td>{{ $o->jabatan }}</td>
-                        <td>{{ $o->tahun_mulai }} - {{ $o->tahun_selesai ?? 'Sekarang' }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
-    <div style="font-weight: bold; margin-bottom: 5px;">C. Sertifikat Keahlian & Pelatihan</div>
-    @if ($sertifikat->isEmpty())
-        <div style="font-style: italic; margin-bottom: 10px; padding-left: 10px;">Tidak ada data sertifikat yang
-            diverifikasi.</div>
-    @else
-        <table class="grid-table" style="font-size: 10px; margin-bottom: 15px;">
-            <thead>
-                <tr>
-                    <th>Nama Sertifikasi / Pelatihan</th>
-                    <th>Jenis</th>
-                    <th>Bidang / Kompetensi</th>
-                    <th>Penyelenggara / Tanggal Terbit</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($sertifikat as $s)
-                    <tr>
-                        <td>{{ $s->nama_sertifikat }}</td>
-                        <td>{{ $s->jenis_sertifikat }}</td>
-                        <td>{{ $s->bidang }}</td>
-                        <td>{{ $s->penyelenggara }}
-                            ({{ \Carbon\Carbon::parse($s->tanggal_terbit)->isoFormat('D MMM YYYY') }})
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
-    <div style="font-weight: bold; margin-bottom: 5px;">D. Kerja Praktik / Magang Industri</div>
-    @if ($magang->isEmpty())
-        <div style="font-style: italic; margin-bottom: 10px; padding-left: 10px;">Tidak ada data magang yang
-            diverifikasi.</div>
-    @else
-        <table class="grid-table" style="font-size: 10px; margin-bottom: 15px;">
-            <thead>
-                <tr>
-                    <th>Mitra Industri</th>
-                    <th>Posisi Intern</th>
-                    <th>Periode Kegiatan</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($magang as $m)
-                    <tr>
-                        <td>{{ $m->tempatMagang->nama_perusahaan }} ({{ $m->tempatMagang->alamat }})</td>
-                        <td>{{ $m->posisi }}</td>
-                        <td>{{ \Carbon\Carbon::parse($m->tanggal_mulai)->isoFormat('D MMM YYYY') }} -
-                            {{ \Carbon\Carbon::parse($m->tanggal_selesai)->isoFormat('D MMM YYYY') }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
-    <div style="font-weight: bold; margin-bottom: 5px;">E. Judul Tugas Akhir (Skripsi)</div>
-    @if (!$tugasAkhir)
-        <div style="font-style: italic; margin-bottom: 10px; padding-left: 10px;">Tidak ada data Tugas Akhir.</div>
-    @else
-        <table class="data-table" style="margin-left: 10px;">
-            <tr>
-                <td style="width: 20%; font-weight: bold;">Judul Skripsi</td>
-                <td style="width: 2%;">:</td>
-                <td style="width: 78%; font-style: italic;">"{{ $tugasAkhir->judul }}"</td>
-            </tr>
-            @foreach ($tugasAkhir->pembimbingTugasAkhir as $index => $pta)
-                <tr>
-                    <td style="font-weight: bold;">Pembimbing {{ $index + 1 }}</td>
-                    <td>:</td>
-                    <td>{{ $pta->nama_dosen }}</td>
-                </tr>
-            @endforeach
-        </table>
-    @endif
-    <div style="font-weight: bold; margin-top: 15px; margin-bottom: 5px;">F. Tabel Sistem Penilaian</div>
-    <table class="grid-table" style="font-size: 9px; width: 60%; margin-bottom: 20px;">
-        <thead>
-            <tr>
-                <th>Nilai Huruf</th>
-                <th>Nilai Minimum</th>
-                <th>Nilai Maksimum</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($penilaian as $pn)
-                <tr>
-                    <td style="font-weight: bold; text-align: center;">{{ $pn->nilai_huruf }}</td>
-                    <td style="text-align: center;">{{ $pn->nilai_min }}</td>
-                    <td style="text-align: center;">{{ $pn->nilai_max }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-    <table class="footer-table">
-        <tr>
-            <td style="width: 50%; vertical-align: bottom;">
-                <div
-                    style="font-size: 8px; color: #555; border: 1px solid #ddd; padding: 8px; border-radius: 4px; width: 85%; line-height: 1.3;">
-                    <strong>Pernyataan Keaslian Dokumen:</strong><br>
-                    Dokumen ini diterbitkan secara elektronik oleh Universitas Nurul Jadid dan telah disetujui secara
-                    digital oleh Dekan. Scan QR code di sebelah kanan menggunakan kamera ponsel untuk memverifikasi
-                    keaslian data langsung pada sistem penjaminan mutu universitas.
-                </div>
+            <td class="label-col">Sistem Penilaian</td>
+            <td>
+                @php
+                    $penilaianList = [];
+                    foreach ($penilaian as $pn) {
+                        $penilaianList[] = $pn->nilai_min . '-' . $pn->nilai_max . '=' . $pn->nilai_huruf;
+                    }
+                    echo implode(', ', $penilaianList) . '.';
+                @endphp
             </td>
-            <td style="width: 50%; text-align: right; vertical-align: top;">
-                <div style="display: inline-block; text-align: left;">
-                    Probolinggo, {{ \Carbon\Carbon::parse($skpi->tanggal_terbit)->isoFormat('D MMMM YYYY') }}<br>
-                    Dekan Fakultas Teknik,<br>
-                    <div style="margin-top: 8px; margin-bottom: 8px;">
-                    @if ($pengajuan->status === 'dicetak')
-                        @php
-                            $verifyUrl = route('skpi.verify', ['id_skpi' => $skpi]);
-                            $qrCodeBase64 = base64_encode(
-                                \SimpleSoftwareIO\QrCode\Facades\QrCode::size(100)->errorCorrection('H')->generate($verifyUrl)
-                            );
-                            $logoPath = public_path('assets/media/logos/unuja.png');
-                            $logoBase64 = base64_encode(file_get_contents($logoPath));
-                        @endphp
-                        <div style="width: 100px; height: 100px; display: inline-block; text-align: left;">
-                            <img src="data:image/svg+xml;base64,{{ $qrCodeBase64 }}" width="100" height="100" style="display: block;" alt="QR Code Keaslian">
-                            <div style="margin-top: -65px; margin-left: 35px; width: 30px; height: 30px; background-color: white; border-radius: 3px;">
-                                <img src="data:image/png;base64,{{ $logoBase64 }}" width="26" height="26" style="margin-top: 2px; margin-left: 2px;">
-                            </div>
+        </tr>
+        <tr>
+            <td class="label-col">Lama Studi Reguler</td>
+            <td>{{ $mahasiswa->programStudi->lama_studi }}</td>
+        </tr>
+        <tr>
+            <td class="label-col">Jenis & Jenjeng Pendidikan</td>
+            <td>{{ $mahasiswa->programStudi->jenis_pendidikan }}</td>
+        </tr>
+        <tr>
+            <td class="label-col">Jenis & Jenjang Pendidikan Lanjutan</td>
+            <td>{{ $mahasiswa->programStudi->jenis_pendidikan_lanjutan }}</td>
+        </tr>
+        <tr>
+            <td class="label-col">Jenjang Kualifikasi Sesuai KKNI</td>
+            <td>{{ $mahasiswa->programStudi->jenjang_kkni }}</td>
+        </tr>
+        <tr>
+            <td class="label-col">Status Profesi (Bila Ada)</td>
+            <td>{{ $skpi->status_profesi ?? 'Belum ada keanggotaan profesi' }}</td>
+        </tr>
+    </table>
+
+    <table class="content-table">
+        <tr>
+            <td colspan="2" class="section-header">03. INFORMASI TENTANG KUALIFIKASI DAN HASIL CAPAIAN</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold; width: 13%; text-align: left;">KODE</td>
+            <td style="font-weight: bold; text-align: left; border-left: none;">CAPAIAN PEMBELAJARAN</td>
+        </tr>
+        @php
+            $alphabet = 'A';
+        @endphp
+        @foreach ($cplList as $categoryName => $items)
+            <tr>
+                <td colspan="2" style="font-weight: bold; vertical-align: middle;">{{ $alphabet }}.
+                    {{ strtoupper($categoryName) }}</td>
+            </tr>
+            @foreach ($items as $item)
+                <tr>
+                    <td style="text-align: left; border-right: none;">{{ $item->kode_cpl }}</td>
+                    <td style="text-align: justify; border-left: none;">{{ $item->deskripsi_cpl }}</td>
+                </tr>
+            @endforeach
+            @php $alphabet++; @endphp
+        @endforeach
+    </table>
+
+    <table class="content-table">
+        <tr>
+            <td colspan="2" class="section-header">04. INFORMASI TAMBAHAN</td>
+        </tr>
+        <tr>
+            <td style="width: 5%; text-align: left; border-right: none;">4.1.</td>
+            <td style="border-left: none;">
+                Prestasi/Penghargaan<br>
+                @if (!$prestasi->isEmpty())
+                    @foreach ($prestasi as $p)
+                        {{ $p->nama_prestasi }} ({{ $p->tingkat }}, {{ $p->peringkat }}, {{ $p->penyelenggara }},
+                        {{ $p->tahun }})<br>
+                    @endforeach
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; border-right: none;">4.2.</td>
+            <td style="border-left: none;">
+                Keikutsertaan dalam organisasi<br>
+                @if (!$organisasi->isEmpty())
+                    @foreach ($organisasi as $o)
+                        {{ $o->nama_organisasi }} ({{ $o->jabatan }}, {{ $o->tahun_mulai }} -
+                        {{ $o->tahun_selesai ?? 'Sekarang' }})<br>
+                    @endforeach
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; border-right: none;">4.3.</td>
+            <td style="border-left: none;">
+                Sertifikat Keahlian<br>
+                @if (!$sertifikat->isEmpty())
+                    @foreach ($sertifikat as $s)
+                        {{ $s->nama_sertifikat }}<br>
+                    @endforeach
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; border-right: none;">4.4.</td>
+            <td style="border-left: none;">
+                Kerja Praktik/Magang<br>
+                @if (!$magang->isEmpty())
+                    @foreach ($magang as $m)
+                        {{ $m->tempatMagang->nama_perusahaan }}<br>
+                    @endforeach
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align: left; border-right: none;">4.5.</td>
+            <td style="border-left: none;">
+                Judul Tugas Akhir<br>
+                @if ($tugasAkhir)
+                    {{ strtoupper($tugasAkhir->judul) }}<br>
+                    @foreach ($tugasAkhir->pembimbingTugasAkhir as $index => $pta)
+                        Pembimbing {{ $index + 1 }}: {{ $pta->nama_dosen }}<br>
+                    @endforeach
+                @endif
+            </td>
+        </tr>
+    </table>
+
+    <table class="signature-table">
+        <tr>
+            <td style="width: 50%; vertical-align: top; text-align: left; padding-left: 10px;">
+                Probolinggo, {{ \Carbon\Carbon::parse($skpi->tanggal_terbit)->isoFormat('D MMMM YYYY') }}<br>
+                Dekan,<br>
+                @if ($pengajuan->status === 'dicetak')
+                    @php
+                        $verifyUrl = route('skpi.verify', ['id_skpi' => $skpi]);
+                        $qrCodeBase64 = base64_encode(
+                            \SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)
+                                ->errorCorrection('H')
+                                ->generate($verifyUrl),
+                        );
+                        $logoPath = public_path('assets/media/logos/unuja.png');
+                        $logoBase64 = base64_encode(file_get_contents($logoPath));
+                    @endphp
+                    <div
+                        style="width: 120px; height: 120px; display: inline-block; text-align: left; margin-top: 4px; margin-bottom: 1px;">
+                        <img src="data:image/svg+xml;base64,{{ $qrCodeBase64 }}" width="120" height="120"
+                            style="display: block;" alt="QR Code Keaslian">
+                        <div
+                            style="margin-top: -77px; margin-left: 43px; width: 34px; height: 34px; background-color: white; border-radius: 2px;">
+                            <img src="data:image/png;base64,{{ $logoBase64 }}" width="30" height="30"
+                                style="margin-top: 2px; margin-left: 2px;">
                         </div>
-                    @else
-                        <div style="width: 100px; height: 100px; display: inline-block; border: 2px dashed #ccc; color: #ccc; text-align: center; line-height: 100px; font-weight: bold; font-size: 14px;">
-                            DRAFT
-                        </div>
-                    @endif
-                </div>
+                    </div><br>
+                @else
+                    <br><br><br><br>
+                @endif
                 <strong
                     style="text-decoration: underline;">{{ $skpi->ditandatangani_oleh ?? $fakultas->dekan }}</strong><br>
-                NIDN: {{ $skpi->nidn_penandatangan ?? $fakultas->nidn_dekan }}
-                </div>
+                NIY.{{ $skpi->nidn_penandatangan ?? $fakultas->nidn_dekan }}
             </td>
+            <td style="width: 50%;"></td>
         </tr>
     </table>
 </body>
