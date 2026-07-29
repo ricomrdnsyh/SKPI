@@ -133,13 +133,15 @@
 <body>
     <div class="header-title-container">
         <div class="header-text" style="font-size: 18pt;">YAYASAN NURUL JADID PAITON</div>
-        <div class="header-text" style="font-size: 20pt;">UNIVERSITAS NURUL JADID</div>
+        <div class="header-text" style="font-size: 20pt;">
+            {{ strtoupper($universitas->nama_perguruan_tinggi ?? 'UNIVERSITAS NURUL JADID') }}</div>
         <div class="header-text" style="font-size: 16pt;">SURAT KETERANGAN PENDAMPING IJAZAH</div>
     </div>
 
     <div class="header-contact-wrapper">
         <div class="header-contact">
-            PP. Nurul Jadid Karanganyar Paiton Probolinggo 67291 Telp. 08883077077 Email: unuja@unuja.ac.id
+            PP. Nurul Jadid Karanganyar Paiton Probolinggo 67291 Telp. {{ $universitas->no_telepon ?? '08883077077' }}
+            Email: {{ $universitas->email ?? 'unuja@unuja.ac.id' }}
         </div>
     </div>
 
@@ -190,7 +192,7 @@
         </tr>
         <tr>
             <td class="label-col">SK Akreditasi Perguruan Tinggi</td>
-            <td>Terakreditasi Baik Sekali oleh BAN-PT</td>
+            <td>{{ $universitas->sk_akreditasi ?? 'Terakreditasi Baik Sekali oleh BAN-PT' }}</td>
         </tr>
         <tr>
             <td class="label-col">Persyaratan Penerimaan</td>
@@ -198,7 +200,7 @@
         </tr>
         <tr>
             <td class="label-col">Nama Perguruan Tinggi</td>
-            <td>Universitas Nurul Jadid</td>
+            <td>{{ $universitas->nama_perguruan_tinggi ?? 'Universitas Nurul Jadid' }}</td>
         </tr>
         <tr>
             <td class="label-col">Bahasa Pengantar Kuliah</td>
@@ -210,7 +212,7 @@
         </tr>
         <tr>
             <td class="label-col">Program Studi</td>
-            <td>{{ $mahasiswa->programStudi->nama_prodi }}</td>
+            <td>{{ $mahasiswa->programStudi->nama_prodi }} ({{ $mahasiswa->programStudi->kode_prodi }})</td>
         </tr>
         <tr>
             <td class="label-col">Sistem Penilaian</td>
@@ -282,8 +284,7 @@
                 Prestasi/Penghargaan<br>
                 @if (!$prestasi->isEmpty())
                     @foreach ($prestasi as $p)
-                        {{ $p->nama_prestasi }} ({{ $p->tingkat }}, {{ $p->peringkat }}, {{ $p->penyelenggara }},
-                        {{ $p->tahun }})<br>
+                        {{ $p->nama_prestasi }} ({{ $p->tahun }})<br>
                     @endforeach
                 @endif
             </td>
@@ -294,8 +295,8 @@
                 Keikutsertaan dalam organisasi<br>
                 @if (!$organisasi->isEmpty())
                     @foreach ($organisasi as $o)
-                        {{ $o->nama_organisasi }} ({{ $o->jabatan }}, {{ $o->tahun_mulai }} -
-                        {{ $o->tahun_selesai ?? 'Sekarang' }})<br>
+                        {{ $o->nama_organisasi }} ({{ $o->jabatan }}) Periode {{ $o->tahun_mulai }} -
+                        {{ $o->tahun_selesai ?? 'Sekarang' }}<br>
                     @endforeach
                 @endif
             </td>
@@ -317,7 +318,10 @@
                 Kerja Praktik/Magang<br>
                 @if (!$magang->isEmpty())
                     @foreach ($magang as $m)
-                        {{ $m->tempatMagang->nama_perusahaan }}<br>
+                        {{ $m->tempatMagang->nama_perusahaan }} ({{ $m->posisi }}) Periode
+                        {{ \Carbon\Carbon::parse($m->tanggal_mulai)->isoFormat('D MMMM YYYY') }}
+                        -
+                        {{ \Carbon\Carbon::parse($m->tanggal_selesai)->isoFormat('D MMMM YYYY') }}<br>
                     @endforeach
                 @endif
             </td>

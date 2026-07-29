@@ -111,6 +111,8 @@ class SkpiService
         $mahasiswa = Mahasiswa::with(['programStudi.fakultas'])->find($pengajuan->nim);
         $prodi = $mahasiswa->programStudi;
         $fakultas = $prodi->fakultas ?? null;
+        
+        $universitas = \App\Models\Universitas::first();
 
         $cplList = $this->getCplList($mahasiswa);
         $penilaian = $this->cache->getSistemPenilaian();
@@ -165,7 +167,7 @@ class SkpiService
             'isRemoteEnabled' => true,
             'isHtml5ParserEnabled' => true
         ])->loadView('pdf.skpi', array_merge(
-            compact('pengajuan', 'skpi', 'mahasiswa', 'cplList', 'penilaian', 'fakultas'),
+            compact('pengajuan', 'skpi', 'mahasiswa', 'cplList', 'penilaian', 'fakultas', 'universitas'),
             $data
         ));
 

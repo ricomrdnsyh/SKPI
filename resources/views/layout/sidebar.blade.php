@@ -293,6 +293,13 @@
                             </div>
                         </div>
                         <div class="menu-item">
+                            <a class="menu-link {{ Request::is('admin/universitas*') ? 'active' : '' }}"
+                                href="{{ route('universitas.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-building-columns fs-4"></i></span>
+                                <span class="menu-title">Universitas</span>
+                            </a>
+                        </div>
+                        <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/fakultas*') ? 'active' : '' }}"
                                 href="{{ route('fakultas.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-building fs-4"></i></span>

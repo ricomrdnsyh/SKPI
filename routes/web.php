@@ -111,5 +111,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('tahun-akademik', [\App\Http\Controllers\Admin\TahunAkademikController::class, 'index'])->name('tahun-akademik.index');
         Route::resource('penilaian', SistemPenilaianController::class);
         Route::resource('users', UserController::class);
+        Route::get('universitas', [\App\Http\Controllers\Admin\UniversitasController::class, 'index'])->name('universitas.index');
+        Route::put('universitas', [\App\Http\Controllers\Admin\UniversitasController::class, 'update'])->name('universitas.update');
     });
 });
