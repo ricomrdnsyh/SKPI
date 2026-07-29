@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        \Illuminate\Support\Facades\DB::statement("ALTER TABLE program_studi MODIFY COLUMN jenjang VARCHAR(50) NULL");
+        Schema::table('skpi', function (Blueprint $table) {
+            $table->renameColumn('nim_ijazah', 'nomor_ijazah_nasional');
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        \Illuminate\Support\Facades\DB::statement("ALTER TABLE program_studi MODIFY COLUMN jenjang VARCHAR(50) NOT NULL");
+        Schema::table('skpi', function (Blueprint $table) {
+            $table->renameColumn('nomor_ijazah_nasional', 'nim_ijazah');
+        });
     }
 };

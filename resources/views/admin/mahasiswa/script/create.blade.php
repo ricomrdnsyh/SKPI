@@ -27,7 +27,7 @@
             dateFormat: "Y-m-d"
         });
         
-        $("#tanggal_lulus").flatpickr({
+        $("#tahun_lulus").flatpickr({
             dateFormat: "Y-m-d"
         });
 

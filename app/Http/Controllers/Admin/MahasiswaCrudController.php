@@ -82,20 +82,13 @@ class MahasiswaCrudController extends Controller
             'nomor_telepon' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:6',
             'tahun_masuk' => 'nullable|integer',
-            'tahun_lulus' => 'nullable|integer',
-            'tanggal_lulus' => 'nullable|date',
+            'tahun_lulus' => 'nullable|date',
             'status' => 'nullable|in:Aktif,Lulus',
-            'ipk' => 'nullable|numeric|between:0,4.00',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->except('foto');
+        $data = $request->all();
         if (!$request->filled('password')) {
             $data['password'] = $request->nim;
-        }
-        
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('foto_mahasiswa', 'public');
         }
 
         Mahasiswa::create($data);
@@ -160,20 +153,13 @@ class MahasiswaCrudController extends Controller
             'nomor_telepon' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:6',
             'tahun_masuk' => 'nullable|integer',
-            'tahun_lulus' => 'nullable|integer',
-            'tanggal_lulus' => 'nullable|date',
+            'tahun_lulus' => 'nullable|date',
             'status' => 'nullable|in:Aktif,Lulus',
-            'ipk' => 'nullable|numeric|between:0,4.00',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->except('foto');
+        $data = $request->all();
         if (!$request->filled('password')) {
             unset($data['password']);
-        }
-        
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('foto_mahasiswa', 'public');
         }
 
         $mahasiswa->update($data);

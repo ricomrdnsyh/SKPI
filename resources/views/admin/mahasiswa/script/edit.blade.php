@@ -9,7 +9,7 @@
             if (input) {
                 if (input.type === 'checkbox' || input.type === 'radio') {
                     if(input.value == data[key]) input.checked = true;
-                } else if (key === 'tanggal_lahir' || key === 'tanggal_lulus') {
+                } else if (key === 'tanggal_lahir' || key === 'tahun_lulus') {
                     if (data[key]) {
                         input.value = data[key];
                         if (input._flatpickr) {
@@ -58,7 +58,7 @@
             dateFormat: "Y-m-d"
         });
         
-        $("#edit_tanggal_lulus").flatpickr({
+        $("#edit_tahun_lulus").flatpickr({
             dateFormat: "Y-m-d"
         });
 

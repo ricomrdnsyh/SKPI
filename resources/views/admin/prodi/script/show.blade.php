@@ -6,9 +6,7 @@
         $('#show_kode_prodi').val(data.kode_prodi || '-');
         $('#show_jenjang').val(data.jenjang || '-');
         $('#show_gelar').val(data.gelar || '-');
-        $('#show_sk_akreditasi').val(data.sk_akreditasi || '-');
-        $('#show_tanggal_sk_akreditasi').val(data.tanggal_sk_akreditasi || '-');
-        $('#show_masa_berlaku_akreditasi').val(data.masa_berlaku_akreditasi || '-');
+
         $('#show_jenjang_kkni').val(data.jenjang_kkni || '-');
         $('#show_bahasa_pengantar').val(data.bahasa_pengantar || '-');
         $('#show_lama_studi').val(data.lama_studi || '-');

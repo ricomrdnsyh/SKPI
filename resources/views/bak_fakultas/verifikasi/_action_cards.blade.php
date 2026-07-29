@@ -30,8 +30,8 @@
                     @csrf
                     <div class="row mb-5">
                         <div class="col-md-6 mb-5 mb-md-0">
-                            <label for="nim_ijazah" class="required form-label fw-bold">Nomor Ijazah Nasional</label>
-                            <input type="text" name="nim_ijazah" id="nim_ijazah" class="form-control" required>
+                            <label for="nomor_ijazah_nasional" class="required form-label fw-bold">Nomor Ijazah Nasional</label>
+                            <input type="text" name="nomor_ijazah_nasional" id="nomor_ijazah_nasional" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label for="status_profesi" class="form-label fw-bold">Status Profesi (Opsional)</label>
@@ -56,7 +56,7 @@
                             class="path4"></span><span class="path5"></span></i> Cetak Ulang / Batalkan SKPI</h4>
                 <p class="text-muted fs-6 mb-5">SKPI sudah diterbitkan. Klik tombol di bawah untuk mencetak ulang
                     dokumen PDF.</p>
-                <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}?nim_ijazah={{ urlencode($mahasiswa->skpi->nim_ijazah ?? '') }}"
+                <a href="{{ route('bak_fakultas.skpi.print', $pengajuan->id_pengajuan) }}?nomor_ijazah_nasional={{ urlencode($mahasiswa->skpi->nomor_ijazah_nasional ?? '') }}"
                     target="_blank" class="btn btn-success w-100 fw-bolder mb-6">
                     <i class="ki-duotone ki-file-down fs-2"><span class="path1"></span><span class="path2"></span></i>
                     Cetak Ulang PDF

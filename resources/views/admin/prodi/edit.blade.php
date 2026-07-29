@@ -33,10 +33,10 @@
                             <label for="edit_jenjang" class="form-label required fw-bolder text-dark fs-6">Jenjang</label>
                             <select name="jenjang" id="edit_jenjang" required class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Jenjang" data-dropdown-parent="#form_edit">
                                 <option value="">-- Pilih Jenjang --</option>
-                                <option value="S1">S1</option>
-                                <option value="D3">D3</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
+                                <option value="Diploma 3">Diploma 3</option>
+                                <option value="Strata 1">Strata 1</option>
+                                <option value="Strata 2">Strata 2</option>
+                                <option value="Strata 3">Strata 3</option>
                             </select>
                         </div>
                         <div class="fv-row">
@@ -46,50 +46,35 @@
                     </div>
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
-                            <label for="edit_sk_akreditasi" class="form-label fw-bolder text-dark fs-6">SK Akreditasi</label>
-                            <input type="text" name="sk_akreditasi" id="edit_sk_akreditasi" class="form-control form-control-sm">
-                        </div>
-                        <div class="fv-row">
-                            <label for="edit_tanggal_sk_akreditasi" class="form-label fw-bolder text-dark fs-6">Tanggal SK</label>
-                            <div class="position-relative d-flex align-items-center">
-                                <i class="fas fa-calendar-alt position-absolute ms-3"></i>
-                                <input type="text" name="tanggal_sk_akreditasi" id="edit_tanggal_sk_akreditasi" class="form-control form-control-sm ps-10">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
-                        <div class="fv-row">
-                            <label for="edit_masa_berlaku_akreditasi" class="form-label fw-bolder text-dark fs-6">Masa Berlaku Akreditasi</label>
-                            <div class="position-relative d-flex align-items-center">
-                                <i class="fas fa-calendar-alt position-absolute ms-3"></i>
-                                <input type="text" name="masa_berlaku_akreditasi" id="edit_masa_berlaku_akreditasi" class="form-control form-control-sm ps-10">
-                            </div>
-                        </div>
-                        <div class="fv-row">
                             <label for="edit_jenjang_kkni" class="form-label fw-bolder text-dark fs-6">Jenjang KKNI</label>
                             <input type="text" name="jenjang_kkni" id="edit_jenjang_kkni" class="form-control form-control-sm">
                         </div>
-                    </div>
-                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_bahasa_pengantar" class="form-label fw-bolder text-dark fs-6">Bahasa Pengantar</label>
                             <input type="text" name="bahasa_pengantar" id="edit_bahasa_pengantar" class="form-control form-control-sm">
                         </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_lama_studi" class="form-label fw-bolder text-dark fs-6">Lama Studi</label>
                             <input type="text" name="lama_studi" id="edit_lama_studi" class="form-control form-control-sm">
                         </div>
-                    </div>
-                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
                             <label for="edit_jenis_pendidikan" class="form-label fw-bolder text-dark fs-6">Jenis Pendidikan</label>
-                            <input type="text" name="jenis_pendidikan" id="edit_jenis_pendidikan" class="form-control form-control-sm">
-                        </div>
-                        <div class="fv-row">
-                            <label for="edit_jenis_pendidikan_lanjutan" class="form-label fw-bolder text-dark fs-6">Pendidikan Lanjutan</label>
-                            <input type="text" name="jenis_pendidikan_lanjutan" id="edit_jenis_pendidikan_lanjutan" class="form-control form-control-sm">
+                            <select name="jenis_pendidikan" id="edit_jenis_pendidikan" class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Jenis Pendidikan" data-dropdown-parent="#form_edit">
+                                <option value="">-- Pilih Jenis Pendidikan --</option>
+                                <option value="Diploma 3">Diploma 3</option>
+                                <option value="Sarjana">Sarjana</option>
+                                <option value="Magister">Magister</option>
+                                <option value="Doktor">Doktor</option>
+                            </select>
                         </div>
                     </div>
+                    <div class="fv-row mb-5">
+                        <label for="edit_jenis_pendidikan_lanjutan" class="form-label fw-bolder text-dark fs-6">Pendidikan Lanjutan</label>
+                        <input type="text" name="jenis_pendidikan_lanjutan" id="edit_jenis_pendidikan_lanjutan" class="form-control form-control-sm">
+                    </div>
+
                     <div class="fv-row mb-5">
                         <label for="edit_persyaratan_penerimaan" class="form-label fw-bolder text-dark fs-6">Persyaratan Penerimaan</label>
                         <textarea name="persyaratan_penerimaan" id="edit_persyaratan_penerimaan" rows="2" class="form-control form-control-sm"></textarea>

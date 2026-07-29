@@ -26,10 +26,7 @@ class Mahasiswa extends Authenticatable
         'tanggal_lahir',
         'tahun_masuk',
         'tahun_lulus',
-        'tanggal_lulus',
         'status',
-        'ipk',
-        'foto',
         'email',
         'nomor_telepon',
         'password',
@@ -44,8 +41,7 @@ class Mahasiswa extends Authenticatable
         return [
             'password' => 'hashed',
             'tanggal_lahir' => 'date',
-            'tanggal_lulus' => 'date',
-            'ipk' => 'decimal:2',
+            'tahun_lulus' => 'date',
         ];
     }
 

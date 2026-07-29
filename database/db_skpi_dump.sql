@@ -56,20 +56,16 @@ CREATE TABLE `program_studi` (
   `id_fakultas` tinyint unsigned NOT NULL,
   `nama_prodi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `kode_prodi` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `jenjang` enum('D3','S1','S2','S3') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jenjang` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `gelar` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sk_akreditasi` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tanggal_sk_akreditasi` date DEFAULT NULL,
-  `masa_berlaku_akreditasi` date DEFAULT NULL,
+
   `jenjang_kkni` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `bahasa_pengantar` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Indonesia',
   `lama_studi` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `jenis_pendidikan` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `jenis_pendidikan_lanjutan` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `persyaratan_penerimaan` text COLLATE utf8mb4_unicode_ci,
-  `alamat_prodi` text COLLATE utf8mb4_unicode_ci,
-  `telepon_prodi` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email_prodi` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+
   `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
   PRIMARY KEY (`id_prodi`),
@@ -84,7 +80,7 @@ CREATE TABLE `program_studi` (
 
 LOCK TABLES `program_studi` WRITE;
 /*!40000 ALTER TABLE `program_studi` DISABLE KEYS */;
-INSERT INTO `program_studi` VALUES ('MAN',3,'Manajemen','MN','S1','S.E.','126/SK/BAN-PT/2023','2023-08-25','2028-08-25','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat semua jurusan','Gedung D Kampus 2, Jl. Pendidikan No. 5','021-7654322','manajemen@univ.ac.id',NULL,'active'),('SI',1,'Sistem Informasi','SI','S1','S.Kom.','124/SK/BAN-PT/2023','2023-06-15','2028-06-15','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat semua jurusan','Gedung B Kampus 1, Jl. Raya Utama No. 10','021-1234568','si@univ.ac.id',NULL,'active'),('TIF',1,'Teknik Informatika','IF','S1','S.Kom.','123/SK/BAN-PT/2023','2023-05-10','2028-05-10','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat jurusan IPA/Teknik','Gedung A Kampus 1, Jl. Raya Utama No. 10','021-1234567','informatika@univ.ac.id',NULL,'active'),('TS',2,'Teknik Sipil','TS','S1','S.T.','125/SK/BAN-PT/2023','2023-07-20','2028-07-20','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat jurusan IPA/Teknik','Gedung C Kampus 2, Jl. Pendidikan No. 5','021-7654321','sipil@univ.ac.id',NULL,'active');
+INSERT INTO `program_studi` VALUES ('MAN',3,'Manajemen','MN','Strata 1','S.E.','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat semua jurusan',NULL,'active'),('SI',1,'Sistem Informasi','SI','Strata 1','S.Kom.','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat semua jurusan',NULL,'active'),('TIF',1,'Teknik Informatika','IF','Strata 1','S.Kom.','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat jurusan IPA/Teknik',NULL,'active'),('TS',2,'Teknik Sipil','TS','Strata 1','S.T.','Level 6','Indonesia','8 Semester','Akademik','Program Magister (S2)','Lulusan SMA/SMK/MA sederajat jurusan IPA/Teknik',NULL,'active');
 /*!40000 ALTER TABLE `program_studi` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -197,11 +193,8 @@ CREATE TABLE `mahasiswa` (
   `tempat_lahir` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tanggal_lahir` date DEFAULT NULL,
   `tahun_masuk` year DEFAULT NULL,
-  `tahun_lulus` year DEFAULT NULL,
-  `tanggal_lulus` date DEFAULT NULL,
+  `tahun_lulus` date DEFAULT NULL,
   `status` enum('Aktif','Lulus') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Aktif',
-  `ipk` decimal(4,2) DEFAULT NULL,
-  `foto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nomor_telepon` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -221,7 +214,7 @@ CREATE TABLE `mahasiswa` (
 
 LOCK TABLES `mahasiswa` WRITE;
 /*!40000 ALTER TABLE `mahasiswa` DISABLE KEYS */;
-INSERT INTO `mahasiswa` VALUES (1,'230101001','TIF',1,'Budi Raharjo','Semarang','2004-05-12',2023,NULL,NULL,'Aktif',3.85,NULL,'budi@student.ac.id','081234567890','$2y$12$x08usmLZaxPHkl1ZGSTMs.mBx/MvzmAMMrJotuK0MXP9hkwnvjcHm'),(2,'220101002','TIF',1,'Siti Aminah','Surabaya','2003-08-24',2022,NULL,NULL,'Aktif',3.92,NULL,'siti@student.ac.id','081234567891','$2y$12$BUAk60C91jrqOq9AE6tiP.GXcrqXZL/avvk1ZLi68oY73TRmQTORC'),(3,'230202001','SI',2,'Doni Pratama','Jakarta','2004-11-02',2023,NULL,NULL,'Aktif',3.70,NULL,'doni@student.ac.id','081234567892','$2y$12$cvKc5tLnXsvadIy0RI95G.9/HamAcgrVe26Hhi.2It.mJGU9Pq/fq'),(4,'200202099','SI',2,'Riska Amalia','Bandung','2002-02-15',2020,2024,'2024-03-20','Lulus',3.78,NULL,'riska@student.ac.id','081234567893','$2y$12$3It.4xWZtqzh.3iJuhsImuXg2zSkQBxF3ieMuS9YD1vsK/zlM31y2');
+INSERT INTO `mahasiswa` VALUES (1,'230101001','TIF',1,'Budi Raharjo','Semarang','2004-05-12',2023,NULL,'Aktif','budi@student.ac.id','081234567890','$2y$12$x08usmLZaxPHkl1ZGSTMs.mBx/MvzmAMMrJotuK0MXP9hkwnvjcHm'),(2,'220101002','TIF',1,'Siti Aminah','Surabaya','2003-08-24',2022,NULL,'Aktif','siti@student.ac.id','081234567891','$2y$12$BUAk60C91jrqOq9AE6tiP.GXcrqXZL/avvk1ZLi68oY73TRmQTORC'),(3,'230202001','SI',2,'Doni Pratama','Jakarta','2004-11-02',2023,NULL,'Aktif','doni@student.ac.id','081234567892','$2y$12$cvKc5tLnXsvadIy0RI95G.9/HamAcgrVe26Hhi.2It.mJGU9Pq/fq'),(4,'200202099','SI',2,'Riska Amalia','Bandung','2002-02-15',2020,'2024-03-20','Lulus','riska@student.ac.id','081234567893','$2y$12$3It.4xWZtqzh.3iJuhsImuXg2zSkQBxF3ieMuS9YD1vsK/zlM31y2');
 /*!40000 ALTER TABLE `mahasiswa` ENABLE KEYS */;
 UNLOCK TABLES;
 

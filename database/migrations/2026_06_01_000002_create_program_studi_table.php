@@ -15,20 +15,16 @@ return new class extends Migration
             $table->tinyInteger('id_fakultas')->unsigned();
             $table->string('nama_prodi', 255);
             $table->string('kode_prodi', 10)->nullable();
-            $table->enum('jenjang', ['D3', 'S1', 'S2', 'S3']);
+            $table->string('jenjang', 50);
             $table->string('gelar', 50)->nullable();
-            $table->string('sk_akreditasi', 100)->nullable();
-            $table->date('tanggal_sk_akreditasi')->nullable();
-            $table->date('masa_berlaku_akreditasi')->nullable();
+
             $table->string('jenjang_kkni', 10)->nullable();
             $table->string('bahasa_pengantar', 50)->default('Indonesia');
             $table->string('lama_studi', 50)->nullable();
             $table->string('jenis_pendidikan', 100)->nullable();
             $table->string('jenis_pendidikan_lanjutan', 100)->nullable();
             $table->text('persyaratan_penerimaan')->nullable();
-            $table->text('alamat_prodi')->nullable();
-            $table->string('telepon_prodi', 20)->nullable();
-            $table->string('email_prodi', 100)->nullable();
+
             $table->string('password', 255)->nullable();
             $table->string('status', 20)->default('active');
 

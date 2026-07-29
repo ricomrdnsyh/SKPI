@@ -18,11 +18,8 @@ return new class extends Migration
             $table->string('tempat_lahir', 100)->nullable();
             $table->date('tanggal_lahir')->nullable();
             $table->year('tahun_masuk')->nullable();
-            $table->year('tahun_lulus')->nullable();
-            $table->date('tanggal_lulus')->nullable();
+            $table->date('tahun_lulus')->nullable();
             $table->enum('status', ['Aktif', 'Lulus'])->default('Aktif');
-            $table->decimal('ipk', 4, 2)->nullable();
-            $table->string('foto', 255)->nullable();
             $table->string('email', 100)->nullable();
             $table->string('nomor_telepon', 20)->nullable();
             $table->string('password', 255)->nullable();

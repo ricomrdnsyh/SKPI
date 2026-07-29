@@ -52,27 +52,8 @@
                         <input type="text" id="show_tahun_masuk" class="form-control form-control-sm" disabled />
                     </div>
                     <div class="fv-row">
-                        <label class="fw-bolder text-dark mb-2 fs-6">IPK</label>
-                        <input type="text" id="show_ipk" class="form-control form-control-sm" disabled />
-                    </div>
-                </div>
-                <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
-                    <div class="fv-row">
-                        <label class="fw-bolder text-dark mb-2 fs-6">Tahun Lulus</label>
-                        <input type="text" id="show_tahun_lulus" class="form-control form-control-sm" disabled />
-                    </div>
-                    <div class="fv-row">
                         <label class="fw-bolder text-dark mb-2 fs-6">Tanggal Lulus</label>
-                        <input type="date" id="show_tanggal_lulus" class="form-control form-control-sm" disabled />
-                    </div>
-                </div>
-                <div class="row row-cols-1 row-cols-md-1 g-6 mb-6">
-                    <div class="fv-row">
-                        <label class="fw-bolder text-dark mb-2 fs-6">Foto</label>
-                        <div>
-                            <img id="show_foto_img" src="" style="max-width: 150px; display: none; border-radius: 8px;" />
-                            <span id="show_foto_text" class="text-muted">Tidak ada foto</span>
-                        </div>
+                        <input type="date" id="show_tahun_lulus" class="form-control form-control-sm" disabled />
                     </div>
                 </div>
             </div>

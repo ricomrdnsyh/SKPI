@@ -76,25 +76,11 @@
                     </div>
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
-                            <label for="tahun_lulus" class="form-label fw-bolder text-dark">Tahun Lulus</label>
-                            <input type="number" name="tahun_lulus" id="tahun_lulus" class="form-control form-control-sm" placeholder="Contoh: 2027">
-                        </div>
-                        <div class="fv-row">
-                            <label for="tanggal_lulus" class="form-label fw-bolder text-dark">Tanggal Lulus</label>
+                            <label for="tahun_lulus" class="form-label fw-bolder text-dark">Tanggal Lulus</label>
                             <div class="position-relative d-flex align-items-center">
                                 <i class="fas fa-calendar-alt position-absolute ms-4 fs-5 text-gray-500"></i>
-                                <input class="form-control form-control-sm ps-12" placeholder="Pilih tanggal" id="tanggal_lulus" name="tanggal_lulus" type="text">
+                                <input class="form-control form-control-sm ps-12" placeholder="Pilih tanggal" id="tahun_lulus" name="tahun_lulus" type="text">
                             </div>
-                        </div>
-                    </div>
-                    <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
-                        <div class="fv-row">
-                            <label for="ipk" class="form-label fw-bolder text-dark">IPK</label>
-                            <input type="number" step="0.01" max="4.00" name="ipk" id="ipk" class="form-control form-control-sm" placeholder="Contoh: 3.85">
-                        </div>
-                        <div class="fv-row">
-                            <label for="foto" class="form-label fw-bolder text-dark">Foto (Opsional)</label>
-                            <input type="file" name="foto" id="foto" class="form-control form-control-sm" accept="image/*">
                         </div>
                     </div>
                     <div class="fv-row mb-6">

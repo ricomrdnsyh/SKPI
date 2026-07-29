@@ -139,7 +139,7 @@
                                         <th class="min-w-125px">Program Studi</th>
                                         <th class="min-w-125px">Kode Prodi</th>
                                         <th class="min-w-125px">Jenjang / Gelar</th>
-                                        <th class="min-w-125px">Akreditasi (SK)</th>
+
                                         <th class="min-w-125px">Status</th>
                                     </tr>
                                 </thead>

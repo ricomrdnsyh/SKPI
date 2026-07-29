@@ -170,15 +170,16 @@
         </tr>
         <tr>
             <td class="label-col">Nomer Ijazah Nasional</td>
-            <td>{{ $skpi->nim_ijazah }}</td>
+            <td>{{ $skpi->nomor_ijazah_nasional }}</td>
         </tr>
         <tr>
             <td class="label-col">Tahun Masuk</td>
             <td>{{ $mahasiswa->tahun_masuk }}</td>
         </tr>
         <tr>
-            <td class="label-col">Tahun Lulus</td>
-            <td>{{ $mahasiswa->tahun_lulus }}</td>
+            <td class="label-col">Tanggal Lulus</td>
+            <td>{{ $mahasiswa->tahun_lulus ? \Carbon\Carbon::parse($mahasiswa->tahun_lulus)->isoFormat('D MMMM YYYY') : '-' }}
+            </td>
         </tr>
         <tr>
             <td class="label-col">Gelar</td>
@@ -189,7 +190,7 @@
         </tr>
         <tr>
             <td class="label-col">SK Akreditasi Perguruan Tinggi</td>
-            <td>{{ $mahasiswa->programStudi->sk_akreditasi ?? 'Terakreditasi Baik Sekali oleh BAN-PT' }}</td>
+            <td>Terakreditasi Baik Sekali oleh BAN-PT</td>
         </tr>
         <tr>
             <td class="label-col">Persyaratan Penerimaan</td>
@@ -228,8 +229,8 @@
             <td>{{ $mahasiswa->programStudi->lama_studi }}</td>
         </tr>
         <tr>
-            <td class="label-col">Jenis & Jenjeng Pendidikan</td>
-            <td>{{ $mahasiswa->programStudi->jenis_pendidikan }}</td>
+            <td class="label-col">Jenis & Jenjang Pendidikan</td>
+            <td>{{ $mahasiswa->programStudi->jenis_pendidikan }} ({{ $mahasiswa->programStudi->jenjang }})</td>
         </tr>
         <tr>
             <td class="label-col">Jenis & Jenjang Pendidikan Lanjutan</td>

@@ -19,18 +19,14 @@ class ProgramStudi extends Model
         'kode_prodi',
         'jenjang',
         'gelar',
-        'sk_akreditasi',
-        'tanggal_sk_akreditasi',
-        'masa_berlaku_akreditasi',
+
         'jenjang_kkni',
         'bahasa_pengantar',
         'lama_studi',
         'jenis_pendidikan',
         'jenis_pendidikan_lanjutan',
         'persyaratan_penerimaan',
-        'alamat_prodi',
-        'telepon_prodi',
-        'email_prodi',
+
         'status',
     ];
 

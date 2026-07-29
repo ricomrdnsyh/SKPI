@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('nomor_skpi', 100);
             $table->char('nim', 10);
             $table->integer('id_pengajuan')->unsigned()->nullable()->comment('Relasi ke tabel pengajuan_skpi');
-            $table->string('nim_ijazah', 50);
+            $table->string('nomor_ijazah_nasional', 50);
             $table->date('tanggal_terbit')->comment('Tanggal SKPI diterbitkan oleh BAAK Fakultas');
             $table->integer('dicetak_oleh')->unsigned()->nullable()->comment('FK users (role: bak_fakultas)');
             $table->text('status_profesi')->nullable();

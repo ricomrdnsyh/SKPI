@@ -15,7 +15,7 @@ class Skpi extends Model
         'nomor_skpi',
         'nim',
         'id_pengajuan',
-        'nim_ijazah',
+        'nomor_ijazah_nasional',
         'tanggal_terbit',
         'dicetak_oleh',
         'status_profesi',

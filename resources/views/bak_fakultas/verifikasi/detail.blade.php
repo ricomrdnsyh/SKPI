@@ -76,43 +76,21 @@
                                                         class="path1"></span><span class="path2"></span><span
                                                         class="path3"></span><span class="path4"></span></i>
                                                 {{ $mahasiswa->programStudi->nama_prodi }}
-                                                ({{ $mahasiswa->programStudi->jenjang }})
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-flex flex-wrap flex-stack mt-2">
                                     <div class="d-flex flex-column flex-grow-1 pe-8">
                                         <div class="d-flex flex-wrap">
-                                            <div
-                                                class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="fs-2 fw-bolder">{{ $mahasiswa->ipk ?? '-' }}</div>
-                                                </div>
-                                                <div class="fw-bold fs-6 text-gray-500">IPK</div>
-                                            </div>
-                                            <div
-                                                class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="fs-2 fw-bolder">{{ $mahasiswa->sks_lulus ?? '-' }}</div>
-                                                </div>
-                                                <div class="fw-bold fs-6 text-gray-500">SKS Lulus</div>
-                                            </div>
-                                            <div
-                                                class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="fs-2 fw-bolder">{{ $mahasiswa->predikat_kelulusan ?? '-' }}
-                                                    </div>
-                                                </div>
-                                                <div class="fw-bold fs-6 text-gray-500">Predikat</div>
-                                            </div>
+
+
                                             <div
                                                 class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3 bg-light">
                                                 <div class="d-flex align-items-center">
                                                     <div class="fs-4 fw-bolder text-gray-800">
-                                                        {{ $mahasiswa->skpi->nim_ijazah ?? 'Belum ada' }}</div>
+                                                        {{ $mahasiswa->skpi->nomor_ijazah_nasional ?? 'Belum ada' }}</div>
                                                 </div>
-                                                <div class="fw-bold fs-6 text-gray-500">NIM Ijazah</div>
+                                                <div class="fw-bold fs-6 text-gray-500">Nomor Ijazah Nasional</div>
                                             </div>
                                         </div>
                                     </div>
@@ -138,7 +116,7 @@
                             'pengajuan' => $pengajuan,
                             'statusClass' => $statusClass,
                         ])
-                        
+
                         @include('bak_fakultas.verifikasi._action_cards')
 
                         <div class="card border border-dashed border-dark mb-6">
@@ -292,10 +270,11 @@
                 }
             });
         }
+
         function confirmTerbitkan() {
             const form = document.getElementById('formTerbitkan');
-            const nimIjazah = document.getElementById('nim_ijazah').value;
-            
+            const nimIjazah = document.getElementById('nomor_ijazah_nasional').value;
+
             if (!nimIjazah || nimIjazah.trim() === '') {
                 Swal.fire({
                     title: 'Peringatan',
@@ -339,6 +318,7 @@
                 }
             });
         }
+
         function confirmBatalkanCetak(form) {
             Swal.fire({
                 title: 'Batalkan Cetak SKPI?',

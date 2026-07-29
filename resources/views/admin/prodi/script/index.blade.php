@@ -78,9 +78,7 @@
                 {
                     data: 'jenjang'
                 },
-                {
-                    data: 'akreditasi'
-                },
+
                 {
                     data: 'status'
                 }

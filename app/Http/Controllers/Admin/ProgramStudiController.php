@@ -72,20 +72,16 @@ class ProgramStudiController extends Controller
             'id_fakultas' => 'required|exists:fakultas,id_fakultas',
             'nama_prodi' => 'required|string|max:255',
             'kode_prodi' => 'nullable|string|max:10',
-            'jenjang' => 'required|in:D3,S1,S2,S3',
+            'jenjang' => 'required|in:Diploma 3,Strata 1,Strata 2,Strata 3',
             'gelar' => 'nullable|string|max:50',
-            'sk_akreditasi' => 'nullable|string|max:100',
-            'tanggal_sk_akreditasi' => 'nullable|date',
-            'masa_berlaku_akreditasi' => 'nullable|date',
+
             'jenjang_kkni' => 'nullable|string|max:10',
             'bahasa_pengantar' => 'nullable|string|max:50',
             'lama_studi' => 'nullable|string|max:50',
-            'jenis_pendidikan' => 'nullable|string|max:100',
+            'jenis_pendidikan' => 'nullable|in:Diploma 3,Sarjana,Magister,Doktor',
             'jenis_pendidikan_lanjutan' => 'nullable|string|max:100',
             'persyaratan_penerimaan' => 'nullable|string',
-            'alamat_prodi' => 'nullable|string',
-            'telepon_prodi' => 'nullable|string|max:20',
-            'email_prodi' => 'nullable|email|max:100',
+
         ]);
 
         $prodi->update($request->all());
@@ -136,15 +132,13 @@ class ProgramStudiController extends Controller
                 $query->whereRaw("CONCAT(program_studi.jenjang, ' - ', IFNULL(program_studi.gelar, '')) like ?", ["%{$keyword}%"])
                       ->orWhere('program_studi.jenjang', 'like', "%{$keyword}%");
             })
-            ->filterColumn('akreditasi', function($query, $keyword) {
-                $query->where('program_studi.sk_akreditasi', 'like', "%{$keyword}%");
-            })
+
             ->filterColumn('fakultas', function($query, $keyword) {
                 $query->where('fakultas.nama_fakultas', 'like', "%{$keyword}%");
             })
             ->addColumn('prodi', fn($p) => $p->nama_prodi . ($p->gelar ? ' (' . $p->gelar . ')' : ''))
             ->addColumn('jenjang', fn($p) => $p->jenjang . ($p->gelar ? ' - ' . $p->gelar : ''))
-            ->addColumn('akreditasi', fn($p) => ($p->sk_akreditasi ?? '-') . ($p->masa_berlaku_akreditasi ? ' s.d ' . Carbon::parse($p->masa_berlaku_akreditasi)->isoFormat('D MMM YYYY') : ''))
+
             ->addColumn('fakultas', fn($p) => $p->fakultas_nama ?? '-')
             ->addColumn('status', fn($p) => '<span class="badge ' . ($p->status === 'aktif' || $p->status === 'active' ? 'badge-success' : 'badge-danger') . '">' . ucfirst($p->status === 'active' ? 'Aktif' : $p->status) . '</span>')
             ->addColumn('action', function ($row) {

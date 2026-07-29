@@ -60,8 +60,6 @@ class SkpiController extends Controller
             'tanggal_lahir' => $mahasiswaRow->tanggal_lahir,
             'tahun_masuk' => $mahasiswaRow->tahun_masuk,
             'tahun_lulus' => $mahasiswaRow->tahun_lulus,
-            'tanggal_lulus' => $mahasiswaRow->tanggal_lulus,
-            'ipk' => $mahasiswaRow->ipk,
             'id_prodi' => $mahasiswaRow->id_prodi,
         ];
 
@@ -78,7 +76,7 @@ class SkpiController extends Controller
 
         $skpiRow = DB::table('skpi')->where('id_pengajuan', $id_pengajuan)->first();
         $skpi = $skpiRow ? Skpi::hydrate([(array) $skpiRow])->first() : null;
-        $isPublishRequest = !$skpi && $request->has('nim_ijazah');
+        $isPublishRequest = !$skpi && $request->has('nomor_ijazah_nasional');
 
         if ($isPublishRequest) {
             if ($pengajuan->status !== 'dicetak') {
@@ -109,7 +107,7 @@ class SkpiController extends Controller
                     'nomor_skpi' => $nomorSkpi . ' (DRAFT)',
                     'nim' => $mahasiswa->nim,
                     'id_pengajuan' => $pengajuan->id_pengajuan,
-                    'nim_ijazah' => 'BELUM DITERBITKAN',
+                    'nomor_ijazah_nasional' => 'BELUM DITERBITKAN',
                     'tanggal_terbit' => now(),
                     'status_profesi' => 'Belum ada keanggotaan profesi',
                     'tanggal_ttd_dekan' => now(),
@@ -125,31 +123,31 @@ class SkpiController extends Controller
                 }
 
                 $request->validate([
-                    'nim_ijazah' => 'required|string|max:50',
+                    'nomor_ijazah_nasional' => 'required|string|max:50',
                     'status_profesi' => 'nullable|string|max:255',
                 ]);
 
-                $error = $this->skpiService->checkNomorIjazahUnique($request->nim_ijazah);
+                $error = $this->skpiService->checkNomorIjazahUnique($request->nomor_ijazah_nasional);
                 if ($error) {
                     return back()->with('error', $error);
                 }
 
-                $pdf = $this->skpiService->printSkpi($pengajuan, $request->nim_ijazah, $request->status_profesi, $user);
+                $pdf = $this->skpiService->printSkpi($pengajuan, $request->nomor_ijazah_nasional, $request->status_profesi, $user);
             }
         } else {
-            if ($request->has('nim_ijazah') && in_array($user->role, ['bak_fakultas', 'admin'])) {
+            if ($request->has('nomor_ijazah_nasional') && in_array($user->role, ['bak_fakultas', 'admin'])) {
                 $request->validate([
-                    'nim_ijazah' => 'required|string|max:50',
+                    'nomor_ijazah_nasional' => 'required|string|max:50',
                     'status_profesi' => 'nullable|string|max:255',
                 ]);
 
-                $error = $this->skpiService->checkNomorIjazahUnique($request->nim_ijazah, $skpi->id_skpi);
+                $error = $this->skpiService->checkNomorIjazahUnique($request->nomor_ijazah_nasional, $skpi->id_skpi);
                 if ($error) {
                     return back()->with('error', $error);
                 }
 
                 $skpi->update([
-                    'nim_ijazah' => $request->nim_ijazah,
+                    'nomor_ijazah_nasional' => $request->nomor_ijazah_nasional,
                     'status_profesi' => $request->status_profesi ?? 'Belum ada keanggotaan profesi',
                 ]);
             }
@@ -178,8 +176,6 @@ class SkpiController extends Controller
                     'mahasiswa.tanggal_lahir',
                     'mahasiswa.tahun_masuk',
                     'mahasiswa.tahun_lulus',
-                    'mahasiswa.tanggal_lulus',
-                    'mahasiswa.ipk',
                     'mahasiswa.id_prodi',
                     'program_studi.nama_prodi',
                     'program_studi.kode_prodi',
@@ -204,8 +200,6 @@ class SkpiController extends Controller
                 'tanggal_lahir' => $skpi->tanggal_lahir,
                 'tahun_masuk' => $skpi->tahun_masuk,
                 'tahun_lulus' => $skpi->tahun_lulus,
-                'tanggal_lulus' => $skpi->tanggal_lulus,
-                'ipk' => $skpi->ipk,
                 'id_prodi' => $skpi->id_prodi,
                 'programStudi' => (object) [
                     'nama_prodi' => $skpi->nama_prodi,

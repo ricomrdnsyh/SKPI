@@ -11,7 +11,7 @@
                     $fields = [
                         ['label' => 'Nama Lengkap', 'value' => $mahasiswa->nama_lengkap],
                         ['label' => 'NIM', 'value' => $mahasiswa->nim],
-                        ['label' => 'NIM Ijazah', 'value' => $mahasiswa->skpi->nim_ijazah ?? null, 'empty' => '<span class="badge badge-light-warning fw-bold text-uppercase fs-8"><i class="ki-duotone ki-time fs-7 me-1"><span class="path1"></span><span class="path2"></span></i> Diinput saat penerbitan</span>'],
+                        ['label' => 'Nomor Ijazah Nasional', 'value' => $mahasiswa->skpi->nomor_ijazah_nasional ?? null, 'empty' => '<span class="badge badge-light-warning fw-bold text-uppercase fs-8"><i class="ki-duotone ki-time fs-7 me-1"><span class="path1"></span><span class="path2"></span></i> Diinput saat penerbitan</span>'],
                         ['label' => 'Program Studi', 'value' => $mahasiswa->programStudi->nama_prodi],
                         ['label' => 'Tempat, Tanggal Lahir', 'value' => $mahasiswa->tempat_lahir . ', ' . $mahasiswa->tanggal_lahir],
                     ];

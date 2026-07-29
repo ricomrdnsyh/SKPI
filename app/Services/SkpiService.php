@@ -57,7 +57,7 @@ class SkpiService
 
     public function checkNomorIjazahUnique(string $nimIjazah, ?int $exceptId = null): ?string
     {
-        $query = DB::table('skpi')->where('nim_ijazah', $nimIjazah);
+        $query = DB::table('skpi')->where('nomor_ijazah_nasional', $nimIjazah);
         if ($exceptId) {
             $query->where('id_skpi', '!=', $exceptId);
         }
@@ -80,7 +80,7 @@ class SkpiService
                 'nomor_skpi' => $nomorSkpi,
                 'nim' => $mahasiswa->nim,
                 'id_pengajuan' => $pengajuan->id_pengajuan,
-                'nim_ijazah' => $nimIjazah,
+                'nomor_ijazah_nasional' => $nimIjazah,
                 'tanggal_terbit' => now(),
                 'dicetak_oleh' => $user->id_user,
                 'status_profesi' => $statusProfesi ?? 'Belum ada keanggotaan profesi',

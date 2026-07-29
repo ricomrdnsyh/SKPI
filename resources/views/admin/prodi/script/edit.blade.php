@@ -52,13 +52,6 @@
                 }
             });
         }
-        $('#edit_tanggal_sk_akreditasi').flatpickr({
-            dateFormat: "Y-m-d",
-            allowInput: true
-        });
-        $('#edit_masa_berlaku_akreditasi').flatpickr({
-            dateFormat: "Y-m-d",
-            allowInput: true
-        });
+
     });
 </script>

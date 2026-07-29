@@ -409,7 +409,7 @@ class VerifikasiController extends Controller
         $allowedProdis = $this->getAllowedProdiIds($user);
 
         $mahasiswaRow = DB::table('mahasiswa')
-            ->select(['nim', 'id_prodi', 'id_kurikulum', 'nim', 'nama_lengkap', 'ipk', 'tahun_masuk', 'tahun_lulus', 'tanggal_lulus', 'status'])
+            ->select(['nim', 'id_prodi', 'id_kurikulum', 'nim', 'nama_lengkap', 'tahun_masuk', 'tahun_lulus', 'status'])
             ->where('nim', $pengajuan->nim)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
         if (!$mahasiswa) abort(404, 'Mahasiswa tidak ditemukan.');
@@ -425,15 +425,15 @@ class VerifikasiController extends Controller
         }
 
         $request->validate([
-            'nim_ijazah' => 'required|string|max:50',
+            'nomor_ijazah_nasional' => 'required|string|max:50',
             'status_profesi' => 'nullable|string|max:255',
         ]);
 
-        $error = $this->skpiService->checkNomorIjazahUnique($request->nim_ijazah);
+        $error = $this->skpiService->checkNomorIjazahUnique($request->nomor_ijazah_nasional);
         if ($error) return back()->with('error', $error);
 
         DB::transaction(function () use ($pengajuan, $request, $user) {
-            $this->skpiService->createSkpi($pengajuan, $request->nim_ijazah, $request->status_profesi, $user);
+            $this->skpiService->createSkpi($pengajuan, $request->nomor_ijazah_nasional, $request->status_profesi, $user);
             $pengajuan->update(['status' => 'dicetak']);
         });
 

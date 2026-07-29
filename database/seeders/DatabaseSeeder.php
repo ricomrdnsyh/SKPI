@@ -50,20 +50,14 @@ class DatabaseSeeder extends Seeder
             'id_fakultas' => $fti->id_fakultas,
             'nama_prodi' => 'Teknik Informatika',
             'kode_prodi' => 'IF',
-            'jenjang' => 'S1',
+            'jenjang' => 'Strata 1',
             'gelar' => 'S.Kom.',
-            'sk_akreditasi' => '123/SK/BAN-PT/2023',
-            'tanggal_sk_akreditasi' => '2023-05-10',
-            'masa_berlaku_akreditasi' => '2028-05-10',
             'jenjang_kkni' => 'Level 6',
             'bahasa_pengantar' => 'Indonesia',
             'lama_studi' => '8 Semester',
             'jenis_pendidikan' => 'Akademik',
             'jenis_pendidikan_lanjutan' => 'Program Magister (S2)',
             'persyaratan_penerimaan' => 'Lulusan SMA/SMK/MA sederajat jurusan IPA/Teknik',
-            'alamat_prodi' => 'Gedung A Kampus 1, Jl. Raya Utama No. 10',
-            'telepon_prodi' => '021-1234567',
-            'email_prodi' => 'informatika@univ.ac.id',
             'status' => 'active'
         ]);
 
@@ -72,20 +66,14 @@ class DatabaseSeeder extends Seeder
             'id_fakultas' => $fti->id_fakultas,
             'nama_prodi' => 'Sistem Informasi',
             'kode_prodi' => 'SI',
-            'jenjang' => 'S1',
+            'jenjang' => 'Strata 1',
             'gelar' => 'S.Kom.',
-            'sk_akreditasi' => '124/SK/BAN-PT/2023',
-            'tanggal_sk_akreditasi' => '2023-06-15',
-            'masa_berlaku_akreditasi' => '2028-06-15',
             'jenjang_kkni' => 'Level 6',
             'bahasa_pengantar' => 'Indonesia',
             'lama_studi' => '8 Semester',
             'jenis_pendidikan' => 'Akademik',
             'jenis_pendidikan_lanjutan' => 'Program Magister (S2)',
             'persyaratan_penerimaan' => 'Lulusan SMA/SMK/MA sederajat semua jurusan',
-            'alamat_prodi' => 'Gedung B Kampus 1, Jl. Raya Utama No. 10',
-            'telepon_prodi' => '021-1234568',
-            'email_prodi' => 'si@univ.ac.id',
             'status' => 'active'
         ]);
 
@@ -94,20 +82,14 @@ class DatabaseSeeder extends Seeder
             'id_fakultas' => $ft->id_fakultas,
             'nama_prodi' => 'Teknik Sipil',
             'kode_prodi' => 'TS',
-            'jenjang' => 'S1',
+            'jenjang' => 'Strata 1',
             'gelar' => 'S.T.',
-            'sk_akreditasi' => '125/SK/BAN-PT/2023',
-            'tanggal_sk_akreditasi' => '2023-07-20',
-            'masa_berlaku_akreditasi' => '2028-07-20',
             'jenjang_kkni' => 'Level 6',
             'bahasa_pengantar' => 'Indonesia',
             'lama_studi' => '8 Semester',
             'jenis_pendidikan' => 'Akademik',
             'jenis_pendidikan_lanjutan' => 'Program Magister (S2)',
             'persyaratan_penerimaan' => 'Lulusan SMA/SMK/MA sederajat jurusan IPA/Teknik',
-            'alamat_prodi' => 'Gedung C Kampus 2, Jl. Pendidikan No. 5',
-            'telepon_prodi' => '021-7654321',
-            'email_prodi' => 'sipil@univ.ac.id',
             'status' => 'active'
         ]);
 
@@ -116,20 +98,14 @@ class DatabaseSeeder extends Seeder
             'id_fakultas' => $feb->id_fakultas,
             'nama_prodi' => 'Manajemen',
             'kode_prodi' => 'MN',
-            'jenjang' => 'S1',
+            'jenjang' => 'Strata 1',
             'gelar' => 'S.E.',
-            'sk_akreditasi' => '126/SK/BAN-PT/2023',
-            'tanggal_sk_akreditasi' => '2023-08-25',
-            'masa_berlaku_akreditasi' => '2028-08-25',
             'jenjang_kkni' => 'Level 6',
             'bahasa_pengantar' => 'Indonesia',
             'lama_studi' => '8 Semester',
             'jenis_pendidikan' => 'Akademik',
             'jenis_pendidikan_lanjutan' => 'Program Magister (S2)',
             'persyaratan_penerimaan' => 'Lulusan SMA/SMK/MA sederajat semua jurusan',
-            'alamat_prodi' => 'Gedung D Kampus 2, Jl. Pendidikan No. 5',
-            'telepon_prodi' => '021-7654322',
-            'email_prodi' => 'manajemen@univ.ac.id',
             'status' => 'active'
         ]);
 
@@ -278,7 +254,6 @@ class DatabaseSeeder extends Seeder
             'tanggal_lahir' => '2004-05-12',
             'tahun_masuk' => 2023,
             'status' => 'Aktif',
-            'ipk' => 3.85,
             'email' => 'budi@student.ac.id',
             'nomor_telepon' => '081234567890',
             'password' => 'mahasiswa123' // model casts hashed automatically
@@ -293,7 +268,6 @@ class DatabaseSeeder extends Seeder
             'tanggal_lahir' => '2003-08-24',
             'tahun_masuk' => 2022,
             'status' => 'Aktif',
-            'ipk' => 3.92,
             'email' => 'siti@student.ac.id',
             'nomor_telepon' => '081234567891',
             'password' => 'password'
@@ -308,7 +282,6 @@ class DatabaseSeeder extends Seeder
             'tanggal_lahir' => '2004-11-02',
             'tahun_masuk' => 2023,
             'status' => 'Aktif',
-            'ipk' => 3.70,
             'email' => 'doni@student.ac.id',
             'nomor_telepon' => '081234567892',
             'password' => 'password'
@@ -322,10 +295,8 @@ class DatabaseSeeder extends Seeder
             'tempat_lahir' => 'Bandung',
             'tanggal_lahir' => '2002-02-15',
             'tahun_masuk' => 2020,
-            'tahun_lulus' => 2024,
-            'tanggal_lulus' => '2024-03-20',
+            'tahun_lulus' => '2024-03-20',
             'status' => 'Lulus',
-            'ipk' => 3.78,
             'email' => 'riska@student.ac.id',
             'nomor_telepon' => '081234567893',
             'password' => 'password'
