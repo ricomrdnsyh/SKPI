@@ -9,14 +9,27 @@
                 @csrf
                 <div class="modal-body">
                     <div class="fv-row mb-6">
-                        <label for="username" class="form-label required fw-bolder text-dark">Username</label>
-                        <input type="text" name="username" id="username" required
-                            class="form-control form-control-sm">
+                        <label for="karyawan" class="form-label required fw-bolder text-dark">Pilih Karyawan</label>
+                        <select id="karyawan" class="form-select form-select-sm" data-control="select2"
+                            data-placeholder="Pilih Karyawan" data-allow-clear="true"
+                            data-dropdown-parent="#form_create" required>
+                            <option value="">-- Pilih Karyawan --</option>
+                            @if (isset($karyawans) && is_array($karyawans))
+                                @foreach ($karyawans as $karyawan)
+                                    <option value="{{ $karyawan['id_penduduk'] ?? '' }}"
+                                        data-nama="{{ $karyawan['nama_penduduk'] ?? '' }}"
+                                        data-email="{{ $karyawan['email'] ?? '' }}">
+                                        {{ $karyawan['nama_penduduk'] ?? '' }} - {{ $karyawan['lembaga'] ?? '' }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
                     </div>
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <input type="hidden" name="nama_lengkap" id="nama_lengkap" required>
                         <div class="fv-row">
-                            <label for="nama_lengkap" class="form-label required fw-bolder text-dark">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" id="nama_lengkap" required
+                            <label for="username" class="form-label required fw-bolder text-dark">Username</label>
+                            <input type="text" name="username" id="username" required readonly
                                 class="form-control form-control-sm">
                         </div>
                         <div class="fv-row">

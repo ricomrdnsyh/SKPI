@@ -36,6 +36,25 @@ class ClientSSO
         return $this->fetchData('dosen', ['id_sms' => $idSms]);
     }
 
+    public function getKaryawanFromApi(): array
+    {
+        $allKaryawans = [];
+        $lembagaIds = [3, 4, 5, 6, 7, 8, 11];
+        foreach ($lembagaIds as $idLembaga) {
+            try {
+                $data = $this->fetchData('karyawan', [
+                    'id_lembaga' => $idLembaga,
+                    'pagination' => 'off'
+                ]);
+                if (is_array($data)) {
+                    $allKaryawans = array_merge($allKaryawans, $data);
+                }
+            } catch (\Exception $e) {
+            }
+        }
+        return $allKaryawans;
+    }
+
     private function fetchData(string $filter, array $additionalPayload = []): array
     {
         $auth = $this->auth->getAuth();

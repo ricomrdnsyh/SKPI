@@ -10,14 +10,28 @@
                 @method('PUT')
                 <div class="modal-body">
                     <div class="fv-row mb-6">
-                        <label for="edit_username" class="form-label required fw-bolder text-dark">Username</label>
-                        <input type="text" name="username" id="edit_username" required
-                            class="form-control form-control-sm">
+                        <label for="edit_karyawan" class="form-label required fw-bolder text-dark">Pilih
+                            Karyawan</label>
+                        <select id="edit_karyawan" class="form-select form-select-sm" data-control="select2"
+                            data-placeholder="Pilih Karyawan" data-allow-clear="true" data-dropdown-parent="#form_edit"
+                            required>
+                            <option value="">-- Pilih Karyawan --</option>
+                            @if (isset($karyawans) && is_array($karyawans))
+                                @foreach ($karyawans as $karyawan)
+                                    <option value="{{ $karyawan['id_penduduk'] ?? '' }}"
+                                        data-nama="{{ $karyawan['nama_penduduk'] ?? '' }}"
+                                        data-email="{{ $karyawan['email'] ?? '' }}">
+                                        {{ $karyawan['nama_penduduk'] ?? '' }} - {{ $karyawan['lembaga'] ?? '' }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
                     </div>
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
+                        <input type="hidden" name="nama_lengkap" id="edit_nama_lengkap" required>
                         <div class="fv-row">
-                            <label for="edit_nama_lengkap" class="form-label required fw-bolder text-dark">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" id="edit_nama_lengkap" required 
+                            <label for="edit_username" class="form-label required fw-bolder text-dark">Username</label>
+                            <input type="text" name="username" id="edit_username" required readonly
                                 class="form-control form-control-sm">
                         </div>
                         <div class="fv-row">
@@ -28,14 +42,17 @@
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
                             <label for="edit_role" class="form-label required fw-bolder text-dark">Peran (Role)</label>
-                            <select name="role" id="edit_role" required class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Role">
+                            <select name="role" id="edit_role" required class="form-select form-select-sm"
+                                data-control="select2" data-placeholder="Pilih Role">
                                 <option value="admin">Admin</option>
                                 <option value="bak_fakultas">BAK Fakultas</option>
                             </select>
                         </div>
                         <div class="fv-row" id="edit_fakultas-container">
-                            <label for="edit_id_fakultas" class="form-label fw-bolder text-dark">Hubungkan Fakultas</label>
-                            <select name="id_fakultas" id="edit_id_fakultas" class="form-select form-select-sm" data-control="select2" data-placeholder="Pilih Fakultas">
+                            <label for="edit_id_fakultas" class="form-label fw-bolder text-dark">Hubungkan
+                                Fakultas</label>
+                            <select name="id_fakultas" id="edit_id_fakultas" class="form-select form-select-sm"
+                                data-control="select2" data-placeholder="Pilih Fakultas">
                                 <option value="">-- Pilih Fakultas --</option>
                                 @foreach ($fakultas as $f)
                                     <option value="{{ $f->id_fakultas }}">
@@ -46,19 +63,22 @@
                     </div>
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-6">
                         <div class="fv-row">
-                            <label for="edit_password" class="form-label fw-bolder text-dark">Password (Kosongkan jika tidak diubah)</label>
-                            <input type="password" name="password" id="edit_password" class="form-control form-control-sm"
-                                placeholder="Minimal 6 karakter">
+                            <label for="edit_password" class="form-label fw-bolder text-dark">Password (Kosongkan jika
+                                tidak diubah)</label>
+                            <input type="password" name="password" id="edit_password"
+                                class="form-control form-control-sm" placeholder="Minimal 6 karakter">
                         </div>
                         <div class="fv-row">
                             <label class="form-label required fw-bolder text-dark">Status Akun</label>
                             <div class="d-flex align-items-center mt-3">
                                 <div class="form-check form-check-custom form-check-sm me-5">
-                                    <input class="form-check-input" type="radio" value="1" name="aktif" id="edit_aktif_1" required />
+                                    <input class="form-check-input" type="radio" value="1" name="aktif"
+                                        id="edit_aktif_1" required />
                                     <label class="form-check-label" for="edit_aktif_1">Aktif</label>
                                 </div>
                                 <div class="form-check form-check-custom form-check-sm">
-                                    <input class="form-check-input" type="radio" value="0" name="aktif" id="edit_aktif_0" required />
+                                    <input class="form-check-input" type="radio" value="0" name="aktif"
+                                        id="edit_aktif_0" required />
                                     <label class="form-check-label" for="edit_aktif_0">Nonaktif</label>
                                 </div>
                             </div>

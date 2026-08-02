@@ -12,11 +12,26 @@
                 $('#id_fakultas').val(null).trigger('change.select2');
             }
         });
+
+        $('#karyawan').on('change', function() {
+            let selected = $(this).find('option:selected');
+            if (selected.val()) {
+                $('#username').val(selected.val()).prop('readonly', true);
+                $('#nama_lengkap').val(selected.data('nama')).prop('readonly', true);
+                if (selected.data('email')) {
+                    $('#email').val(selected.data('email'));
+                }
+            } else {
+                $('#username').val('').prop('readonly', false);
+                $('#nama_lengkap').val('').prop('readonly', false);
+                $('#email').val('');
+            }
+        });
         $('#role').trigger('change');
         let submitButtonCreate = formCreate.querySelector('[type="submit"]');
         if (!submitButtonCreate) {
-             const ind = formCreate.querySelector('.indicator-label');
-             if(ind) submitButtonCreate = ind.closest('button');
+            const ind = formCreate.querySelector('.indicator-label');
+            if (ind) submitButtonCreate = ind.closest('button');
         }
         formCreate.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -29,8 +44,8 @@
                 submitButtonCreate.disabled = true;
                 const label = submitButtonCreate.querySelector('.indicator-label');
                 const progress = submitButtonCreate.querySelector('.indicator-progress');
-                if(label) label.style.display = 'none';
-                if(progress) progress.style.display = 'inline-block';
+                if (label) label.style.display = 'none';
+                if (progress) progress.style.display = 'inline-block';
             }
             $('.invalid-feedback.d-block').remove();
             $(formCreate).find('.is-invalid').removeClass('is-invalid');
@@ -48,7 +63,9 @@
                         icon: "success",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, mengerti!",
-                        customClass: { confirmButton: "btn btn-primary" }
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        }
                     });
                     if ($.fn.DataTable.isDataTable('#table-users')) {
                         $('#table-users').DataTable().ajax.reload(null, false);
@@ -58,16 +75,18 @@
                     if (submitButtonCreate) {
                         submitButtonCreate.disabled = false;
                         const label = submitButtonCreate.querySelector('.indicator-label');
-                        const progress = submitButtonCreate.querySelector('.indicator-progress');
-                        if(label) label.style.display = 'inline-block';
-                        if(progress) progress.style.display = 'none';
+                        const progress = submitButtonCreate.querySelector(
+                            '.indicator-progress');
+                        if (label) label.style.display = 'inline-block';
+                        if (progress) progress.style.display = 'none';
                     }
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
                         for (let key in errors) {
-                            let input = $(formCreate).find('[name="'+key+'"]');
+                            let input = $(formCreate).find('[name="' + key + '"]');
                             input.addClass('is-invalid');
-                            input.parent().append('<div class="invalid-feedback d-block">' + errors[key][0] + '</div>');
+                            input.parent().append('<div class="invalid-feedback d-block">' +
+                                errors[key][0] + '</div>');
                         }
                     } else {
                         Swal.fire({
@@ -75,7 +94,9 @@
                             icon: "error",
                             buttonsStyling: false,
                             confirmButtonText: "Ok, mengerti!",
-                            customClass: { confirmButton: "btn btn-danger" }
+                            customClass: {
+                                confirmButton: "btn btn-danger"
+                            }
                         });
                     }
                 }
@@ -83,18 +104,21 @@
         });
         const modalEl = document.getElementById('form_create');
         if (modalEl) {
-            modalEl.addEventListener('hidden.bs.modal', function () {
+            modalEl.addEventListener('hidden.bs.modal', function() {
                 formCreate.classList.remove('was-validated');
                 formCreate.reset();
                 $('.invalid-feedback.d-block').remove();
                 $(formCreate).find('.is-invalid').removeClass('is-invalid');
                 $('#role').trigger('change');
+                if ($('#karyawan').length) {
+                    $('#karyawan').val(null).trigger('change.select2');
+                }
                 if (submitButtonCreate) {
                     submitButtonCreate.disabled = false;
                     const label = submitButtonCreate.querySelector('.indicator-label');
                     const progress = submitButtonCreate.querySelector('.indicator-progress');
-                    if(label) label.style.display = 'inline-block';
-                    if(progress) progress.style.display = 'none';
+                    if (label) label.style.display = 'inline-block';
+                    if (progress) progress.style.display = 'none';
                 }
             });
         }

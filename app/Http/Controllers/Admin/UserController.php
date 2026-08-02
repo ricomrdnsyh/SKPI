@@ -13,7 +13,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(\App\Services\ClientSSO $clientSSO)
     {
 
 
@@ -23,16 +23,17 @@ class UserController extends Controller
         $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
         $fakultas = DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get();
 
+        $karyawans = $clientSSO->getKaryawanFromApi();
 
-
-        return view('admin.users.index', compact('roleOptions', 'statusOptions', 'prodiList', 'prodi', 'fakultas'));
+        return view('admin.users.index', compact('roleOptions', 'statusOptions', 'prodiList', 'prodi', 'fakultas', 'karyawans'));
     }
 
-    public function create()
+    public function create(\App\Services\ClientSSO $clientSSO)
     {
         $prodi = DB::table('program_studi')->select('id_prodi', 'nama_prodi')->get();
         $fakultas = DB::table('fakultas')->select('id_fakultas', 'nama_fakultas')->get();
-        return view('admin.users.create', compact('prodi', 'fakultas'));
+        $karyawans = $clientSSO->getKaryawanFromApi();
+        return view('admin.users.create', compact('prodi', 'fakultas', 'karyawans'));
     }
 
     public function store(Request $request)
