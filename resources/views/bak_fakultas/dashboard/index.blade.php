@@ -141,28 +141,40 @@
                     @php
                         $statCards = [
                             [
-                                'label' => 'Total Verifikasi',
-                                'value' => $stats['sudah_verifikasi'],
+                                'label' => 'Total Pengajuan',
+                                'value' => $stats['total_pengajuan'],
                                 'color' => 'primary',
-                                'icon' => 'ki-shield-tick',
+                                'icon' => 'ki-abstract-14',
                             ],
                             [
-                                'label' => 'Perlu Verifikasi',
-                                'value' => $stats['pending'],
+                                'label' => 'Draft',
+                                'value' => $stats['draft'],
+                                'color' => 'dark',
+                                'icon' => 'ki-file',
+                            ],
+                            [
+                                'label' => 'Diajukan',
+                                'value' => $stats['diajukan'],
                                 'color' => 'warning',
                                 'icon' => 'ki-time',
                             ],
                             [
-                                'label' => 'Sedang Verifikasi',
+                                'label' => 'Verifikasi',
                                 'value' => $stats['verifikasi'],
                                 'color' => 'info',
                                 'icon' => 'ki-document',
                             ],
                             [
-                                'label' => 'Sudah Tercetak',
-                                'value' => $stats['completed'],
+                                'label' => 'Dicetak',
+                                'value' => $stats['dicetak'],
                                 'color' => 'success',
                                 'icon' => 'ki-check-circle',
+                            ],
+                            [
+                                'label' => 'Ditolak',
+                                'value' => $stats['ditolak'],
+                                'color' => 'danger',
+                                'icon' => 'ki-cross-circle',
                             ],
                         ];
                     @endphp

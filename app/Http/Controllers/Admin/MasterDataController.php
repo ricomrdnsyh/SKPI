@@ -45,18 +45,15 @@ class MasterDataController extends Controller
         $pendingCount = \App\Models\PengajuanSkpi::hasPendingItems()->count();
 
         $skpiStats = [
-            'pending' => $pendingCount,
+            'total_pengajuan' => collect($statusCounts)->except('draft')->sum(),
+            'draft' => $statusCounts['draft'] ?? 0,
+            'diajukan' => $statusCounts['diajukan'] ?? 0,
             'verifikasi' => $statusCounts['verifikasi'] ?? 0,
-            'completed' => $statusCounts['dicetak'] ?? 0,
-            'sudah_verifikasi' => $statusCounts->only(['diajukan', 'verifikasi', 'dicetak', 'ditolak'])->sum(),
-            'permohonan_cetak_count' => $permohonanCetakCount,
+            'dicetak' => $statusCounts['dicetak'] ?? 0,
+            'ditolak' => $statusCounts['ditolak'] ?? 0,
         ];
 
-        $statuses = Cache::remember('master:pengajuan_statuses', 7200, function () {
-            return DB::table('pengajuan_skpi')
-                ->select('status')->distinct()
-                ->pluck('status')->sort()->values();
-        });
+        $statuses = collect(['draft', 'diajukan', 'verifikasi', 'dicetak', 'ditolak']);
 
         $prodis = Cache::remember('master:prodi_with_fakultas:all', 7200, function () {
             return DB::table('program_studi')->select('id_fakultas', 'nama_prodi')->orderBy('nama_prodi')->get();

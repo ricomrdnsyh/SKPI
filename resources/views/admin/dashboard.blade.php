@@ -144,28 +144,40 @@
                     @php
                         $statCards = [
                             [
-                                'label' => 'Total Verifikasi',
-                                'value' => $skpiStats['sudah_verifikasi'],
+                                'label' => 'Total Pengajuan',
+                                'value' => $skpiStats['total_pengajuan'],
                                 'color' => 'primary',
-                                'icon' => 'ki-shield-tick',
+                                'icon' => 'ki-abstract-14',
                             ],
                             [
-                                'label' => 'Perlu Verifikasi',
-                                'value' => $skpiStats['pending'],
+                                'label' => 'Draft',
+                                'value' => $skpiStats['draft'],
+                                'color' => 'dark',
+                                'icon' => 'ki-file',
+                            ],
+                            [
+                                'label' => 'Diajukan',
+                                'value' => $skpiStats['diajukan'],
                                 'color' => 'warning',
                                 'icon' => 'ki-time',
                             ],
                             [
-                                'label' => 'Sedang Verifikasi',
+                                'label' => 'Verifikasi',
                                 'value' => $skpiStats['verifikasi'],
                                 'color' => 'info',
                                 'icon' => 'ki-document',
                             ],
                             [
-                                'label' => 'Sudah Tercetak',
-                                'value' => $skpiStats['completed'],
+                                'label' => 'Dicetak',
+                                'value' => $skpiStats['dicetak'],
                                 'color' => 'success',
                                 'icon' => 'ki-check-circle',
+                            ],
+                            [
+                                'label' => 'Ditolak',
+                                'value' => $skpiStats['ditolak'],
+                                'color' => 'danger',
+                                'icon' => 'ki-cross-circle',
                             ],
                         ];
                     @endphp

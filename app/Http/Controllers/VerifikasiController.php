@@ -81,11 +81,12 @@ class VerifikasiController extends Controller
         $pendingCount = $pendingCountQuery->hasPendingItems()->count();
 
         $stats = [
-            'pending' => $pendingCount,
+            'total_pengajuan' => collect($statusCounts)->except('draft')->sum(),
+            'draft' => $statusCounts['draft'] ?? 0,
+            'diajukan' => $statusCounts['diajukan'] ?? 0,
             'verifikasi' => $statusCounts['verifikasi'] ?? 0,
-            'completed' => $statusCounts['dicetak'] ?? 0,
-            'sudah_verifikasi' => $statusCounts->only(['diajukan', 'verifikasi', 'dicetak', 'ditolak'])->sum(),
-            'permohonan_cetak_count' => $permohonanCetakCount,
+            'dicetak' => $statusCounts['dicetak'] ?? 0,
+            'ditolak' => $statusCounts['ditolak'] ?? 0,
         ];
 
         $statuses = $this->getStatusesCached();
@@ -103,11 +104,7 @@ class VerifikasiController extends Controller
 
     private function getStatusesCached(): \Illuminate\Support\Collection
     {
-        return Cache::remember('master:pengajuan_statuses', 7200, function () {
-            return DB::table('pengajuan_skpi')
-                ->select('status')->distinct()
-                ->pluck('status')->sort()->values();
-        });
+        return collect(['draft', 'diajukan', 'verifikasi', 'dicetak', 'ditolak']);
     }
 
     private function getProdiListCached($allowedProdis = null): \Illuminate\Support\Collection
