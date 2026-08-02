@@ -82,19 +82,23 @@ class VerifikasiController extends Controller
 
         $stats = [
             'pending' => $pendingCount,
-            'verifikasi' => $statusCounts->get('verifikasi', 0),
-            'completed' => $statusCounts->get('dicetak', 0),
-            'sudah_verifikasi' => $statusCounts->only(['verifikasi', 'dicetak', 'ditolak'])->sum(),
+            'verifikasi' => $statusCounts['verifikasi'] ?? 0,
+            'completed' => $statusCounts['dicetak'] ?? 0,
+            'sudah_verifikasi' => $statusCounts->only(['diajukan', 'verifikasi', 'dicetak', 'ditolak'])->sum(),
             'permohonan_cetak_count' => $permohonanCetakCount,
         ];
 
         $statuses = $this->getStatusesCached();
         $prodis = $this->getProdiListCached($allowedProdis);
-        $tahun_akademiks = Cache::remember('master:tahun_akademik', 7200, function () {
-            return DB::table('tahun_akademik')->pluck('nama', 'id_tahun_akademik')->toArray();
+        $tahun_akademiks = Cache::remember('master:tahun_akademik_ordered', 7200, function () {
+            return DB::table('tahun_akademik')->orderByDesc('id_tahun_akademik')->pluck('nama', 'id_tahun_akademik')->toArray();
         });
 
-        return view('bak_fakultas.dashboard.index', compact('stats', 'statuses', 'prodis', 'tahun_akademiks'));
+        $active_tahun_akademik = Cache::remember('master:tahun_akademik_active', 7200, function () {
+            return DB::table('tahun_akademik')->where('is_active', 1)->value('id_tahun_akademik');
+        });
+
+        return view('bak_fakultas.dashboard.index', compact('stats', 'statuses', 'prodis', 'tahun_akademiks', 'active_tahun_akademik'));
     }
 
     private function getStatusesCached(): \Illuminate\Support\Collection
@@ -195,66 +199,6 @@ class VerifikasiController extends Controller
         $this->cache->flushDashboard($mahasiswaId);
         Cache::forget('master:pengajuan_statuses');
     }
-
-    public function cancelPrint(int $id_pengajuan, Request $request)
-    {
-        $request->validate([
-            'catatan' => 'required|string|max:1000'
-        ]);
-
-        $user = Auth::user();
-        $allowedProdis = $this->getAllowedProdiIds($user);
-        $pengajuanRow = DB::table('pengajuan_skpi')->where('id_pengajuan', $id_pengajuan)->first();
-        if (!$pengajuanRow) abort(404);
-        if ($pengajuanRow->status !== 'dicetak') {
-            return back()->with('error', 'Pengajuan belum dicetak.');
-        }
-
-        $idProdi = DB::table('mahasiswa')->where('nim', $pengajuanRow->nim)->value('id_prodi');
-        if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
-        if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
-
-        DB::transaction(function () use ($id_pengajuan, $pengajuanRow, $request, $user) {
-            DB::table('skpi')->where('id_pengajuan', $id_pengajuan)->delete();
-
-            DB::table('checklist_verifikasi_skpi')->where('id_pengajuan', $id_pengajuan)->update([
-                'hasil_verifikasi' => 'perlu_revisi',
-                'catatan' => $request->catatan,
-                'diverifikasi_oleh' => $user->id_user,
-                'tanggal_verifikasi' => now(),
-            ]);
-
-            DB::table('pengajuan_skpi')->where('id_pengajuan', $id_pengajuan)->update([
-                'status' => 'draft',
-                'catatan_bak' => $request->catatan,
-                'permohonan_cetak' => false,
-                'diverifikasi_oleh' => null,
-                'tanggal_verifikasi' => null,
-            ]);
-
-            \App\Models\Approval::create([
-                'approvable_type' => 'pengajuan_skpi',
-                'approvable_id' => $id_pengajuan,
-                'role' => 'baak',
-                'user_id' => $user->id_user,
-                'status' => 'rejected',
-                'notes' => 'Pembatalan Cetak: ' . $request->catatan,
-            ]);
-        });
-
-        $this->flushRelatedCaches($id_pengajuan, $pengajuanRow->nim);
-
-        if ($request->wantsJson() || $request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Pencetakan SKPI berhasil dibatalkan. Status dikembalikan ke Draft agar mahasiswa dapat mengedit.'
-            ]);
-        }
-
-        return redirect()->route('bak_fakultas.dashboard')
-            ->with('success', 'Pencetakan SKPI berhasil dibatalkan. Status dikembalikan ke Draft agar mahasiswa dapat mengedit.');
-    }
-
 
     public function approveItem(string $type, int $id)
     {
@@ -443,6 +387,48 @@ class VerifikasiController extends Controller
             ->with('success', 'SKPI berhasil diterbitkan.');
     }
 
+    public function cancelPrint(Request $request, int $id_pengajuan)
+    {
+        $user = Auth::user();
+        $allowedProdis = $this->getAllowedProdiIds($user);
+
+        $pengajuanRow = DB::table('pengajuan_skpi')->where('id_pengajuan', $id_pengajuan)->first();
+        if (!$pengajuanRow) abort(404);
+        $pengajuan = PengajuanSkpi::hydrate([(array) $pengajuanRow])->first();
+
+        $idProdi = DB::table('mahasiswa')->where('nim', $pengajuan->nim)->value('id_prodi');
+        if (!$idProdi) abort(404, 'Mahasiswa tidak ditemukan.');
+        if ($allowedProdis !== null && !in_array($idProdi, $allowedProdis)) abort(403, 'Akses ditolak.');
+
+        if ($pengajuan->status !== 'dicetak') {
+            return back()->with('error', 'SKPI belum diterbitkan atau tidak dalam status dicetak.');
+        }
+
+        $request->validate([
+            'catatan' => 'required|string|max:500',
+        ]);
+
+        DB::transaction(function () use ($pengajuan, $request) {
+            DB::table('skpi')->where('id_pengajuan', $pengajuan->id_pengajuan)->delete();
+            
+            $pengajuan->update([
+                'status' => 'draft',
+                'catatan_bak' => $request->catatan,
+                'tanggal_verifikasi' => null,
+            ]);
+
+            DB::table('checklist_verifikasi_skpi')->where('id_pengajuan', $pengajuan->id_pengajuan)->update([
+                'hasil_verifikasi' => 'perlu_revisi',
+                'catatan' => $request->catatan,
+            ]);
+        });
+
+        $this->flushRelatedCaches($id_pengajuan, $pengajuan->nim);
+
+        return redirect()->route('bak_fakultas.verifikasi.detail', $pengajuan->id_pengajuan)
+            ->with('success', 'Penerbitan SKPI berhasil dibatalkan dan dikembalikan ke Draft.');
+    }
+
     public function submitChecklist(Request $request, int $id_pengajuan)
     {
         $user = Auth::user();
@@ -483,6 +469,7 @@ class VerifikasiController extends Controller
         $query = DB::table('pengajuan_skpi')
             ->leftJoin('mahasiswa', 'pengajuan_skpi.nim', '=', 'mahasiswa.nim')
             ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
+            ->leftJoin('fakultas', 'program_studi.id_fakultas', '=', 'fakultas.id_fakultas')
             ->leftJoin('checklist_verifikasi_skpi', 'pengajuan_skpi.id_pengajuan', '=', 'checklist_verifikasi_skpi.id_pengajuan')
             ->leftJoin('skpi', 'pengajuan_skpi.id_pengajuan', '=', 'skpi.id_pengajuan')
             ->select(
@@ -499,6 +486,7 @@ class VerifikasiController extends Controller
                 'mahasiswa.nim as mhs_nim',
                 'mahasiswa.id_prodi as mhs_id_prodi',
                 'program_studi.nama_prodi as prodi_nama',
+                'fakultas.nama_fakultas as fakultas_nama',
                 'checklist_verifikasi_skpi.cek_identitas_mahasiswa',
                 'checklist_verifikasi_skpi.cek_identitas_prodi',
                 'checklist_verifikasi_skpi.cek_cpl',
@@ -519,6 +507,7 @@ class VerifikasiController extends Controller
             $query = PengajuanSkpi::query()
                 ->leftJoin('mahasiswa', 'pengajuan_skpi.nim', '=', 'mahasiswa.nim')
                 ->leftJoin('program_studi', 'mahasiswa.id_prodi', '=', 'program_studi.id_prodi')
+                ->leftJoin('fakultas', 'program_studi.id_fakultas', '=', 'fakultas.id_fakultas')
                 ->leftJoin('checklist_verifikasi_skpi', 'pengajuan_skpi.id_pengajuan', '=', 'checklist_verifikasi_skpi.id_pengajuan')
                 ->leftJoin('skpi', 'pengajuan_skpi.id_pengajuan', '=', 'skpi.id_pengajuan')
                 ->select(
@@ -535,6 +524,7 @@ class VerifikasiController extends Controller
                     'mahasiswa.nim as mhs_nim',
                     'mahasiswa.id_prodi as mhs_id_prodi',
                     'program_studi.nama_prodi as prodi_nama',
+                    'fakultas.nama_fakultas as fakultas_nama',
                     'checklist_verifikasi_skpi.cek_identitas_mahasiswa',
                     'checklist_verifikasi_skpi.cek_identitas_prodi',
                     'checklist_verifikasi_skpi.cek_cpl',
@@ -558,6 +548,9 @@ class VerifikasiController extends Controller
             $query->whereIn('pengajuan_skpi.status', ['verifikasi', 'dicetak', 'ditolak']);
         }
 
+        if ($request->filled('fakultas')) {
+            $query->where('program_studi.id_fakultas', $request->fakultas);
+        }
         if ($request->filled('prodi')) {
             $query->where('program_studi.nama_prodi', $request->prodi);
         }
@@ -587,11 +580,19 @@ class VerifikasiController extends Controller
             ->filterColumn('prodi', function($query, $keyword) {
                 $query->where('program_studi.nama_prodi', 'like', "%{$keyword}%");
             })
+            ->filterColumn('fakultas', function($query, $keyword) {
+                $query->where('fakultas.nama_fakultas', 'like', "%{$keyword}%");
+            })
             ->addColumn('mahasiswa', fn($p) => $p->mhs_nama ?? '-')
             ->addColumn('nim', fn($p) => $p->mhs_nim ?? '-')
             ->addColumn('prodi', fn($p) => $p->prodi_nama ?? '-')
+            ->addColumn('fakultas', fn($p) => $p->fakultas_nama ?? '-')
             ->addColumn('dosen_wali', fn($p) => '-')
-            ->addColumn('tanggal', fn($p) => DataTableHelper::tanggal($p->tanggal_pengajuan))
+            ->editColumn('tanggal_pengajuan', function($p) {
+                if (!$p->tanggal_pengajuan) return '-';
+                $date = \Carbon\Carbon::parse($p->tanggal_pengajuan)->locale('id');
+                return '<div><span class="text-gray-800 fw-bold">' . $date->isoFormat('D MMMM YYYY, HH:mm') . '</span><br><span class="text-muted fs-8">' . $date->diffForHumans() . '</span></div>';
+            })
             ->addColumn('verifikasi', function ($p) use ($mahasiswas) {
                 $mhs = $mahasiswas->get($p->nim);
                 if (!$mhs) return '-';
@@ -631,95 +632,12 @@ class VerifikasiController extends Controller
             ->addColumn('status', fn($p) => DataTableHelper::statusBadge($p->status))
             ->addColumn('aksi', function ($p) {
                 $detailRoute = route('bak_fakultas.verifikasi.detail', $p->id_pengajuan);
-                if ($p->status !== 'dicetak') {
-                    return DataTableHelper::actionButtons([
-                        ['type' => 'view', 'url' => $detailRoute],
-                    ]);
-                }
-
-                $cancelRoute = route('bak_fakultas.verifikasi.cancel_print', $p->id_pengajuan);
-                $csrfToken = csrf_token();
                 return DataTableHelper::actionButtons([
                     ['type' => 'view', 'url' => $detailRoute],
-                    ['type' => 'custom', 'html' => <<<HTML
-<button type="button" class="btn btn-sm btn-light btn-active-light-danger border-0" data-bs-toggle="tooltip" data-bs-title="Batalkan Cetak SKPI" onclick="
-    Swal.fire({
-        icon: 'warning',
-        iconColor: '#f1416c',
-        title: 'Batalkan Cetak SKPI?',
-        html: `
-            <div class='text-gray-500 fw-semibold fs-6 mb-5'>
-                Dokumen SKPI ini akan dibatalkan pencetakannya dan status dikembalikan ke tahap awal.
-            </div>
-            <div class='text-start'>
-                <label class='required form-label fw-bold mb-2'>Alasan Pembatalan</label>
-                <textarea id='cancel_reason' class='form-control' rows='4' placeholder='Ketik alasan pembatalan di sini...'></textarea>
-            </div>
-        `,
-        width: '600px',
-        showCancelButton: true,
-        buttonsStyling: false,
-        confirmButtonText: 'Ya, Batalkan',
-        cancelButtonText: 'Tutup',
-        customClass: {
-            confirmButton: 'btn btn-danger',
-            cancelButton: 'btn btn-secondary'
-        },
-        preConfirm: () => {
-            let reason = document.getElementById('cancel_reason').value;
-            if (!reason || reason.trim() === '') {
-                Swal.showValidationMessage('Alasan pembatalan cetak wajib diisi.');
-                return false;
-            }
-            
-            Swal.showLoading();
-            
-            return fetch('{$cancelRoute}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{$csrfToken}'
-                },
-                body: JSON.stringify({ catatan: reason })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(response.statusText || 'Terjadi kesalahan');
-                }
-                return response.json();
-            })
-            .catch(error => {
-                Swal.showValidationMessage(`Gagal memproses permintaan: \${error}`);
-            });
-        }
-    }).then((result) => {
-        if (result.isConfirmed && result.value && result.value.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: result.value.message,
-                confirmButtonText: 'Tutup',
-                customClass: {
-                    confirmButton: 'btn btn-primary'
-                }
-            }).then(() => {
-                if (typeof $ !== 'undefined' && $.fn.DataTable.isDataTable('#table-bak-fakultas')) {
-                    $('#table-bak-fakultas').DataTable().ajax.reload(null, false);
-                } else {
-                    window.location.reload();
-                }
-            });
-        }
-    });
-">
-    <i class="fa-solid fa-ban"></i>
-</button>
-HTML
-                    ],
                 ]);
+
             })
-            ->rawColumns(['status', 'aksi', 'progress', 'verifikasi'])
+            ->rawColumns(['status', 'aksi', 'progress', 'verifikasi', 'tanggal_pengajuan'])
             ->make(true);
     }
 }

@@ -21,7 +21,7 @@
 
         body {
             font-family: 'Garamond', serif;
-            font-size: 11pt;
+            font-size: 12pt;
             line-height: 1.25;
             color: #000;
         }
@@ -75,7 +75,7 @@
         }
 
         .doc-desc {
-            font-size: 12pt;
+            font-size: 11pt;
             line-height: 1.0;
             color: #333;
         }
@@ -96,7 +96,7 @@
         .content-table td {
             border: 1px solid #f4b084;
             padding: 2px 4px;
-            vertical-align: top;
+            vertical-align: middle;
             line-height: 1.1;
         }
 
@@ -109,7 +109,7 @@
         }
 
         .label-col {
-            width: 35%;
+            width: 40%;
         }
 
         .signature-table {
@@ -148,7 +148,7 @@
     <div class="doc-title-container">
         <div class="doc-number"><u>Nomor : {{ $skpi->nomor_skpi }}</u></div>
         <div class="doc-desc">
-            Surat Keterangan Pendamping Ijazah sebagai pelengkap Ijazah yang menerangkan capaian pembelajaran dan
+            Surat Keterangan Pendamping Ijazah sebagai pelengkap Ijazah yang menerangkan capaian pembelajaran dan<br>
             prestasi dari pemegang Ijazah selama masa studi
         </div>
     </div>
@@ -253,7 +253,7 @@
             <td colspan="2" class="section-header">03. INFORMASI TENTANG KUALIFIKASI DAN HASIL CAPAIAN</td>
         </tr>
         <tr>
-            <td style="font-weight: bold; width: 13%; text-align: left;">KODE</td>
+            <td style="font-weight: bold; width: 12%; text-align: left; white-space: nowrap;">KODE</td>
             <td style="font-weight: bold; text-align: left; border-left: none;">CAPAIAN PEMBELAJARAN</td>
         </tr>
         @php
@@ -266,8 +266,8 @@
             </tr>
             @foreach ($items as $item)
                 <tr>
-                    <td style="text-align: left; border-right: none;">{{ $item->kode_cpl }}</td>
-                    <td style="text-align: justify; border-left: none;">{{ $item->deskripsi_cpl }}</td>
+                    <td style="text-align: left; border-right: none; white-space: nowrap; vertical-align: top;">{{ $item->kode_cpl }}</td>
+                    <td style="text-align: justify; border-left: none; vertical-align: top;">{{ $item->deskripsi_cpl }}</td>
                 </tr>
             @endforeach
             @php $alphabet++; @endphp

@@ -69,8 +69,8 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
             Route::get('/data', [VerifikasiController::class, 'datatable'])->name('datatable');
             Route::get('/verifikasi/{id_pengajuan}', [VerifikasiController::class, 'detail'])->name('verifikasi.detail');
             Route::post('/verifikasi/{id_pengajuan}/publish', [VerifikasiController::class, 'publish'])->name('verifikasi.publish');
-            Route::post('/verifikasi/{id_pengajuan}/checklist', [VerifikasiController::class, 'submitChecklist'])->name('verifikasi.checklist');
             Route::post('/verifikasi/{id_pengajuan}/cancel-print', [VerifikasiController::class, 'cancelPrint'])->name('verifikasi.cancel_print');
+            Route::post('/verifikasi/{id_pengajuan}/checklist', [VerifikasiController::class, 'submitChecklist'])->name('verifikasi.checklist');
             Route::post('/tugas-akhir/{id}/approve', [VerifikasiController::class, 'approveTugasAkhir'])->name('tugas_akhir.approve');
             Route::post('/tugas-akhir/{id}/reject', [VerifikasiController::class, 'rejectTugasAkhir'])->name('tugas_akhir.reject');
             Route::post('/pengajuan-cetak/{id_pengajuan}/approve', [VerifikasiController::class, 'approvePengajuanCetak'])->name('pengajuan_cetak.approve');
