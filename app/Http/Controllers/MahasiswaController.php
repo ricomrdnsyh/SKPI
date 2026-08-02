@@ -161,7 +161,7 @@ class MahasiswaController extends Controller
         $overallSteps = $this->progressService->getSteps($mahasiswa);
         
         $idFakultas = $mahasiswa->programStudi->id_fakultas ?? null;
-        $dosenQuery = \App\Models\Dosen::orderBy('nama_dosen', 'asc');
+        $dosenQuery = \App\Models\Dosen::with('programStudi')->orderBy('nama_dosen', 'asc');
         if ($idFakultas) {
             $dosenQuery->where('id_fakultas', $idFakultas);
         }

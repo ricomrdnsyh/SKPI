@@ -89,7 +89,7 @@
                                             <option value=""></option>
                                             @foreach($dosens as $dosen)
                                                 <option value="{{ $dosen->nama_dosen }}" {{ (old('pembimbing.0', $pembimbingNames[0] ?? '')) == $dosen->nama_dosen ? 'selected' : '' }}>
-                                                    {{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }}
+                                                    {{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }} - {{ $dosen->programStudi->nama_prodi ?? 'Prodi Tidak Diketahui' }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -100,7 +100,7 @@
                                             <option value=""></option>
                                             @foreach($dosens as $dosen)
                                                 <option value="{{ $dosen->nama_dosen }}" {{ (old('pembimbing.1', $pembimbingNames[1] ?? '')) == $dosen->nama_dosen ? 'selected' : '' }}>
-                                                    {{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }}
+                                                    {{ $dosen->nama_dosen }} {{ $dosen->nidn ? '('.$dosen->nidn.')' : '' }} - {{ $dosen->programStudi->nama_prodi ?? 'Prodi Tidak Diketahui' }}
                                                 </option>
                                             @endforeach
                                         </select>

@@ -16,7 +16,7 @@
                         <input type="text" id="show_nama_prodi" class="form-control form-control-sm" disabled />
                     </div>
                     <div class="fv-row">
-                        <label class="fw-bolder text-dark mb-2 fs-6">Kode Prodi</label>
+                        <label class="fw-bolder text-dark mb-2 fs-6">Singkatan</label>
                         <input type="text" id="show_kode_prodi" class="form-control form-control-sm" disabled />
                     </div>
                 </div>
@@ -37,7 +37,8 @@
                     </div>
                     <div class="fv-row">
                         <label class="fw-bolder text-dark mb-2 fs-6">Bahasa Pengantar</label>
-                        <input type="text" id="show_bahasa_pengantar" class="form-control form-control-sm" disabled />
+                        <input type="text" id="show_bahasa_pengantar" class="form-control form-control-sm"
+                            disabled />
                     </div>
                 </div>
                 <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
@@ -47,12 +48,14 @@
                     </div>
                     <div class="fv-row">
                         <label class="fw-bolder text-dark mb-2 fs-6">Jenis Pendidikan</label>
-                        <input type="text" id="show_jenis_pendidikan" class="form-control form-control-sm" disabled />
+                        <input type="text" id="show_jenis_pendidikan" class="form-control form-control-sm"
+                            disabled />
                     </div>
                 </div>
                 <div class="fv-row mb-5">
                     <label class="fw-bolder text-dark mb-2 fs-6">Pendidikan Lanjutan</label>
-                    <input type="text" id="show_jenis_pendidikan_lanjutan" class="form-control form-control-sm" disabled />
+                    <input type="text" id="show_jenis_pendidikan_lanjutan" class="form-control form-control-sm"
+                        disabled />
                 </div>
                 <div class="fv-row mb-5">
                     <label class="fw-bolder text-dark mb-2 fs-6">Persyaratan Penerimaan</label>
