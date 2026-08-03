@@ -380,7 +380,7 @@ class VerifikasiController extends Controller
 
         $this->flushRelatedCaches($id_pengajuan, $pengajuan->nim);
 
-        return redirect()->route('bak_fakultas.verifikasi.detail', $pengajuan->id_pengajuan)
+        return redirect()->route('dashboard')
             ->with('success', 'SKPI berhasil diterbitkan.');
     }
 

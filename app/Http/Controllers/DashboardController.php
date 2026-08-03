@@ -14,6 +14,8 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
 
+        session()->reflash();
+
         return match ($user->role) {
             'mahasiswa' => redirect()->route('mahasiswa.dashboard'),
             'bak_fakultas' => redirect()->route('bak_fakultas.dashboard'),

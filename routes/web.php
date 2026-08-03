@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CplProdiController;
+use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\FakultasController;
 use App\Http\Controllers\Admin\KategoriCplController;
 use App\Http\Controllers\Admin\KurikulumController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\Admin\MahasiswaCrudController;
 use App\Http\Controllers\Admin\MasterDataController;
 use App\Http\Controllers\Admin\ProgramStudiController;
 use App\Http\Controllers\Admin\SistemPenilaianController;
+use App\Http\Controllers\Admin\TahunAkademikController;
+use App\Http\Controllers\Admin\UniversitasController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -16,6 +19,7 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\PengajuanSkpiController;
 use App\Http\Controllers\PrestasiController;
+use App\Http\Controllers\RekapitulasiController;
 use App\Http\Controllers\SertifikatController;
 use App\Http\Controllers\SkpiController;
 use App\Http\Controllers\TugasAkhirController;
@@ -23,6 +27,10 @@ use App\Http\Controllers\VerifikasiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+
+
+
+
 
 
 Route::get('log-viewer', [LogViewerController::class, 'index'])->middleware(['auth:web', 'role:admin']);
@@ -38,9 +46,9 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/skpi/{id_pengajuan}/print', [SkpiController::class, 'print'])->name('bak_fakultas.skpi.print');
     Route::middleware('role:admin,bak_fakultas')->group(function () {
-        Route::get('/rekapitulasi/data', [\App\Http\Controllers\RekapitulasiController::class, 'datatable'])->name('rekapitulasi.datatable');
-        Route::get('/rekapitulasi/download-zip', [\App\Http\Controllers\RekapitulasiController::class, 'downloadZip'])->name('rekapitulasi.download_zip');
-        Route::get('/rekapitulasi', [\App\Http\Controllers\RekapitulasiController::class, 'index'])->name('rekapitulasi.index');
+        Route::get('/rekapitulasi/data', [RekapitulasiController::class, 'datatable'])->name('rekapitulasi.datatable');
+        Route::get('/rekapitulasi/download-zip', [RekapitulasiController::class, 'downloadZip'])->name('rekapitulasi.download_zip');
+        Route::get('/rekapitulasi', [RekapitulasiController::class, 'index'])->name('rekapitulasi.index');
     });
 
     Route::prefix('mahasiswa')->name('mahasiswa.')->middleware('role:mahasiswa')->group(function () {
@@ -91,7 +99,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('kurikulum/data', [KurikulumController::class, 'datatable'])->name('kurikulum.datatable');
         Route::get('fakultas/data', [FakultasController::class, 'datatable'])->name('fakultas.datatable');
         Route::get('prodi/data', [ProgramStudiController::class, 'datatable'])->name('prodi.datatable');
-        Route::get('dosen/data', [\App\Http\Controllers\Admin\DosenController::class, 'datatable'])->name('dosen.datatable');
+        Route::get('dosen/data', [DosenController::class, 'datatable'])->name('dosen.datatable');
         Route::get('kategori-cpl/data', [KategoriCplController::class, 'datatable'])->name('kategori-cpl.datatable');
 
         Route::resource('mahasiswa', MahasiswaCrudController::class);
@@ -104,20 +112,20 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::resource('fakultas', FakultasController::class)->except(['create', 'store']);
         Route::post('prodi/sync', [ProgramStudiController::class, 'sync'])->name('prodi.sync');
         Route::resource('prodi', ProgramStudiController::class)->except(['create', 'store']);
-        Route::post('dosen/sync', [\App\Http\Controllers\Admin\DosenController::class, 'sync'])->name('dosen.sync');
-        Route::resource('dosen', \App\Http\Controllers\Admin\DosenController::class)->except(['create', 'store']);
+        Route::post('dosen/sync', [DosenController::class, 'sync'])->name('dosen.sync');
+        Route::resource('dosen', DosenController::class)->except(['create', 'store']);
         Route::resource('kategori-cpl', KategoriCplController::class);
     });
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [MasterDataController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('penilaian/data', [SistemPenilaianController::class, 'datatable'])->name('penilaian.datatable');
         Route::get('users/data', [UserController::class, 'datatable'])->name('users.datatable');
-        Route::get('tahun-akademik/data', [\App\Http\Controllers\Admin\TahunAkademikController::class, 'datatable'])->name('tahun-akademik.datatable');
-        Route::post('tahun-akademik/sync', [\App\Http\Controllers\Admin\TahunAkademikController::class, 'sync'])->name('tahun-akademik.sync');
-        Route::get('tahun-akademik', [\App\Http\Controllers\Admin\TahunAkademikController::class, 'index'])->name('tahun-akademik.index');
+        Route::get('tahun-akademik/data', [TahunAkademikController::class, 'datatable'])->name('tahun-akademik.datatable');
+        Route::post('tahun-akademik/sync', [TahunAkademikController::class, 'sync'])->name('tahun-akademik.sync');
+        Route::get('tahun-akademik', [TahunAkademikController::class, 'index'])->name('tahun-akademik.index');
         Route::resource('penilaian', SistemPenilaianController::class);
         Route::resource('users', UserController::class);
-        Route::get('universitas', [\App\Http\Controllers\Admin\UniversitasController::class, 'index'])->name('universitas.index');
-        Route::put('universitas', [\App\Http\Controllers\Admin\UniversitasController::class, 'update'])->name('universitas.update');
+        Route::get('universitas', [UniversitasController::class, 'index'])->name('universitas.index');
+        Route::put('universitas', [UniversitasController::class, 'update'])->name('universitas.update');
     });
 });

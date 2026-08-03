@@ -75,69 +75,123 @@ class VerifikasiService
 
         $history = collect();
 
-        $pushApprovalHistory = function ($item, $label, $detail) use ($history) {
-            if ($item->approved_by && $item->status !== 'rejected') {
+        $parseWaktu = function ($waktu) {
+            return $waktu ? \Carbon\Carbon::parse($waktu) : now();
+        };
+
+        $parseWaktu = function ($waktu, $fallback = null, $addMinutes = 0) {
+            if ($waktu) return \Carbon\Carbon::parse($waktu);
+            if ($fallback) return \Carbon\Carbon::parse($fallback)->addMinutes($addMinutes);
+            return now();
+        };
+
+        $addCategorizedHistory = function($items, $kategori) use ($history, $parseWaktu, $pengajuan) {
+            if ($items->isEmpty()) return;
+
+            $getName = function($item) use ($kategori) {
+                if ($kategori === 'Tugas Akhir') return $item->judul ?? 'Tugas Akhir';
+                if ($kategori === 'Magang') return $item->tempatMagang->nama_perusahaan ?? $item->posisi ?? 'Magang';
+                $field = 'nama_' . strtolower($kategori);
+                return $item->$field ?? $kategori;
+            };
+
+            $getTimestamp = function($val) {
+                return $val ? \Carbon\Carbon::parse($val)->timestamp : null;
+            };
+
+            // 1. Uploads (Earliest creation time)
+            $minCreatedTs = $items->map(fn($i) => $getTimestamp($i->created_at))->filter()->min();
+            $earliestUpload = $minCreatedTs ? \Carbon\Carbon::createFromTimestamp($minCreatedTs) : null;
+
+            if (!$earliestUpload) {
+                // Fallback logis jika created_at null
+                $minApprovedTs = $items->map(fn($i) => $getTimestamp($i->approved_at))->filter()->min();
+                $earliestUpload = $minApprovedTs 
+                    ? \Carbon\Carbon::createFromTimestamp($minApprovedTs)->subMinutes(2) 
+                    : ($pengajuan->tanggal_pengajuan ? \Carbon\Carbon::parse($pengajuan->tanggal_pengajuan)->subMinutes(5) : now());
+            }
+
+            $uploadNames = $items->map($getName)->filter()->implode(', ');
+            $history->push([
+                'waktu' => $parseWaktu($earliestUpload),
+                'aksi' => 'Upload Data ' . $kategori,
+                'detail' => $uploadNames,
+                'status' => 'submitted',
+                'catatan' => ''
+            ]);
+
+            // 2. Approvals (Grouped)
+            $approvedItems = $items->filter(function($i) { return $i->approved_by && $i->status !== 'rejected'; });
+            if ($approvedItems->isNotEmpty()) {
+                $maxApproveTs = $approvedItems->map(fn($i) => $getTimestamp($i->approved_at))->filter()->max();
+                $latestApprove = $maxApproveTs ? \Carbon\Carbon::createFromTimestamp($maxApproveTs) : null;
+
                 $history->push([
-                    'waktu' => $item->approved_at ?? now(),
-                    'aksi' => 'Approve ' . $label . ' (BAAK)',
-                    'detail' => $detail,
+                    'waktu' => $parseWaktu($latestApprove, $earliestUpload, 1),
+                    'aksi' => 'Validasi ' . $kategori,
+                    'detail' => $approvedItems->count() . ' data ' . $kategori . ' telah disetujui (BAAK)',
                     'status' => 'approved',
-                    'catatan' => 'Disetujui oleh BAAK Fakultas'
+                    'catatan' => ''
                 ]);
             }
-            if ($item->status === 'rejected') {
+
+            // 3. Rejections (Individual)
+            $rejectedItems = $items->filter(function($i) { return $i->status === 'rejected'; });
+            foreach($rejectedItems as $rj) {
                 $history->push([
-                    'waktu' => $item->approved_at ?? now(),
-                    'aksi' => 'Reject ' . $label . ' (BAAK)',
-                    'detail' => $detail,
+                    'waktu' => $parseWaktu($rj->approved_at, $earliestUpload, 1),
+                    'aksi' => 'Revisi ' . $kategori,
+                    'detail' => $getName($rj),
                     'status' => 'rejected',
-                    'catatan' => $item->keterangan ?? ''
+                    'catatan' => $rj->keterangan ?? 'Data tidak valid, butuh perbaikan'
+                ]);
+            }
+
+            // 4. Updates / Resubmissions
+            $updatedItems = $items->filter(function($i) { 
+                return $i->status === 'pending' && $i->updated_at && $i->created_at && $i->updated_at->diffInMinutes($i->created_at) > 5; 
+            });
+            if ($updatedItems->isNotEmpty()) {
+                $maxUpdateTs = $updatedItems->map(fn($i) => $getTimestamp($i->updated_at))->filter()->max();
+                $latestUpdate = $maxUpdateTs ? \Carbon\Carbon::createFromTimestamp($maxUpdateTs) : null;
+
+                $history->push([
+                    'waktu' => $parseWaktu($latestUpdate),
+                    'aksi' => 'Perbaikan Data ' . $kategori,
+                    'detail' => 'Mahasiswa memperbarui ' . $updatedItems->count() . ' data ' . $kategori,
+                    'status' => 'submitted',
+                    'catatan' => ''
                 ]);
             }
         };
 
         if ($ta) {
-            $history->push(['waktu' => $ta->created_at ?? now(), 'aksi' => 'Submit Tugas Akhir', 'detail' => $ta->judul, 'status' => 'submitted', 'catatan' => '']);
-            $pushApprovalHistory($ta, 'Tugas Akhir', $ta->judul);
+            $addCategorizedHistory(collect([$ta]), 'Tugas Akhir');
         }
-
-        foreach ($prestasi as $p) {
-            $history->push(['waktu' => $p->created_at ?? $p->approved_at ?? now(), 'aksi' => 'Upload Prestasi', 'detail' => $p->nama_prestasi, 'status' => 'submitted', 'catatan' => '']);
-            if ($p->approved_by || $p->status === 'rejected') {
-                $pushApprovalHistory($p, 'Prestasi', $p->nama_prestasi);
-            }
-        }
-        foreach ($organisasi as $o) {
-            $history->push(['waktu' => $o->created_at ?? $o->approved_at ?? now(), 'aksi' => 'Upload Organisasi', 'detail' => $o->nama_organisasi, 'status' => 'submitted', 'catatan' => '']);
-            if ($o->approved_by || $o->status === 'rejected') {
-                $pushApprovalHistory($o, 'Organisasi', $o->nama_organisasi);
-            }
-        }
-        foreach ($sertifikat as $s) {
-            $history->push(['waktu' => $s->created_at ?? $s->approved_at ?? now(), 'aksi' => 'Upload Sertifikat', 'detail' => $s->nama_sertifikat, 'status' => 'submitted', 'catatan' => '']);
-            if ($s->approved_by || $s->status === 'rejected') {
-                $pushApprovalHistory($s, 'Sertifikat', $s->nama_sertifikat);
-            }
-        }
-        foreach ($magang as $m) {
-            $history->push(['waktu' => $m->created_at ?? $m->approved_at ?? now(), 'aksi' => 'Upload Magang', 'detail' => $m->tempatMagang->nama_perusahaan ?? $m->posisi, 'status' => 'submitted', 'catatan' => '']);
-            if ($m->approved_by || $m->status === 'rejected') {
-                $pushApprovalHistory($m, 'Magang', $m->tempatMagang->nama_perusahaan ?? $m->posisi);
-            }
-        }
+        $addCategorizedHistory($prestasi, 'Prestasi');
+        $addCategorizedHistory($organisasi, 'Organisasi');
+        $addCategorizedHistory($sertifikat, 'Sertifikat');
+        $addCategorizedHistory($magang, 'Magang');
 
         if ($pengajuan->tanggal_pengajuan) {
-            $history->push(['waktu' => $pengajuan->tanggal_pengajuan, 'aksi' => 'Pengajuan Cetak SKPI', 'detail' => 'Mahasiswa mengajukan cetak SKPI', 'status' => 'submitted', 'catatan' => $pengajuan->catatan_mahasiswa]);
+            $history->push(['waktu' => $parseWaktu($pengajuan->tanggal_pengajuan), 'aksi' => 'Pengajuan SKPI', 'detail' => 'Mahasiswa mengajukan validasi akhir dan cetak SKPI', 'status' => 'submitted', 'catatan' => $pengajuan->catatan_mahasiswa]);
         }
         if ($pengajuan->tanggal_verifikasi) {
             $statusVerif = $pengajuan->status === 'ditolak' ? 'rejected' : 'approved';
-            $history->push(['waktu' => $pengajuan->tanggal_verifikasi, 'aksi' => 'Verifikasi BAAK Fakultas', 'detail' => 'BAAK memproses pengajuan cetak', 'status' => $statusVerif, 'catatan' => $pengajuan->catatan_bak]);
+            $history->push(['waktu' => $parseWaktu($pengajuan->tanggal_verifikasi), 'aksi' => 'Verifikasi Akhir BAAK', 'detail' => 'Review pengajuan cetak oleh BAAK', 'status' => $statusVerif, 'catatan' => $pengajuan->catatan_bak]);
         }
 
         if ($skpi && $skpi->tanggal_terbit) {
-            $history->push(['waktu' => $skpi->tanggal_terbit, 'aksi' => 'Cetak SKPI', 'detail' => 'Nomor: ' . ($skpi->nomor_skpi ?? '-'), 'status' => 'dicetak', 'catatan' => '']);
+            // Gunakan jam dari updated_at pengajuan saat status berubah menjadi dicetak agar jamnya presisi
+            $waktuTerbit = $pengajuan->updated_at && $pengajuan->status === 'dicetak' 
+                ? \Carbon\Carbon::parse($pengajuan->updated_at) 
+                : \Carbon\Carbon::parse($skpi->tanggal_terbit)->endOfDay();
+                
+            $history->push(['waktu' => $waktuTerbit, 'aksi' => 'Penerbitan SKPI', 'detail' => 'Nomor: ' . ($skpi->nomor_skpi ?? '-'), 'status' => 'dicetak', 'catatan' => 'SKPI Resmi Diterbitkan']);
         }
 
-        return $history->sortByDesc('waktu')->values();
+        return $history->sortByDesc(function ($item) {
+            return $item['waktu']->timestamp;
+        })->values();
     }
 }
