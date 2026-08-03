@@ -363,6 +363,20 @@
                             </a>
                         </div>
                     @endif
+                    @if (in_array($role, ['bak_fakultas', 'admin']))
+                        <div class="menu-item pt-5">
+                            <div class="menu-content pb-2">
+                                <span class="menu-section text-muted text-uppercase fs-8 ls-1">Laporan</span>
+                            </div>
+                        </div>
+                        <div class="menu-item">
+                            <a class="menu-link {{ Request::is('rekapitulasi*') ? 'active' : '' }}"
+                                href="{{ route('rekapitulasi.index') }}">
+                                <span class="menu-icon"><i class="fa-solid fa-file-contract fs-4"></i></span>
+                                <span class="menu-title">Rekapitulasi SKPI</span>
+                            </a>
+                        </div>
+                    @endif
                     @if (in_array($role, ['mahasiswa', 'bak_fakultas', 'admin']))
                         <div class="menu-item pt-5">
                             <div class="menu-content pb-2">

@@ -37,6 +37,12 @@ Route::get('/verify/skpi/{id_skpi}', [SkpiController::class, 'verify'])->name('s
 Route::middleware(['auth:web,mahasiswa'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/skpi/{id_pengajuan}/print', [SkpiController::class, 'print'])->name('bak_fakultas.skpi.print');
+    Route::middleware('role:admin,bak_fakultas')->group(function () {
+        Route::get('/rekapitulasi/data', [\App\Http\Controllers\RekapitulasiController::class, 'datatable'])->name('rekapitulasi.datatable');
+        Route::get('/rekapitulasi/download-zip', [\App\Http\Controllers\RekapitulasiController::class, 'downloadZip'])->name('rekapitulasi.download_zip');
+        Route::get('/rekapitulasi', [\App\Http\Controllers\RekapitulasiController::class, 'index'])->name('rekapitulasi.index');
+    });
+
     Route::prefix('mahasiswa')->name('mahasiswa.')->middleware('role:mahasiswa')->group(function () {
         Route::get('/dashboard', [MahasiswaController::class, 'dashboard'])->name('dashboard');
         Route::get('/tugas-akhir', [MahasiswaController::class, 'editTugasAkhir'])->name('tugas_akhir.edit');
