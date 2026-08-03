@@ -28,9 +28,7 @@
 
         @page {
             size: 210mm 330mm;
-            /* F4 / Folio */
-            margin: 1cm 2cm 2cm 2cm;
-            /* Atas 1cm, Kanan-Bawah-Kiri 2cm */
+            margin: 1.5cm 1cm 1cm 1cm;
         }
 
         .header-title-container {
@@ -133,16 +131,12 @@
 <body>
     <div class="header-title-container">
         <div class="header-text" style="font-size: 18pt;">YAYASAN NURUL JADID PAITON</div>
-        <div class="header-text" style="font-size: 20pt;">
-            {{ strtoupper($universitas->nama_perguruan_tinggi ?? 'UNIVERSITAS NURUL JADID') }}</div>
+        <div class="header-text" style="font-size: 20pt;">{{ strtoupper($universitas->nama_perguruan_tinggi ?? 'UNIVERSITAS NURUL JADID') }}</div>
         <div class="header-text" style="font-size: 16pt;">SURAT KETERANGAN PENDAMPING IJAZAH</div>
     </div>
 
     <div class="header-contact-wrapper">
-        <div class="header-contact">
-            PP. Nurul Jadid Karanganyar Paiton Probolinggo 67291 Telp. {{ $universitas->no_telepon ?? '08883077077' }}
-            Email: {{ $universitas->email ?? 'unuja@unuja.ac.id' }}
-        </div>
+        <div class="header-contact">PP. Nurul Jadid Karanganyar Paiton Probolinggo 67291 Telp. {{ $universitas->no_telepon ?? '08883077077' }} Email: {{ $universitas->email ?? 'unuja@unuja.ac.id' }}</div>
     </div>
 
     <div class="doc-title-container">
@@ -266,8 +260,11 @@
             </tr>
             @foreach ($items as $item)
                 <tr>
-                    <td style="text-align: left; border-right: none; white-space: nowrap; vertical-align: top;">{{ $item->kode_cpl }}</td>
-                    <td style="text-align: justify; border-left: none; vertical-align: top;">{{ $item->deskripsi_cpl }}</td>
+                    <td style="text-align: left; border-right: none; white-space: nowrap; vertical-align: top;">
+                        {{ $item->kode_cpl }}</td>
+                    <td style="text-align: justify; border-left: none; vertical-align: top;">
+                        <div style="text-align: justify;">{{ $item->deskripsi_cpl }}</div>
+                    </td>
                 </tr>
             @endforeach
             @php $alphabet++; @endphp
@@ -279,7 +276,7 @@
             <td colspan="2" class="section-header">04. INFORMASI TAMBAHAN</td>
         </tr>
         <tr>
-            <td style="width: 5%; text-align: left; border-right: none;">4.1.</td>
+            <td style="width: 5%; text-align: left; border-right: none; vertical-align: top;">4.1.</td>
             <td style="border-left: none;">
                 Prestasi/Penghargaan<br>
                 @if (!$prestasi->isEmpty())
@@ -290,7 +287,7 @@
             </td>
         </tr>
         <tr>
-            <td style="text-align: left; border-right: none;">4.2.</td>
+            <td style="text-align: left; border-right: none; vertical-align: top;">4.2.</td>
             <td style="border-left: none;">
                 Keikutsertaan dalam organisasi<br>
                 @if (!$organisasi->isEmpty())
@@ -302,7 +299,7 @@
             </td>
         </tr>
         <tr>
-            <td style="text-align: left; border-right: none;">4.3.</td>
+            <td style="text-align: left; border-right: none; vertical-align: top;">4.3.</td>
             <td style="border-left: none;">
                 Sertifikat Keahlian<br>
                 @if (!$sertifikat->isEmpty())
@@ -313,7 +310,7 @@
             </td>
         </tr>
         <tr>
-            <td style="text-align: left; border-right: none;">4.4.</td>
+            <td style="text-align: left; border-right: none; vertical-align: top;">4.4.</td>
             <td style="border-left: none;">
                 Kerja Praktik/Magang<br>
                 @if (!$magang->isEmpty())
@@ -327,7 +324,7 @@
             </td>
         </tr>
         <tr>
-            <td style="text-align: left; border-right: none;">4.5.</td>
+            <td style="text-align: left; border-right: none; vertical-align: top;">4.5.</td>
             <td style="border-left: none;">
                 Judul Tugas Akhir<br>
                 @if ($tugasAkhir)
