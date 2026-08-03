@@ -28,12 +28,14 @@
 
         @page {
             size: 210mm 330mm;
-            margin: 1.5cm 1cm 1cm 1cm;
+            margin: 1.5cm 1.5cm 1.5cm 1.5cm;
         }
 
         .header-title-container {
             text-align: center;
+            margin-top: -20px;
             margin-bottom: 10px;
+            padding-left: 50px;
         }
 
         .header-text {
@@ -53,8 +55,9 @@
         .header-contact {
             text-align: center;
             border-bottom: 3px solid #000;
-            padding-top: 0;
-            padding-bottom: 1px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-left: 50px;
             margin-top: -2px;
             margin-bottom: 1px;
             font-size: 10pt;
@@ -73,7 +76,7 @@
         }
 
         .doc-desc {
-            font-size: 11pt;
+            font-size: 12pt;
             line-height: 1.0;
             color: #333;
         }
@@ -130,13 +133,16 @@
 
 <body>
     <div class="header-title-container">
-        <div class="header-text" style="font-size: 18pt;">YAYASAN NURUL JADID PAITON</div>
-        <div class="header-text" style="font-size: 20pt;">{{ strtoupper($universitas->nama_perguruan_tinggi ?? 'UNIVERSITAS NURUL JADID') }}</div>
-        <div class="header-text" style="font-size: 16pt;">SURAT KETERANGAN PENDAMPING IJAZAH</div>
+        <div class="header-text" style="font-size: 20pt;">YAYASAN NURUL JADID PAITON</div>
+        <div class="header-text" style="font-size: 22pt;">
+            {{ strtoupper($universitas->nama_perguruan_tinggi ?? 'UNIVERSITAS NURUL JADID') }}</div>
+        <div class="header-text" style="font-size: 18pt;">SURAT KETERANGAN PENDAMPING IJAZAH</div>
     </div>
 
     <div class="header-contact-wrapper">
-        <div class="header-contact">PP. Nurul Jadid Karanganyar Paiton Probolinggo 67291 Telp. {{ $universitas->no_telepon ?? '08883077077' }} Email: {{ $universitas->email ?? 'unuja@unuja.ac.id' }}</div>
+        <div class="header-contact">PP. Nurul Jadid Karanganyar Paiton Probolinggo 67291 Telp.
+            {{ $universitas->no_telepon ?? '08883077077' }} Email: {{ $universitas->email ?? 'unuja@unuja.ac.id' }}
+        </div>
     </div>
 
     <div class="doc-title-container">
