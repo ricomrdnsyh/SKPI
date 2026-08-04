@@ -45,7 +45,7 @@ class MasterDataController extends Controller
         $pendingCount = \App\Models\PengajuanSkpi::hasPendingItems()->count();
 
         $skpiStats = [
-            'total_pengajuan' => collect($statusCounts)->except('draft')->sum(),
+            'total_pengajuan' => collect($statusCounts)->sum(),
             'draft' => $statusCounts['draft'] ?? 0,
             'diajukan' => $statusCounts['diajukan'] ?? 0,
             'verifikasi' => $statusCounts['verifikasi'] ?? 0,

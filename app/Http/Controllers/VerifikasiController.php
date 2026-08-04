@@ -81,7 +81,7 @@ class VerifikasiController extends Controller
         $pendingCount = $pendingCountQuery->hasPendingItems()->count();
 
         $stats = [
-            'total_pengajuan' => collect($statusCounts)->except('draft')->sum(),
+            'total_pengajuan' => collect($statusCounts)->sum(),
             'draft' => $statusCounts['draft'] ?? 0,
             'diajukan' => $statusCounts['diajukan'] ?? 0,
             'verifikasi' => $statusCounts['verifikasi'] ?? 0,
