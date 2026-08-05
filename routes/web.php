@@ -99,7 +99,6 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::get('kurikulum/data', [KurikulumController::class, 'datatable'])->name('kurikulum.datatable');
         Route::get('fakultas/data', [FakultasController::class, 'datatable'])->name('fakultas.datatable');
         Route::get('prodi/data', [ProgramStudiController::class, 'datatable'])->name('prodi.datatable');
-        Route::get('dosen/data', [DosenController::class, 'datatable'])->name('dosen.datatable');
         Route::get('kategori-cpl/data', [KategoriCplController::class, 'datatable'])->name('kategori-cpl.datatable');
 
         Route::resource('mahasiswa', MahasiswaCrudController::class);
@@ -112,8 +111,6 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::resource('fakultas', FakultasController::class)->except(['create', 'store']);
         Route::post('prodi/sync', [ProgramStudiController::class, 'sync'])->name('prodi.sync');
         Route::resource('prodi', ProgramStudiController::class)->except(['create', 'store']);
-        Route::post('dosen/sync', [DosenController::class, 'sync'])->name('dosen.sync');
-        Route::resource('dosen', DosenController::class)->except(['create', 'store']);
         Route::resource('kategori-cpl', KategoriCplController::class);
     });
     Route::prefix('admin')->middleware('role:admin')->group(function () {

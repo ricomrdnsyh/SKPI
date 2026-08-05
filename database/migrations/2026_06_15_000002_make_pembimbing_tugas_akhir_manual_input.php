@@ -9,39 +9,39 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // 1. Add nama_dosen as nullable first so we can migrate existing data
         Schema::table('pembimbing_tugas_akhir', function (Blueprint $table) {
-            $table->string('nama_dosen', 255)->nullable()->after('id_dosen');
+            if (!Schema::hasColumn('pembimbing_tugas_akhir', 'nama_dosen')) {
+                $table->string('nama_dosen', 255)->nullable();
+            }
         });
 
-        // 2. Migrate existing data from dosen table if the table exists
         if (Schema::hasTable('dosen')) {
-            $pembimbingRecords = DB::table('pembimbing_tugas_akhir')
-                ->join('dosen', 'pembimbing_tugas_akhir.id_dosen', '=', 'dosen.id_dosen')
-                ->select('pembimbing_tugas_akhir.id_pembimbing_ta', 'dosen.nama_dosen', 'dosen.gelar_depan', 'dosen.gelar_belakang')
-                ->get();
+            try {
+                $pembimbingRecords = DB::table('pembimbing_tugas_akhir')
+                    ->join('dosen', 'pembimbing_tugas_akhir.id_dosen', '=', 'dosen.id_dosen')
+                    ->select('pembimbing_tugas_akhir.id_pembimbing_ta', 'dosen.nama_dosen', 'dosen.gelar_depan', 'dosen.gelar_belakang')
+                    ->get();
 
-            foreach ($pembimbingRecords as $p) {
-                $fullName = trim(
-                    ($p->gelar_depan ? $p->gelar_depan . ' ' : '') .
-                    $p->nama_dosen .
-                    ($p->gelar_belakang ? ', ' . $p->gelar_belakang : '')
-                );
-                DB::table('pembimbing_tugas_akhir')
-                    ->where('id_pembimbing_ta', $p->id_pembimbing_ta)
-                    ->update(['nama_dosen' => $fullName]);
-            }
+                foreach ($pembimbingRecords as $p) {
+                    $fullName = trim(
+                        ($p->gelar_depan ? $p->gelar_depan . ' ' : '') .
+                        $p->nama_dosen .
+                        ($p->gelar_belakang ? ', ' . $p->gelar_belakang : '')
+                    );
+                    DB::table('pembimbing_tugas_akhir')
+                        ->where('id_pembimbing_ta', $p->id_pembimbing_ta)
+                        ->update(['nama_dosen' => $fullName]);
+                }
+            } catch (\Exception $e) {}
         }
 
-        // 3. Drop foreign key, drop index, drop column id_dosen, and make nama_dosen not nullable
         Schema::table('pembimbing_tugas_akhir', function (Blueprint $table) {
-            $table->dropForeign('fk_pembimbing_dosen');
-            $table->dropColumn('id_dosen');
-            $table->string('nama_dosen', 255)->nullable(false)->change();
+            if (Schema::hasColumn('pembimbing_tugas_akhir', 'id_dosen')) {
+                $table->dropColumn('id_dosen');
+            }
         });
 
-        // 4. Drop the dosen table completely
-        Schema::dropIfExists('dosen');
+        // The dosen table will be dropped by drop_dosens_tables later
     }
 
     public function down(): void

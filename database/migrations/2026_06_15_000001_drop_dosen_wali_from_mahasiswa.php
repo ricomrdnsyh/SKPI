@@ -9,9 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('mahasiswa', function (Blueprint $table) {
-            $table->dropForeign('fk_mahasiswa_dosen_wali');
-            $table->dropIndex('idx_mahasiswa_dosen_wali');
-            $table->dropColumn('id_dosen_wali');
+            // Foreign key might have already been dropped.
+            if (Schema::hasColumn('mahasiswa', 'id_dosen_wali')) {
+                $table->dropColumn('id_dosen_wali');
+            }
         });
     }
 

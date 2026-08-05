@@ -58,8 +58,6 @@ class SkpiController extends Controller
             'nama_lengkap' => $mahasiswaRow->nama_lengkap,
             'tempat_lahir' => $mahasiswaRow->tempat_lahir,
             'tanggal_lahir' => $mahasiswaRow->tanggal_lahir,
-            'tahun_masuk' => $mahasiswaRow->tahun_masuk,
-            'tahun_lulus' => $mahasiswaRow->tahun_lulus,
             'id_prodi' => $mahasiswaRow->id_prodi,
         ];
 
@@ -101,7 +99,17 @@ class SkpiController extends Controller
                     'niy_dekan' => $mahasiswaRow->niy_dekan,
                 ];
                 $kodeFakultas = $mahasiswaRow->kode_fakultas ?? 'FAKULTAS';
-                $nomorSkpi = $this->skpiService->generateNomorSkpi($kodeFakultas);
+                try {
+                    $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mahasiswa->nim);
+                    $noTranskrip = $transkrip['ketuntasan']['no_transkrip'] ?? null;
+                    if ($noTranskrip) {
+                        $nomorSkpi = 'SKPI ' . $noTranskrip;
+                    } else {
+                        $nomorSkpi = $this->skpiService->generateNomorSkpi($kodeFakultas);
+                    }
+                } catch (\Exception $e) {
+                    $nomorSkpi = $this->skpiService->generateNomorSkpi($kodeFakultas);
+                }
 
                 $draftSkpi = new Skpi([
                     'nomor_skpi' => $nomorSkpi . ' (DRAFT)',
@@ -174,8 +182,6 @@ class SkpiController extends Controller
                     'mahasiswa.nama_lengkap as mahasiswa_nama',
                     'mahasiswa.tempat_lahir',
                     'mahasiswa.tanggal_lahir',
-                    'mahasiswa.tahun_masuk',
-                    'mahasiswa.tahun_lulus',
                     'mahasiswa.id_prodi',
                     'program_studi.nama_prodi',
                     'program_studi.kode_prodi',
@@ -198,8 +204,6 @@ class SkpiController extends Controller
                 'nama_lengkap' => $skpi->mahasiswa_nama,
                 'tempat_lahir' => $skpi->tempat_lahir,
                 'tanggal_lahir' => $skpi->tanggal_lahir,
-                'tahun_masuk' => $skpi->tahun_masuk,
-                'tahun_lulus' => $skpi->tahun_lulus,
                 'id_prodi' => $skpi->id_prodi,
                 'programStudi' => (object) [
                     'nama_prodi' => $skpi->nama_prodi,

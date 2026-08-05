@@ -27,9 +27,7 @@
             dateFormat: "Y-m-d"
         });
         
-        $("#tahun_lulus").flatpickr({
-            dateFormat: "Y-m-d"
-        });
+
 
         const modalEl = document.getElementById('form_create');
         if (modalEl) {

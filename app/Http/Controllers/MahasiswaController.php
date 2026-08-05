@@ -31,7 +31,7 @@ class MahasiswaController extends Controller
 
         $mahasiswaId = $user->nim;
 
-        return $this->cache->rememberDashboard("mahasiswa:{$mahasiswaId}", function () use ($mahasiswaId) {
+        $data = $this->cache->rememberDashboard("mahasiswa:{$mahasiswaId}_data", function () use ($mahasiswaId) {
             $mahasiswa = Mahasiswa::with([
                 'programStudi.fakultas',
                 'prestasi',
@@ -74,8 +74,10 @@ class MahasiswaController extends Controller
 
             $steps = $this->progressService->getSteps($mahasiswa, $pengajuan);
 
-            return view('mahasiswa.dashboard.index', compact('mahasiswa', 'prestasi', 'organisasi', 'sertifikat', 'magang', 'pengajuan', 'steps'))->render();
+            return compact('mahasiswa', 'prestasi', 'organisasi', 'sertifikat', 'magang', 'pengajuan', 'steps');
         });
+
+        return view('mahasiswa.dashboard.index', $data);
     }
 
     public function editTugasAkhir()
@@ -99,11 +101,35 @@ class MahasiswaController extends Controller
         $isRejected = $tugasAkhir && $tugasAkhir->status === 'rejected';
         $isLocked = !$isRejected && $pengajuan && in_array($pengajuan->status, ['diajukan', 'verifikasi', 'dicetak']);
         $isApproved = $tugasAkhir && $tugasAkhir->status === 'approved';
-        $readonly = $isLocked || $isApproved;
+        
+        $judulApi = '';
+        $pembimbingNames = [];
+        
+        if (!$isLocked && !$isApproved) {
+            try {
+                $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mahasiswaId);
+                $ketuntasan = $transkrip['ketuntasan'] ?? null;
+                if ($ketuntasan && !empty($ketuntasan['judul'])) {
+                    $judulApi = $ketuntasan['judul'];
+                    if (!empty($ketuntasan['pembimbing_1'])) $pembimbingNames[] = $ketuntasan['pembimbing_1'];
+                    if (!empty($ketuntasan['pembimbing_2'])) $pembimbingNames[] = $ketuntasan['pembimbing_2'];
+                }
+            } catch (\Exception $e) {
+                // Abaikan jika API gagal
+            }
+        }
 
         if ($tugasAkhir) {
             $tugasAkhir->pembimbingTugasAkhir = $tugasAkhir->pembimbing;
         }
+
+        // Fallback ke data database jika API kosong
+        if (empty($judulApi) && $tugasAkhir) {
+            $judulApi = $tugasAkhir->judul;
+            $pembimbingNames = collect($tugasAkhir->pembimbingTugasAkhir)->pluck('nama_dosen')->toArray();
+        }
+
+        $readonly = $isLocked || $isApproved;
 
         $itemSteps = [
             [
@@ -159,15 +185,8 @@ class MahasiswaController extends Controller
         }
 
         $overallSteps = $this->progressService->getSteps($mahasiswa);
-        
-        $idFakultas = $mahasiswa->programStudi->id_fakultas ?? null;
-        $dosenQuery = \App\Models\Dosen::with('programStudi')->orderBy('nama_dosen', 'asc');
-        if ($idFakultas) {
-            $dosenQuery->where('id_fakultas', $idFakultas);
-        }
-        $dosens = $dosenQuery->get();
 
-        return view('mahasiswa.tugas_akhir.edit', compact('mahasiswa', 'itemSteps', 'overallSteps', 'isLocked', 'readonly', 'dosens'));
+        return view('mahasiswa.tugas_akhir.edit', compact('mahasiswa', 'itemSteps', 'overallSteps', 'isLocked', 'readonly', 'judulApi', 'pembimbingNames'));
     }
 
     public function updateTugasAkhir(StoreTugasAkhirRequest $request)

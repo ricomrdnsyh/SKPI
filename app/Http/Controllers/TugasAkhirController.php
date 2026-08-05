@@ -41,13 +41,7 @@ class TugasAkhirController extends Controller
             ];
         }
 
-        $dosenQuery = \App\Models\Dosen::with('programStudi')->orderBy('nama_dosen', 'asc');
-        if ($user->role === 'bak_fakultas' && isset($id_fakultas)) {
-            $dosenQuery->where('id_fakultas', $id_fakultas);
-        }
-        $dosens = $dosenQuery->get();
-
-        return view('bak_fakultas.tugas_akhir.index', compact('filterOptions', 'mahasiswas', 'dosens'));
+        return view('bak_fakultas.tugas_akhir.index', compact('filterOptions', 'mahasiswas'));
     }
 
     private function checkIsLocked($tugasAkhir)

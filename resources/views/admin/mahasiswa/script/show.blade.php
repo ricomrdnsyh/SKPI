@@ -9,8 +9,6 @@
         $('#show_tanggal_lahir').val(data.tanggal_lahir || '');
         $('#show_email').val(data.email || '-');
         $('#show_nomor_telepon').val(data.nomor_telepon || '-');
-        $('#show_tahun_masuk').val(data.tahun_masuk || '-');
-        $('#show_tahun_lulus').val(data.tahun_lulus || '');
         $('#form_show').modal('show');
     }
 </script>

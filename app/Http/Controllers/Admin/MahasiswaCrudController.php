@@ -81,8 +81,6 @@ class MahasiswaCrudController extends Controller
             'email' => 'nullable|email|max:100',
             'nomor_telepon' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:6',
-            'tahun_masuk' => 'nullable|integer',
-            'tahun_lulus' => 'nullable|date',
             'status' => 'nullable|in:Aktif,Lulus',
         ]);
 
@@ -152,8 +150,6 @@ class MahasiswaCrudController extends Controller
             'email' => 'nullable|email|max:100',
             'nomor_telepon' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:6',
-            'tahun_masuk' => 'nullable|integer',
-            'tahun_lulus' => 'nullable|date',
             'status' => 'nullable|in:Aktif,Lulus',
         ]);
 

@@ -72,8 +72,19 @@ class SkpiService
         $niy = $fakultas->niy_dekan ?? null;
         $namaDekan = $fakultas->dekan ?? $user->nama_lengkap;
 
-        $kodeFakultas = $fakultas->kode_fakultas ?? 'FAKULTAS';
-        $nomorSkpi = $this->generateNomorSkpi($kodeFakultas);
+        try {
+            $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mahasiswa->nim);
+            $noTranskrip = $transkrip['ketuntasan']['no_transkrip'] ?? null;
+            if ($noTranskrip) {
+                $nomorSkpi = 'SKPI ' . $noTranskrip;
+            } else {
+                $kodeFakultas = $fakultas->kode_fakultas ?? 'FAKULTAS';
+                $nomorSkpi = $this->generateNomorSkpi($kodeFakultas);
+            }
+        } catch (\Exception $e) {
+            $kodeFakultas = $fakultas->kode_fakultas ?? 'FAKULTAS';
+            $nomorSkpi = $this->generateNomorSkpi($kodeFakultas);
+        }
 
         return DB::transaction(function () use ($nomorSkpi, $mahasiswa, $pengajuan, $nimIjazah, $statusProfesi, $user, $niy, $namaDekan) {
             $skpi = Skpi::create([
@@ -160,7 +171,24 @@ class SkpiService
                 $tugasAkhir->pembimbingTugasAkhir = $pembimbingList;
             }
 
-            return compact('prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir');
+            $apiTahunMasuk = null;
+            $apiTahunLulus = null;
+            try {
+                $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mhsId);
+                $ketuntasan = $transkrip['ketuntasan'] ?? null;
+                if ($ketuntasan) {
+                    if (!empty($ketuntasan['tahun_masuk'])) {
+                        $apiTahunMasuk = substr($ketuntasan['tahun_masuk'], 0, 4);
+                    }
+                    if (!empty($ketuntasan['tahun_keluar'])) {
+                        $apiTahunLulus = substr($ketuntasan['tahun_keluar'], 0, 4);
+                    }
+                }
+            } catch (\Exception $e) {
+                // ignore
+            }
+
+            return compact('prestasi', 'organisasi', 'sertifikat', 'magang', 'tugasAkhir', 'apiTahunMasuk', 'apiTahunLulus');
         })();
 
         $pdf = Pdf::setOption([

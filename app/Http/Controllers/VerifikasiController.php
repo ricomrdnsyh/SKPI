@@ -184,7 +184,14 @@ class VerifikasiController extends Controller
             return compact('mahasiswa', 'prestasi', 'organisasi', 'sertifikat', 'magang', 'history', 'hasPendingItems', 'hasNoTugasAkhir');
         });
 
-        return view('bak_fakultas.verifikasi.detail', array_merge($cached, compact('pengajuan')));
+        try {
+            $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mahasiswa->nim);
+            $apiNoIjazah = $transkrip['ketuntasan']['no_ijazah'] ?? null;
+        } catch (\Exception $e) {
+            $apiNoIjazah = null;
+        }
+
+        return view('bak_fakultas.verifikasi.detail', array_merge($cached, compact('pengajuan', 'apiNoIjazah')));
     }
 
     private function flushRelatedCaches(int $pengajuanId, int $mahasiswaId): void
@@ -350,7 +357,7 @@ class VerifikasiController extends Controller
         $allowedProdis = $this->getAllowedProdiIds($user);
 
         $mahasiswaRow = DB::table('mahasiswa')
-            ->select(['nim', 'id_prodi', 'id_kurikulum', 'nim', 'nama_lengkap', 'tahun_masuk', 'tahun_lulus', 'status'])
+            ->select(['nim', 'id_prodi', 'id_kurikulum', 'nim', 'nama_lengkap', 'status'])
             ->where('nim', $pengajuan->nim)->first();
         $mahasiswa = $mahasiswaRow ? Mahasiswa::hydrate([(array) $mahasiswaRow])->first() : null;
         if (!$mahasiswa) abort(404, 'Mahasiswa tidak ditemukan.');

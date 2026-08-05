@@ -31,7 +31,7 @@
                     <div class="row mb-5">
                         <div class="col-md-6 mb-5 mb-md-0">
                             <label for="nomor_ijazah_nasional" class="required form-label fw-bold">Nomor Ijazah Nasional</label>
-                            <input type="text" name="nomor_ijazah_nasional" id="nomor_ijazah_nasional" class="form-control" required>
+                            <input type="text" name="nomor_ijazah_nasional" id="nomor_ijazah_nasional" class="form-control bg-light" required value="{{ $apiNoIjazah }}" readonly placeholder="Diambil otomatis dari API">
                         </div>
                         <div class="col-md-6">
                             <label for="status_profesi" class="form-label fw-bold">Status Profesi (Opsional)</label>

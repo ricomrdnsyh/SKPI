@@ -263,13 +263,7 @@
                                 <span class="menu-title">Program Studi</span>
                             </a>
                         </div>
-                        <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/dosen*') ? 'active' : '' }}"
-                                href="{{ route('dosen.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-chalkboard-user fs-4"></i></span>
-                                <span class="menu-title">Dosen</span>
-                            </a>
-                        </div>
+
 
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/kategori-cpl*') ? 'active' : '' }}"
@@ -313,13 +307,7 @@
                                 <span class="menu-title">Program Studi</span>
                             </a>
                         </div>
-                        <div class="menu-item">
-                            <a class="menu-link {{ Request::is('akademik/dosen*') ? 'active' : '' }}"
-                                href="{{ route('dosen.index') }}">
-                                <span class="menu-icon"><i class="fa-solid fa-chalkboard-user fs-4"></i></span>
-                                <span class="menu-title">Dosen</span>
-                            </a>
-                        </div>
+
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('akademik/kurikulum*') ? 'active' : '' }}"
                                 href="{{ route('kurikulum.index') }}">

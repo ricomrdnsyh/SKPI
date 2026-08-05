@@ -176,12 +176,11 @@
         </tr>
         <tr>
             <td class="label-col">Tahun Masuk</td>
-            <td>{{ $mahasiswa->tahun_masuk }}</td>
+            <td>{{ $apiTahunMasuk ?? '-' }}</td>
         </tr>
         <tr>
-            <td class="label-col">Tanggal Lulus</td>
-            <td>{{ $mahasiswa->tahun_lulus ? \Carbon\Carbon::parse($mahasiswa->tahun_lulus)->isoFormat('D MMMM YYYY') : '-' }}
-            </td>
+            <td class="label-col">Tahun Lulus</td>
+            <td>{{ $apiTahunLulus ?? '-' }}</td>
         </tr>
         <tr>
             <td class="label-col">Gelar</td>
@@ -370,7 +369,9 @@
                         </div>
                     </div><br>
                 @else
-                    <br><br><br><br>
+                    <div style="width: 116px; height: 116px; display: inline-block; text-align: center; margin-top: 4px; margin-bottom: 1px; border: 2px dashed #999; border-radius: 8px;">
+                        <div style="margin-top: 45px;"><strong style="font-size: 20px; color: #999;">DRAFT</strong></div>
+                    </div><br>
                 @endif
                 <strong
                     style="text-decoration: underline;">{{ $skpi->ditandatangani_oleh ?? $fakultas->dekan }}</strong><br>

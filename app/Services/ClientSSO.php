@@ -36,6 +36,11 @@ class ClientSSO
         return $this->fetchData('dosen', ['id_sms' => $idSms]);
     }
 
+    public function getTranskrip(string $nim): array
+    {
+        return $this->fetchData('transkrip', ['nim' => $nim]);
+    }
+
     public function getKaryawanFromApi(): array
     {
         $allKaryawans = [];
