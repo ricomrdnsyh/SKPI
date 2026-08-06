@@ -53,6 +53,6 @@ class AuthController extends Controller
         Auth::guard('mahasiswa')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login');
+        return redirect('https://sso.unuja.ac.id');
     }
 }

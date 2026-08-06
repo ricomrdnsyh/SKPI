@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('login') }}"
+                    <a href="https://sso.unuja.ac.id"
                         class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-blue-700 hover:bg-blue-800 shadow-lg shadow-blue-700/30 hover:shadow-blue-700/50 transition-all duration-200 hover:-translate-y-0.5">
                         Masuk Portal
                     </a>
@@ -124,7 +124,7 @@
                     class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900">Tentang</a>
                 <a href="#dokumen"
                     class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900">Dokumen</a>
-                <a href="{{ route('login') }}"
+                <a href="https://sso.unuja.ac.id"
                     class="block w-full text-center mt-4 px-3 py-3 rounded-xl text-base font-bold text-white bg-blue-700 hover:bg-blue-800">Masuk
                     Portal</a>
             </div>
@@ -167,7 +167,7 @@
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in-up"
                         style="animation-delay: 600ms;">
-                        <a href="{{ route('login') }}"
+                        <a href="https://sso.unuja.ac.id"
                             class="group inline-flex items-center justify-center px-8 py-4 text-base font-bold text-unujablue-950 bg-white rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 hover:-translate-y-1">
                             Akses Dashboard
                             <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
@@ -530,7 +530,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('login') }}" target="_blank"
+                            <a href="https://sso.unuja.ac.id" target="_blank"
                                 class="inline-flex items-center gap-2 text-white/50 no-underline hover:text-yellow-400 active:text-yellow-400 hover:translate-x-1.5 active:translate-x-1.5 transition-all duration-300 group active:scale-[0.98]">
                                 <svg class="w-3.5 h-3.5 text-white/50 group-hover:text-yellow-400 group-active:text-yellow-400 transition-colors shrink-0 active:scale-[0.98]"
                                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -648,6 +648,20 @@
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                text: "{{ session('error') }}",
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Ok, mengerti",
+                customClass: {
+                    confirmButton: "bg-blue-700 text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-800"
+                }
+            });
+        </script>
+    @endif
 </body>
 
 </html>

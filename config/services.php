@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'sso' => [
+        'x_token' => env('SSO_X_TOKEN'),
+        'dev_id' => env('SSO_DEV_ID'),
+        'api_url' => env('SSO_API_URL'),
+        'public_url' => env('SSO_PUBLIC_URL'),
+        'authorize_url' => env('SSO_AUTHORIZE_URL'),
+        'data_url' => env('SSO_DATA_URL'),
+        'me_url' => env('SSO_ME_URL'),
+    ],
+
 ];

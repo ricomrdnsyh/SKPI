@@ -27,6 +27,7 @@ use App\Http\Controllers\VerifikasiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
+use App\Http\Controllers\SsoController;
 
 
 
@@ -41,6 +42,9 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::any('/sso', [SsoController::class, 'sso'])->name('sso.callback');
+Route::any('/sso/logout/{sessionId}', [SsoController::class, 'logout'])->name('sso.logout');
 Route::get('/verify/skpi/{id_skpi}', [SkpiController::class, 'verify'])->name('skpi.verify');
 Route::middleware(['auth:web,mahasiswa'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
