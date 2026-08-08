@@ -177,11 +177,11 @@ class SkpiService
                 $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mhsId);
                 $ketuntasan = $transkrip['ketuntasan'] ?? null;
                 if ($ketuntasan) {
-                    if (!empty($ketuntasan['tahun_masuk'])) {
-                        $apiTahunMasuk = substr($ketuntasan['tahun_masuk'], 0, 4);
+                    if (!empty($ketuntasan['tgl_masuk'])) {
+                        $apiTahunMasuk = substr($ketuntasan['tgl_masuk'], 0, 4);
                     }
-                    if (!empty($ketuntasan['tahun_keluar'])) {
-                        $apiTahunLulus = substr($ketuntasan['tahun_keluar'], 0, 4);
+                    if (!empty($ketuntasan['tgl_keluar'])) {
+                        $apiTahunLulus = substr($ketuntasan['tgl_keluar'], 0, 4);
                     }
                 }
             } catch (\Exception $e) {

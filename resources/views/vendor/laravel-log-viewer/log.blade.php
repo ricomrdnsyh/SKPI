@@ -172,7 +172,7 @@
                             <div
                                 class="ml-4 hidden group-hover:block absolute left-full top-0 z-50 min-w-[200px] bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl p-2 transform transition-all">
                                 @foreach ($folder['subfolders'] as $sub)
-                                    <a href="?l={{ Crypt::encrypt($sub) }}"
+                                    <a href="?l={{ Crypt::encryptString($sub) }}"
                                         class="flex items-center gap-3 p-2.5 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg text-slate-700 dark:text-slate-200 transition-colors">
                                         <i class="fas fa-folder text-yellow-500"></i>
                                         {{ basename($sub) }}
@@ -186,7 +186,7 @@
                 <div>
                     <div class="space-y-1.5">
                         @foreach ($files as $file)
-                            <a href="?l={{ Crypt::encrypt($file) }}" @class([
+                            <a href="?l={{ Crypt::encryptString($file) }}" @class([
                                 'flex items-center gap-3 p-3 rounded-xl text-sm font-medium truncate transition-all duration-300 relative overflow-hidden group',
                                 'bg-primary text-white shadow-md shadow-primary/20 translate-x-1' =>
                                     $current_file == $file,
@@ -273,7 +273,7 @@
                         <h3 class="text-lg font-bold text-red-800 dark:text-red-400 mb-1">File Too Large</h3>
                         <p class="text-red-600 dark:text-red-300 text-sm">
                             The log file is over 50MB and cannot be displayed in the browser. Please
-                            <a href="?dl={{ Crypt::encrypt($current_file) }}"
+                            <a href="?dl={{ Crypt::encryptString($current_file) }}"
                                 class="font-bold underline hover:text-red-800 dark:hover:text-red-200 transition-colors">download
                                 it</a> to view its contents.
                         </p>
@@ -467,7 +467,7 @@
             downloadLog: () => {
                 fileActions.showLoading();
                 window.location.href =
-                    `?dl={{ Crypt::encrypt($current_file) }}{{ $current_folder ? '&f=' . Crypt::encrypt($current_folder) : '' }}`;
+                    `?dl={{ Crypt::encryptString($current_file) }}{{ $current_folder ? '&f=' . Crypt::encryptString($current_folder) : '' }}`;
                 setTimeout(fileActions.hideLoading, 2000);
             },
 
@@ -475,7 +475,7 @@
                 if (confirm('Are you sure you want to clean this log file? All contents will be erased.')) {
                     fileActions.showLoading();
                     window.location.href =
-                        `?clean={{ Crypt::encrypt($current_file) }}{{ $current_folder ? '&f=' . Crypt::encrypt($current_folder) : '' }}`;
+                        `?clean={{ Crypt::encryptString($current_file) }}{{ $current_folder ? '&f=' . Crypt::encryptString($current_folder) : '' }}`;
                 }
             },
 
@@ -483,7 +483,7 @@
                 if (confirm('Are you sure you want to delete this log file? This action cannot be undone.')) {
                     fileActions.showLoading();
                     window.location.href =
-                        `?del={{ Crypt::encrypt($current_file) }}{{ $current_folder ? '&f=' . Crypt::encrypt($current_folder) : '' }}`;
+                        `?del={{ Crypt::encryptString($current_file) }}{{ $current_folder ? '&f=' . Crypt::encryptString($current_folder) : '' }}`;
                 }
             },
 
@@ -492,7 +492,7 @@
                         'WARNING: Are you sure you want to delete ALL log files? This action cannot be undone.')) {
                     fileActions.showLoading();
                     window.location.href =
-                        `?delall=true{{ $current_folder ? '&f=' . Crypt::encrypt($current_folder) : '' }}`;
+                        `?delall=true{{ $current_folder ? '&f=' . Crypt::encryptString($current_folder) : '' }}`;
                 }
             }
         };
