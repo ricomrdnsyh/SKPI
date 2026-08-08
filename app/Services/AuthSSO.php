@@ -20,10 +20,10 @@ class AuthSSO
 
     public function __construct()
     {
-        $this->authUrl = env('SSO_AUTH_URL');
-        $this->newBase = env('SSO_DATA_BASE_URL');
-        $this->XToken = env('SSO_X_TOKEN');
-        $this->devId = env('SSO_DEV_ID');
+        $this->authUrl = (string) env('SSO_AUTHORIZE_URL');
+        $this->newBase = (string) env('SSO_DATA_URL');
+        $this->XToken = (string) env('SSO_X_TOKEN');
+        $this->devId = (string) env('SSO_DEV_ID');
     }
 
     public function getAuth(): array
