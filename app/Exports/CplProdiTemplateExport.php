@@ -23,8 +23,11 @@ class CplProdiTemplateExport implements FromArray, WithHeadings, ShouldAutoSize,
     public function array(): array
     {
         return [
-            ['S', 'S1', 'Bertakwa kepada Tuhan Yang Maha Esa dan mampu menunjukkan sikap religius', '1'],
-            ['P', 'P1', 'Menguasai konsep teoritis bidang pengetahuan tertentu secara umum', '2'],
+            ['S', 'CPL-S01', 'Bertakwa kepada Tuhan Yang Maha Esa dan mampu menunjukkan sikap religius.', '1'],
+            ['S', 'CPL-S02', 'Menjunjung tinggi nilai kemanusiaan dalam menjalankan tugas berdasarkan agama, moral dan etika.', '2'],
+            ['KU', 'CPL-KU01', 'Mampu menerapkan pemikiran logis, kritis, sistematis, dan inovatif dalam konteks pengembangan atau implementasi ilmu pengetahuan dan teknologi yang memperhatikan dan menerapkan nilai humaniora yang sesuai dengan bidang keahliannya.', '3'],
+            ['KK', 'CPL-KK01', 'Mampu merancang dan mengembangkan algoritma untuk berbagai keperluan seperti Network Security, Data Compression Multimedia Technologies, Mobile Computing Intelligent Systems, Information Management, Algorithms and Complexity, Human-Computer Interaction, Graphics and Visual Computing.', '4'],
+            ['P', 'CPL-P01', 'Menguasai konsep teoritis bidang pengetahuan Ilmu Komputer/Informatika secara umum dan konsep teoritis bagian khusus dalam bidang pengetahuan tersebut secara mendalam, serta mampu memformulasikan penyelesaian masalah prosedural.', '5'],
         ];
     }
 

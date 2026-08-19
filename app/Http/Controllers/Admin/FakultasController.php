@@ -60,7 +60,7 @@ class FakultasController extends Controller
             'nama_fakultas' => 'required|string|max:255',
             'kode_fakultas' => 'required|string|max:10|unique:fakultas,kode_fakultas' . ($id ? ',' . $id . ',id_fakultas' : ''),
             'dekan' => 'required|string|max:255',
-            'niy_dekan' => 'nullable|string|max:50',
+            'niy_dekan' => 'required|string|max:50',
             'status' => 'required|in:aktif,nonaktif',
         ], $messages);
 

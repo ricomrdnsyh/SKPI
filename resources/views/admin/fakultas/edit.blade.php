@@ -18,20 +18,20 @@
                         </div>
                         <div class="fv-row">
                             <label for="edit_kode_fakultas"
-                                class="form-label fw-bolder text-dark fs-6">Singkatan</label>
-                            <input type="text" name="kode_fakultas" id="edit_kode_fakultas"
+                                class="form-label required fw-bolder text-dark fs-6">Singkatan</label>
+                            <input type="text" name="kode_fakultas" id="edit_kode_fakultas" required
                                 class="form-control form-control-sm form-control-sm">
                         </div>
                     </div>
                     <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
                         <div class="fv-row">
-                            <label for="edit_dekan" class="form-label fw-bolder text-dark fs-6">Nama Dekan</label>
-                            <input type="text" name="dekan" id="edit_dekan"
+                            <label for="edit_dekan" class="form-label required fw-bolder text-dark fs-6">Nama Dekan</label>
+                            <input type="text" name="dekan" id="edit_dekan" required
                                 class="form-control form-control-sm form-control-sm">
                         </div>
                         <div class="fv-row">
-                            <label for="edit_niy_dekan" class="form-label fw-bolder text-dark fs-6">NIY Dekan</label>
-                            <input type="text" name="niy_dekan" id="edit_niy_dekan"
+                            <label for="edit_niy_dekan" class="form-label required fw-bolder text-dark fs-6">NIY Dekan</label>
+                            <input type="text" name="niy_dekan" id="edit_niy_dekan" required
                                 class="form-control form-control-sm form-control-sm">
                         </div>
                     </div>

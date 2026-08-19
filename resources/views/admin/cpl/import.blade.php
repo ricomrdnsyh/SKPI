@@ -8,7 +8,6 @@
             <form id="form_import_cpl" action="{{ route('cpl.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
-                    <!-- Attractive Download Template Section -->
                     <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed mb-9 p-6">
                         <i class="fas fa-file-excel fs-2tx text-primary me-4 mt-1"></i>
                         <div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
@@ -19,7 +18,7 @@
                                     Excel diisi dengan kode yang valid (misal: S, P, KU, KK).</div>
                             </div>
                             <a href="{{ route('cpl.import.template') }}"
-                                class="btn btn-sm btn-primary fw-bolder flex-shrink-0" target="_blank">
+                                class="btn btn-sm btn-primary fw-bolder flex-shrink-0" download>
                                 <i class="fas fa-download me-2"></i>Download Template
                             </a>
                         </div>
@@ -62,7 +61,7 @@
                                     let file = this.files[0];
                                     let validExts = ['.xlsx', '.xls', '.csv'];
                                     let fileExt = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-                                    
+
                                     if (!validExts.includes(fileExt)) {
                                         this.value = '';
                                         Swal.fire({text: 'Format file tidak sesuai! Hanya izinkan file Excel (.xlsx, .xls) atau CSV.', icon: 'error', confirmButtonText: 'OK', customClass: {confirmButton: 'btn btn-danger'}});
@@ -72,7 +71,7 @@
                                         document.getElementById('upload_subtitle').textContent = 'Format XLSX, XLS (Maks. 5MB)';
                                         return;
                                     }
-                                    
+
                                     if (file.size > 5 * 1024 * 1024) {
                                         this.value = '';
                                         Swal.fire({text: 'Ukuran file terlalu besar! Maksimal 5MB.', icon: 'error', confirmButtonText: 'OK', customClass: {confirmButton: 'btn btn-danger'}});

@@ -215,16 +215,16 @@ class CplProdiController extends Controller
         }
 
         return DataTables::of($query)
-            ->filterColumn('prodi', function($query, $keyword) {
+            ->filterColumn('prodi', function ($query, $keyword) {
                 $query->where('program_studi.nama_prodi', 'like', "%{$keyword}%");
             })
-            ->filterColumn('kurikulum', function($query, $keyword) {
+            ->filterColumn('kurikulum', function ($query, $keyword) {
                 $query->where('kurikulum.nama_kurikulum', 'like', "%{$keyword}%");
             })
-            ->filterColumn('kategori', function($query, $keyword) {
+            ->filterColumn('kategori', function ($query, $keyword) {
                 $query->where('kategori_cpl.nama_kategori', 'like', "%{$keyword}%");
             })
-            ->filterColumn('deskripsi', function($query, $keyword) {
+            ->filterColumn('deskripsi', function ($query, $keyword) {
                 $query->where('cpl_prodi.deskripsi_cpl', 'like', "%{$keyword}%");
             })
             ->addColumn('prodi', fn($c) => $c->prodi_nama ?? '-')
@@ -233,7 +233,7 @@ class CplProdiController extends Controller
             ->addColumn('deskripsi', fn($c) => Str::limit($c->deskripsi_cpl, 50))
             ->addColumn('action', function ($row) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
-                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_cpl . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
+                return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_cpl . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -241,7 +241,16 @@ class CplProdiController extends Controller
 
     public function downloadTemplate()
     {
-        return Excel::download(new CplProdiTemplateExport, 'Template_Import_CPL_Prodi.xlsx');
+        try {
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            \PhpOffice\PhpSpreadsheet\Shared\File::setUseUploadTempDirectory(true);
+            return Excel::download(new CplProdiTemplateExport, 'Template_Import_CPL_Prodi.xlsx');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal download template CPL: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response('TERJADI ERROR (Harap screenshot ini): ' . $e->getMessage() . ' di baris ' . $e->getLine() . ' pada ' . $e->getFile(), 500);
+        }
     }
 
     public function import(Request $request)
@@ -303,7 +312,7 @@ class CplProdiController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             restore_error_handler();
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Validasi gagal: <br>' . implode('<br>', $e->errors()['import_error'] ?? ['Terjadi kesalahan pada data.'])
             ], 422);
         } catch (\Exception $e) {

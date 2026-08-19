@@ -22,19 +22,19 @@
                             @csrf
                             <div class="fv-row mb-8">
                                 <label class="form-label fw-bold fs-6">Judul Tugas Akhir / Skripsi</label>
-                                <textarea name="judul" rows="3" class="form-control" disabled>{{ $judulApi ?? '' }}</textarea>
+                                <textarea name="judul" rows="3" class="form-control" readonly>{{ $judulApi ?? '' }}</textarea>
                             </div>
 
                             <div class="row g-8 mb-8">
                                 <div class="col-md-6 fv-row">
                                     <label class="form-label fw-bold fs-6">Dosen Pembimbing 1 (Utama)</label>
                                     <input type="text" name="pembimbing[0]" class="form-control"
-                                        value="{{ $pembimbingNames[0] ?? '' }}" disabled>
+                                        value="{{ $pembimbingNames[0] ?? '' }}" readonly>
                                 </div>
                                 <div class="col-md-6 fv-row">
                                     <label class="form-label fw-bold fs-6">Dosen Pembimbing 2 (Pendamping)</label>
                                     <input type="text" name="pembimbing[1]" class="form-control"
-                                        value="{{ $pembimbingNames[1] ?? '' }}" disabled>
+                                        value="{{ $pembimbingNames[1] ?? '' }}" readonly>
                                 </div>
                             </div>
                             @if (!$readonly && (!isset($mahasiswa->tugasAkhir) || $mahasiswa->tugasAkhir->status === 'rejected'))

@@ -71,16 +71,16 @@ class ProgramStudiController extends Controller
         $request->validate([
             'id_fakultas' => 'required|exists:fakultas,id_fakultas',
             'nama_prodi' => 'required|string|max:255',
-            'kode_prodi' => 'nullable|string|max:10',
+            'kode_prodi' => 'required|string|max:10',
             'jenjang' => 'required|in:Diploma 3,Strata 1,Strata 2,Strata 3',
-            'gelar' => 'nullable|string|max:50',
+            'gelar' => 'required|string|max:50',
 
-            'jenjang_kkni' => 'nullable|string|max:10',
-            'bahasa_pengantar' => 'nullable|string|max:50',
-            'lama_studi' => 'nullable|string|max:50',
-            'jenis_pendidikan' => 'nullable|in:Diploma 3,Sarjana,Magister,Doktor',
-            'jenis_pendidikan_lanjutan' => 'nullable|string|max:100',
-            'persyaratan_penerimaan' => 'nullable|string',
+            'jenjang_kkni' => 'required|string|max:10',
+            'bahasa_pengantar' => 'required|string|max:50',
+            'lama_studi' => 'required|string|max:50',
+            'jenis_pendidikan' => 'required|in:Diploma 3,Sarjana,Magister,Doktor',
+            'jenis_pendidikan_lanjutan' => 'required|string|max:100',
+            'persyaratan_penerimaan' => 'required|string',
 
         ]);
 
