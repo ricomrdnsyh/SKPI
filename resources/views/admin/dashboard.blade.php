@@ -82,7 +82,6 @@
 
                 <div class="card border-0 mb-8 rounded-4 overflow-hidden shadow-sm"
                     style="background: linear-gradient(135deg, #0A2342 0%, #1756A9 100%);">
-                    <!-- Premium Background Elements -->
                     <div class="position-absolute top-0 end-0 opacity-10">
                         <i class="ki-duotone ki-element-11 text-white"
                             style="font-size: 15rem; transform: translate(30%, -20%);">
@@ -185,7 +184,6 @@
                         <div class="col-12 col-sm-6 col-md-4 col-xl mb-3 mb-xl-0">
                             <div
                                 class="card bg-white border border-dashed border-{{ $sc['color'] }} shadow-sm hover-elevate-up h-100 overflow-hidden position-relative transition-all">
-                                <!-- Background Watermark Icon -->
                                 <div class="position-absolute top-0 end-0 mt-n4 me-n5 opacity-10">
                                     <i class="ki-duotone {{ $sc['icon'] }} text-{{ $sc['color'] }}"
                                         style="font-size: 8rem;">

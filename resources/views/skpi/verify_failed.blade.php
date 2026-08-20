@@ -86,14 +86,12 @@
                     <img src="{{ asset('assets/media/logos/unuja.png') }}" class="watermark" alt="Watermark" />
                     
                     <div class="content-relative">
-                        <!-- Header -->
                         <div class="text-center mb-10 pb-5 border-bottom border-gray-300">
                             <img alt="Logo" src="{{ asset('assets/media/logos/unuja.png') }}" class="h-80px mb-5" />
                             <h1 class="institution-title mb-2">Universitas Nurul Jadid</h1>
                             <div class="document-title">Hasil Verifikasi Dokumen Akademik</div>
                         </div>
 
-                        <!-- Status -->
                         <div class="text-center mb-10">
                             <div class="status-badge danger mb-5">
                                 <i class="ki-duotone ki-shield-cross fs-2x text-danger me-3">
@@ -106,7 +104,6 @@
                             </div>
                         </div>
 
-                        <!-- Footer Info -->
                         <div class="alert alert-secondary border border-gray-300 d-flex align-items-center p-5 mb-0">
                             <i class="ki-duotone ki-information-5 fs-2hx text-gray-600 me-4">
                                 <span class="path1"></span><span class="path2"></span><span class="path3"></span>
