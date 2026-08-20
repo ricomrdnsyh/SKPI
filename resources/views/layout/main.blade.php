@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" translate="no">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
@@ -16,7 +17,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-        <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
+        type="text/css" />
     <style>
         .app-container {
             max-width: 100% !important;
@@ -24,10 +26,12 @@
     </style>
     @yield('css')
 </head>
-<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true" data-kt-app-header-fixed-mobile="true"
-    data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
-    data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
-    data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default" style="overflow-x: hidden;">
+
+<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
+    data-kt-app-header-fixed-mobile="true" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true"
+    data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
+    data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default"
+    style="overflow-x: hidden;">
     <script>
         var defaultThemeMode = "light";
         var themeMode;
@@ -76,7 +80,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.body.addEventListener('change', function(e) {
-                if (e.target && e.target.type === 'file' && !e.target.classList.contains('skip-global-validation')) {
+                if (e.target && e.target.type === 'file' && !e.target.classList.contains(
+                        'skip-global-validation')) {
                     let file = e.target.files[0];
                     if (!file) {
                         e.target.classList.remove('is-invalid');
@@ -87,7 +92,7 @@
                         return;
                     }
                     let validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-                    let maxSize = 2 * 1024 * 1024; // 2MB
+                    let maxSize = 2 * 1024 * 1024;
                     let nextEl = e.target.nextElementSibling;
                     if (nextEl && nextEl.classList.contains('invalid-feedback')) {
                         nextEl.remove();
@@ -112,9 +117,11 @@
         });
     </script>
     <script>
-        // Global flash message handler — tampilkan SweetAlert pop-up untuk session flash
+        $.ajaxSetup({
+            cache: false
+        });
         document.addEventListener('DOMContentLoaded', function() {
-            @if(session('success'))
+            @if (session('success'))
                 Swal.fire({
                     title: 'Berhasil!',
                     text: @json(session('success')),
@@ -126,7 +133,7 @@
                 });
             @endif
 
-            @if(session('error'))
+            @if (session('error'))
                 Swal.fire({
                     title: 'Gagal!',
                     text: @json(session('error')),
@@ -138,7 +145,7 @@
                 });
             @endif
 
-            @if(session('warning'))
+            @if (session('warning'))
                 Swal.fire({
                     title: 'Perhatian!',
                     text: @json(session('warning')),
@@ -153,4 +160,5 @@
     </script>
     @yield('js')
 </body>
+
 </html>
