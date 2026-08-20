@@ -92,7 +92,7 @@ class CacheService
 
     public function flushDashboard($mahasiswaId): void
     {
-        Cache::forget("dashboard:mahasiswa:{$mahasiswaId}");
+        Cache::forget("dashboard:mahasiswa:{$mahasiswaId}_data");
     }
 
     public function flushDetail($pengajuanId): void
