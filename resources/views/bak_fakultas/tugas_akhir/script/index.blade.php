@@ -14,11 +14,6 @@
                     className: 'dt-control',
                     orderable: false,
                     searchable: false
-                },
-                {
-                    targets: 1,
-                    orderable: false,
-                    searchable: false
                 }
             ],
             lengthMenu: [
@@ -53,7 +48,6 @@
             },
             columns: [
                 { data: null, defaultContent: '', orderable: false, searchable: false },
-                { data: 'action', orderable: false, searchable: false },
                 { data: 'nama_mahasiswa', name: 'mahasiswa.nama_lengkap' },
                 { data: 'judul' },
                 { data: 'pembimbing', orderable: false, searchable: false },

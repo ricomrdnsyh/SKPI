@@ -79,7 +79,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
     Route::prefix('bak-fakultas')->name('bak_fakultas.')->group(function () {
         Route::middleware('role:bak_fakultas,admin')->group(function () {
             Route::get('tugas-akhir/data', [TugasAkhirController::class, 'datatable'])->name('tugas_akhir.datatable');
-            Route::resource('tugas-akhir', TugasAkhirController::class)->except(['show'])->names('tugas_akhir');
+            Route::resource('tugas-akhir', TugasAkhirController::class)->only(['index'])->names('tugas_akhir');
         });
 
         Route::middleware('role:bak_fakultas,admin')->group(function () {

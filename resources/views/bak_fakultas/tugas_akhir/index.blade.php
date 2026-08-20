@@ -99,12 +99,6 @@
                                             class="card-label fw-bolder fs-3 mb-1">List Tugas Akhir</span></h3>
                                 </div>
                             </div>
-                            <div class="card-toolbar">
-                                <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah Tugas Akhir</button>
-                                </div>
-                            </div>
                         </div>
                         <div class="separator my-5"></div>
                         <div class="card-body pt-0">
@@ -112,7 +106,6 @@
                                 <thead>
                                     <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                         <th class="text-center p-0" style="width:28px; min-width:28px;"></th>
-                                        <th class="text-center">Actions</th>
                                         <th class="min-w-150px">Mahasiswa</th>
                                         <th class="min-w-200px">Judul</th>
                                         <th class="min-w-150px">Pembimbing</th>
@@ -128,8 +121,6 @@
             </div>
         </div>
     </div>
-    @include('bak_fakultas.tugas_akhir.create')
-    @include('bak_fakultas.tugas_akhir.edit')
 @endsection
 @section('js')
     <script src="{{ asset('assets/plugins/custom/datatables/jquery.dataTables.min.js') }}"></script>
