@@ -73,6 +73,8 @@ class RekapitulasiController extends Controller
                 'skpi.id_skpi',
                 'skpi.nomor_skpi',
                 'skpi.tanggal_terbit',
+                'skpi.ditandatangani_oleh',
+                'pengajuan_skpi.sk_akreditasi',
                 'mahasiswa.nim',
                 'mahasiswa.nama_lengkap',
                 'program_studi.nama_prodi',

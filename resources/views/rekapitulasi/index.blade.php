@@ -105,63 +105,69 @@
     <div class="d-flex flex-column flex-column-fluid">
         <div id="kt_app_content" class="app-content flex-column-fluid mt-7">
             <div id="kt_app_content_container" class="app-container container-fluid">
-                
-                @if($role === 'admin')
-                <div class="row g-5 g-xl-8 mb-8">
-                    <div class="col-12 col-sm-6 col-md-4 col-xl mb-3 mb-xl-0">
-                        <div class="card bg-white border border-dashed border-success shadow-sm hover-elevate-up h-100 overflow-hidden position-relative transition-all">
-                            <div class="position-absolute top-0 end-0 mt-n4 me-n5 opacity-10">
-                                <i class="ki-duotone ki-check-circle text-success" style="font-size: 8rem;">
-                                    <span class="path1"></span><span class="path2"></span>
-                                </i>
-                            </div>
 
-                            <div class="card-body d-flex flex-column p-6 position-relative z-index-1">
-                                <div class="d-flex justify-content-between align-items-start mb-5">
-                                    <div class="symbol symbol-45px symbol-circle shadow-sm">
-                                        <div class="symbol-label bg-light-success border border-success border-dashed">
-                                            <i class="ki-duotone ki-check-circle fs-2 text-success">
-                                                <span class="path1"></span><span class="path2"></span>
-                                            </i>
+                @if ($role === 'admin')
+                    <div class="row g-5 g-xl-8 mb-8">
+                        <div class="col-12 col-sm-6 col-md-4 col-xl mb-3 mb-xl-0">
+                            <div
+                                class="card bg-white border border-dashed border-success shadow-sm hover-elevate-up h-100 overflow-hidden position-relative transition-all">
+                                <div class="position-absolute top-0 end-0 mt-n4 me-n5 opacity-10">
+                                    <i class="ki-duotone ki-check-circle text-success" style="font-size: 8rem;">
+                                        <span class="path1"></span><span class="path2"></span>
+                                    </i>
+                                </div>
+
+                                <div class="card-body d-flex flex-column p-6 position-relative z-index-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-5">
+                                        <div class="symbol symbol-45px symbol-circle shadow-sm">
+                                            <div class="symbol-label bg-light-success border border-success border-dashed">
+                                                <i class="ki-duotone ki-check-circle fs-2 text-success">
+                                                    <span class="path1"></span><span class="path2"></span>
+                                                </i>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="d-flex flex-column text-start mt-auto">
-                                    <span class="fs-2hx fw-bolder text-gray-800 me-2 lh-1 ls-n2">{{ $totalSkpiGlobal }}</span>
-                                    <span class="fs-6 fw-semibold text-gray-500 mt-2">Total SKPI Selesai</span>
+                                    <div class="d-flex flex-column text-start mt-auto">
+                                        <span
+                                            class="fs-2hx fw-bolder text-gray-800 me-2 lh-1 ls-n2">{{ $totalSkpiGlobal }}</span>
+                                        <span class="fs-6 fw-semibold text-gray-500 mt-2">Total SKPI Selesai</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    @foreach ($statsPerFakultas as $stat)
-                    <div class="col-12 col-sm-6 col-md-4 col-xl mb-3 mb-xl-0">
-                        <div class="card bg-white border border-dashed border-primary shadow-sm hover-elevate-up h-100 overflow-hidden position-relative transition-all">
-                            <div class="position-absolute top-0 end-0 mt-n4 me-n5 opacity-10">
-                                <i class="ki-duotone ki-bank text-primary" style="font-size: 8rem;">
-                                    <span class="path1"></span><span class="path2"></span>
-                                </i>
-                            </div>
 
-                            <div class="card-body d-flex flex-column p-6 position-relative z-index-1">
-                                <div class="d-flex justify-content-between align-items-start mb-5">
-                                    <div class="symbol symbol-45px symbol-circle shadow-sm">
-                                        <div class="symbol-label bg-light-primary border border-primary border-dashed">
-                                            <i class="ki-duotone ki-bank fs-2 text-primary">
-                                                <span class="path1"></span><span class="path2"></span>
-                                            </i>
+                        @foreach ($statsPerFakultas as $stat)
+                            <div class="col-12 col-sm-6 col-md-4 col-xl mb-3 mb-xl-0">
+                                <div
+                                    class="card bg-white border border-dashed border-primary shadow-sm hover-elevate-up h-100 overflow-hidden position-relative transition-all">
+                                    <div class="position-absolute top-0 end-0 mt-n4 me-n5 opacity-10">
+                                        <i class="ki-duotone ki-bank text-primary" style="font-size: 8rem;">
+                                            <span class="path1"></span><span class="path2"></span>
+                                        </i>
+                                    </div>
+
+                                    <div class="card-body d-flex flex-column p-6 position-relative z-index-1">
+                                        <div class="d-flex justify-content-between align-items-start mb-5">
+                                            <div class="symbol symbol-45px symbol-circle shadow-sm">
+                                                <div
+                                                    class="symbol-label bg-light-primary border border-primary border-dashed">
+                                                    <i class="ki-duotone ki-bank fs-2 text-primary">
+                                                        <span class="path1"></span><span class="path2"></span>
+                                                    </i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column text-start mt-auto">
+                                            <span
+                                                class="fs-2hx fw-bolder text-gray-800 me-2 lh-1 ls-n2">{{ $stat->total }}</span>
+                                            <span
+                                                class="fs-6 fw-semibold text-gray-500 mt-2">{{ $stat->nama_fakultas }}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex flex-column text-start mt-auto">
-                                    <span class="fs-2hx fw-bolder text-gray-800 me-2 lh-1 ls-n2">{{ $stat->total }}</span>
-                                    <span class="fs-6 fw-semibold text-gray-500 mt-2">{{ $stat->nama_fakultas }}</span>
-                                </div>
                             </div>
-                        </div>
+                        @endforeach
                     </div>
-                    @endforeach
-                </div>
                 @endif
 
                 <div class="card shadow-sm border border-dashed border-dark rounded">
@@ -174,7 +180,8 @@
                         <div class="card-toolbar">
                             <div class="d-flex justify-content-end gap-2" data-kt-customer-table-toolbar="base">
                                 <a href="#" id="btn-download-zip" class="btn btn-sm btn-primary">
-                                    <i class="ki-duotone ki-file-down fs-2"><span class="path1"></span><span class="path2"></span></i> Download Semua PDF (ZIP)
+                                    <i class="ki-duotone ki-file-down fs-2"><span class="path1"></span><span
+                                            class="path2"></span></i> Download Semua PDF (ZIP)
                                 </a>
                             </div>
                         </div>
@@ -184,27 +191,34 @@
                             <h5 class="text-primary mb-4"><i class="fas fa-filter text-primary me-2"></i>Filter Data</h5>
                             <div class="row g-5">
                                 @php
-                                    $colClass = $role === 'admin' ? 'col-lg-4 col-md-4 col-sm-12' : 'col-lg-6 col-md-6 col-sm-12';
+                                    $colClass =
+                                        $role === 'admin'
+                                            ? 'col-lg-4 col-md-4 col-sm-12'
+                                            : 'col-lg-6 col-md-6 col-sm-12';
                                 @endphp
-                                @if($role === 'admin')
-                                <div class="{{ $colClass }}">
-                                    <label class="form-label fw-bold mb-2">Fakultas:</label>
-                                    <select id="filter-fakultas" class="form-select form-select-sm" data-control="select2"
-                                        data-placeholder="Semua Fakultas" data-allow-clear="true">
-                                        <option value=""></option>
-                                        @foreach ($fakultas as $id => $nama)
-                                            <option value="{{ $id }}">{{ $nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                @if ($role === 'admin')
+                                    <div class="{{ $colClass }}">
+                                        <label class="form-label fw-bold mb-2">Fakultas:</label>
+                                        <select id="filter-fakultas" class="form-select form-select-sm"
+                                            data-control="select2" data-placeholder="Semua Fakultas"
+                                            data-allow-clear="true">
+                                            <option value=""></option>
+                                            @foreach ($fakultas as $id => $nama)
+                                                <option value="{{ $id }}">{{ $nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 @endif
                                 <div class="{{ $colClass }}">
                                     <label class="form-label fw-bold mb-2">Program Studi:</label>
                                     <select id="filter-prodi" class="form-select form-select-sm" data-control="select2"
-                                        data-placeholder="Semua Program Studi" data-allow-clear="true" {{ $role === 'admin' ? 'disabled' : '' }}>
+                                        data-placeholder="Semua Program Studi" data-allow-clear="true"
+                                        {{ $role === 'admin' ? 'disabled' : '' }}>
                                         <option value=""></option>
                                         @foreach ($prodis as $prodi)
-                                            <option value="{{ $prodi->id_prodi }}" data-fakultas="{{ $prodi->id_fakultas ?? '' }}">{{ $prodi->nama_prodi }}</option>
+                                            <option value="{{ $prodi->id_prodi }}"
+                                                data-fakultas="{{ $prodi->id_fakultas ?? '' }}">{{ $prodi->nama_prodi }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -214,7 +228,9 @@
                                         data-placeholder="Semua Tahun Akademik" data-allow-clear="true">
                                         <option value=""></option>
                                         @foreach ($tahun_akademiks as $id => $nama)
-                                            <option value="{{ $id }}" {{ $id == $active_tahun_akademik ? 'selected' : '' }}>{{ $nama }}</option>
+                                            <option value="{{ $id }}"
+                                                {{ $id == $active_tahun_akademik ? 'selected' : '' }}>{{ $nama }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -232,6 +248,8 @@
                                         <th class="min-w-150px">Program Studi</th>
                                         <th class="min-w-150px">No. SKPI</th>
                                         <th class="min-w-100px">Tanggal Terbit</th>
+                                        <th class="min-w-150px">SK Akreditasi Perguruan Tinggi</th>
+                                        <th class="min-w-150px">Ditandatangani Oleh</th>
                                         <th class="text-center min-w-100px">Aksi</th>
                                     </tr>
                                 </thead>
@@ -330,6 +348,17 @@
                         name: 'skpi.tanggal_terbit'
                     },
                     {
+                        data: 'sk_akreditasi',
+                        name: 'pengajuan_skpi.sk_akreditasi',
+                        render: function(data, type, row) {
+                            return data ? data : '-';
+                        }
+                    },
+                    {
+                        data: 'ditandatangani_oleh',
+                        name: 'skpi.ditandatangani_oleh'
+                    },
+                    {
                         data: 'aksi',
                         name: 'aksi',
                         orderable: false,
@@ -345,43 +374,43 @@
                     })
                 }
             });
-            @if($role === 'admin')
-            var allProdiOptions = $('#filter-prodi option').clone();
-            
-            $('#filter-fakultas').on('change', function() {
-                var fakultasId = $(this).val();
-                var $prodiSelect = $('#filter-prodi');
-                var currentVal = $prodiSelect.val();
-                
-                $prodiSelect.empty();
-                $prodiSelect.append(allProdiOptions.filter('[value=""]'));
-                
-                if (fakultasId) {
-                    $prodiSelect.prop('disabled', false);
-                    $prodiSelect.append(allProdiOptions.filter(function() {
-                        return $(this).data('fakultas') == fakultasId;
-                    }));
-                } else {
-                    $prodiSelect.prop('disabled', true);
-                }
-                
-                if ($prodiSelect.find('option[value="' + currentVal + '"]').length) {
-                    $prodiSelect.val(currentVal);
-                } else {
-                    $prodiSelect.val('');
-                }
-                
-                $prodiSelect.trigger('change.select2');
-                table.draw();
-            });
-            
-            $('#filter-prodi, #filter-tahun').on('change', function() {
-                table.draw();
-            });
+            @if ($role === 'admin')
+                var allProdiOptions = $('#filter-prodi option').clone();
+
+                $('#filter-fakultas').on('change', function() {
+                    var fakultasId = $(this).val();
+                    var $prodiSelect = $('#filter-prodi');
+                    var currentVal = $prodiSelect.val();
+
+                    $prodiSelect.empty();
+                    $prodiSelect.append(allProdiOptions.filter('[value=""]'));
+
+                    if (fakultasId) {
+                        $prodiSelect.prop('disabled', false);
+                        $prodiSelect.append(allProdiOptions.filter(function() {
+                            return $(this).data('fakultas') == fakultasId;
+                        }));
+                    } else {
+                        $prodiSelect.prop('disabled', true);
+                    }
+
+                    if ($prodiSelect.find('option[value="' + currentVal + '"]').length) {
+                        $prodiSelect.val(currentVal);
+                    } else {
+                        $prodiSelect.val('');
+                    }
+
+                    $prodiSelect.trigger('change.select2');
+                    table.draw();
+                });
+
+                $('#filter-prodi, #filter-tahun').on('change', function() {
+                    table.draw();
+                });
             @else
-            $('#filter-prodi, #filter-tahun').on('change', function() {
-                table.draw();
-            });
+                $('#filter-prodi, #filter-tahun').on('change', function() {
+                    table.draw();
+                });
             @endif
 
             $('#btn-download-zip').on('click', function(e) {
@@ -393,7 +422,7 @@
                 }
                 params.append('prodi_filter', $('#filter-prodi').val() || '');
                 params.append('tahun_akademik_filter', $('#filter-tahun').val() || '');
-                
+
                 // SweetAlert for processing
                 Swal.fire({
                     title: 'Memproses ZIP',
@@ -407,7 +436,7 @@
 
                 // Redirect to download URL
                 window.location.href = url + params.toString();
-                
+
                 // Hide Swal after a few seconds (since download triggers in browser)
                 setTimeout(function() {
                     Swal.close();

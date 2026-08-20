@@ -124,9 +124,20 @@ class SkpiService
         $fakultas = $prodi->fakultas ?? null;
         
         $universitas = \App\Models\Universitas::first();
+        if ($pengajuan->sk_akreditasi) {
+            if ($universitas) {
+                $universitas->sk_akreditasi = $pengajuan->sk_akreditasi;
+            } else {
+                $universitas = (object)['sk_akreditasi' => $pengajuan->sk_akreditasi];
+            }
+        }
 
         $cplList = $this->getCplList($mahasiswa);
-        $penilaian = $this->cache->getSistemPenilaian();
+        $penilaian = $pengajuan->sistem_penilaian ? 
+            collect($pengajuan->sistem_penilaian)->map(function($item) {
+                return (object) $item;
+            }) 
+            : $this->cache->getSistemPenilaian();
 
         $mhsId = $mahasiswa->nim;
 

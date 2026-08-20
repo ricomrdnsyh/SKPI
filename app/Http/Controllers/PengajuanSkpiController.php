@@ -48,6 +48,8 @@ class PengajuanSkpiController extends Controller
             if (in_array($existing->status, ['ditolak', 'draft'])) {
                 DB::transaction(function () use ($existing, $request, $nim) {
                     $activeTahun = DB::table('tahun_akademik')->where('is_active', true)->first();
+                    $universitas = DB::table('universitas')->first();
+                    $sistemPenilaian = DB::table('sistem_penilaian')->get();
                     
                     DB::table('pengajuan_skpi')
                         ->where('id_pengajuan', $existing->id_pengajuan)
@@ -59,6 +61,8 @@ class PengajuanSkpiController extends Controller
                             'tanggal_verifikasi' => null,
                             'catatan_bak' => null,
                             'id_tahun_akademik' => $activeTahun?->id_tahun_akademik,
+                            'sk_akreditasi' => $universitas?->sk_akreditasi,
+                            'sistem_penilaian' => $sistemPenilaian->toJson(),
                         ]);
 
                     DB::table('checklist_verifikasi_skpi')

@@ -19,13 +19,16 @@ class PengajuanSkpi extends Model
         'diverifikasi_oleh',
         'tanggal_verifikasi',
         'catatan_bak',
-        'permohonan_cetak'
+        'permohonan_cetak',
+        'sk_akreditasi',
+        'sistem_penilaian'
     ];
 
     protected $casts = [
         'tanggal_pengajuan' => 'datetime',
         'tanggal_verifikasi' => 'datetime',
-        'permohonan_cetak' => 'boolean'
+        'permohonan_cetak' => 'boolean',
+        'sistem_penilaian' => 'array'
     ];
 
     public function mahasiswa()
