@@ -47,7 +47,7 @@ class PengajuanSkpiController extends Controller
             }
             if (in_array($existing->status, ['ditolak', 'draft'])) {
                 DB::transaction(function () use ($existing, $request, $nim) {
-                    $activeTahun = DB::table('tahun_akademik')->where('is_active', true)->first();
+                    $activeTahun = $this->pengajuanService->getStudentTahunAkademik($nim);
                     $universitas = DB::table('universitas')->first();
                     $sistemPenilaian = DB::table('sistem_penilaian')->get();
                     

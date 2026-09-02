@@ -8,9 +8,44 @@ use Illuminate\Support\Facades\DB;
 
 class PengajuanService
 {
+    public function getStudentTahunAkademik($idMahasiswa)
+    {
+        try {
+            // Ambil tahun akademik / semester kelulusan atau terakhir aktif dari SIMPT
+            $simptData = DB::selectOne("
+                SELECT
+                    b.id_smt AS id_smt
+                FROM dbsimpt.tbmas_mahasiswa_pt a
+                LEFT JOIN dbsimpt.tbbak_kuliah_mahasiswa b 
+                    ON a.id_mahasiswa_pt = b.id_mahasiswa_pt
+                WHERE a.nipd = ? 
+                  AND b.ipk_ketuntasan IS NOT NULL
+                ORDER BY b.id_smt DESC
+                LIMIT 1
+            ", [$idMahasiswa]);
+
+            if ($simptData && $simptData->id_smt) {
+                $tahunAkademik = DB::table('tahun_akademik')
+                    ->where('id_tahun_akademik', $simptData->id_smt)
+                    ->first();
+                
+                if ($tahunAkademik) {
+                    return $tahunAkademik;
+                }
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Gagal ambil tahun akademik SIMPT untuk NIM: {$idMahasiswa}", [
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        // Fallback: gunakan tahun akademik yang sedang aktif jika data SIMPT tidak ditemukan
+        return DB::table('tahun_akademik')->where('is_active', true)->first();
+    }
+
     public function submitCetak($idMahasiswa, ?string $catatan): PengajuanSkpi
     {
-        $activeTahun = DB::table('tahun_akademik')->where('is_active', true)->first();
+        $activeTahun = $this->getStudentTahunAkademik($idMahasiswa);
         $universitas = DB::table('universitas')->first();
         $sistemPenilaian = DB::table('sistem_penilaian')->get();
         

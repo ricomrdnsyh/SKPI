@@ -256,9 +256,7 @@
                                         data-allow-clear="true">
                                         <option value=""></option>
                                         @foreach ($tahun_akademiks as $id => $nama)
-                                            <option value="{{ $id }}"
-                                                {{ isset($active_tahun_akademik) && $active_tahun_akademik == $id ? 'selected' : '' }}>
-                                                {{ $nama }}</option>
+                                            <option value="{{ $id }}">{{ $nama }}</option>
                                         @endforeach
                                     </select>
                                 </div>
