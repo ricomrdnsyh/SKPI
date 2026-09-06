@@ -333,12 +333,14 @@
                     },
                     {
                         extend: 'csv',
+                        action: newexportaction,
                         titleAttr: 'Csv',
                         title: 'Data SKPI',
                         className: 'btn btn-sm btn-primary mt-2 rounded-2'
                     },
                     {
                         extend: 'excel',
+                        action: newexportaction,
                         titleAttr: 'Excel',
                         title: 'Data SKPI',
                         className: 'btn btn-sm btn-primary mt-2 rounded-2'

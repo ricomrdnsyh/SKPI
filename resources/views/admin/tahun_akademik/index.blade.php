@@ -121,12 +121,14 @@
                     },
                     {
                         extend: 'csv',
+                        action: newexportaction,
                         titleAttr: 'Csv',
                         title: 'Data Tahun Akademik',
                         className: 'btn btn-sm btn-primary mt-2 rounded-2'
                     },
                     {
                         extend: 'excel',
+                        action: newexportaction,
                         titleAttr: 'Excel',
                         title: 'Data Tahun Akademik',
                         className: 'btn btn-sm btn-primary mt-2 rounded-2'
