@@ -167,11 +167,11 @@
                 {{ \Carbon\Carbon::parse($mahasiswa->tanggal_lahir)->isoFormat('D MMMM YYYY') }}</td>
         </tr>
         <tr>
-            <td class="label-col">Nomer Induk Mahasiswa</td>
+            <td class="label-col">Nomor Induk Mahasiswa</td>
             <td>{{ $mahasiswa->nim }}</td>
         </tr>
         <tr>
-            <td class="label-col">Nomer Ijazah Nasional</td>
+            <td class="label-col">Nomor Ijazah Nasional</td>
             <td>{{ $skpi->nomor_ijazah_nasional }}</td>
         </tr>
         <tr>
@@ -369,8 +369,10 @@
                         </div>
                     </div><br>
                 @else
-                    <div style="width: 116px; height: 116px; display: inline-block; text-align: center; margin-top: 4px; margin-bottom: 1px; border: 2px dashed #999; border-radius: 8px;">
-                        <div style="margin-top: 45px;"><strong style="font-size: 20px; color: #999;">DRAFT</strong></div>
+                    <div
+                        style="width: 116px; height: 116px; display: inline-block; text-align: center; margin-top: 4px; margin-bottom: 1px; border: 2px dashed #999; border-radius: 8px;">
+                        <div style="margin-top: 45px;"><strong style="font-size: 20px; color: #999;">DRAFT</strong>
+                        </div>
                     </div><br>
                 @endif
                 <strong

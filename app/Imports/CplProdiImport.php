@@ -33,7 +33,7 @@ class CplProdiImport implements ToCollection, WithHeadingRow
             $rowNumber = $index + 2; // +1 for 0-index, +1 for heading row
             
             // Expected headers in CSV/Excel after WithHeadingRow: 
-            // kode_kategori, kode_cpl, deskripsi_cpl, urutan
+            // kode_kategori, kode_cpl, urutan, deskripsi_cpl
             $kodeKategori = trim($row['kode_kategori'] ?? '');
             
             if (empty($kodeKategori) && empty($row['kode_cpl']) && empty($row['deskripsi_cpl'])) {
