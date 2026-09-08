@@ -26,6 +26,7 @@ class UniversitasController extends Controller
             'sk_akreditasi' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:50',
             'no_telepon' => 'nullable|string|max:20',
+            'tanggal_terbit_skpi' => 'nullable|date',
         ]);
 
         $universitas = Universitas::first();

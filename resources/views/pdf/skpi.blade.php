@@ -345,7 +345,7 @@
     <table class="signature-table">
         <tr>
             <td style="width: 50%; vertical-align: top; text-align: left; padding-left: 10px;">
-                Probolinggo, {{ \Carbon\Carbon::parse($skpi->tanggal_terbit)->isoFormat('D MMMM YYYY') }}<br>
+                Probolinggo, {{ \Carbon\Carbon::parse($pengajuan->tanggal_terbit_skpi ?? $skpi->tanggal_terbit ?? now())->isoFormat('D MMMM YYYY') }}<br>
                 Dekan,<br>
                 @if ($pengajuan->status === 'dicetak')
                     @php

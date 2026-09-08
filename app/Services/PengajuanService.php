@@ -59,6 +59,7 @@ class PengajuanService
                 'id_tahun_akademik' => $activeTahun?->id_tahun_akademik,
                 'sk_akreditasi' => $universitas?->sk_akreditasi,
                 'sistem_penilaian' => $sistemPenilaian->toArray(),
+                'tanggal_terbit_skpi' => $universitas?->tanggal_terbit_skpi,
             ]);
         });
     }

@@ -35,6 +35,14 @@
                                 <label class="fs-6 fw-semibold mb-2">Email</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email', $universitas->email) }}" />
                             </div>
+                            <div class="col-md-6 fv-row">
+                                <label class="fs-6 fw-semibold mb-2">Tanggal Terbit SKPI</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="text" class="form-control @error('tanggal_terbit_skpi') is-invalid @enderror" name="tanggal_terbit_skpi" id="tanggal_terbit_skpi" placeholder="Pilih tanggal" value="{{ old('tanggal_terbit_skpi', $universitas->tanggal_terbit_skpi ? $universitas->tanggal_terbit_skpi->format('Y-m-d') : '') }}" />
+                                </div>
+                                <div class="form-text mt-2">Tanggal ini akan digunakan sebagai tanggal terbit di dokumen SKPI mahasiswa.</div>
+                            </div>
                         </div>
                         <div class="text-end">
                             <button type="button" class="btn btn-primary" onclick="confirmSubmit()">
@@ -50,6 +58,13 @@
 @endsection
 @section('js')
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#tanggal_terbit_skpi').flatpickr({
+            dateFormat: "Y-m-d",
+            allowInput: true
+        });
+    });
+
     @if($errors->any())
         Swal.fire({
             title: 'Validasi Gagal!',

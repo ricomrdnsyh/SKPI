@@ -26,6 +26,11 @@ class PengajuanSkpiController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
+        $universitas = DB::table('universitas')->first();
+        if (!$universitas || empty($universitas->tanggal_terbit_skpi)) {
+            return back()->with('error', 'Tanggal terbit SKPI belum diatur. Anda belum dapat mengajukan SKPI.');
+        }
+
         $mahasiswaRow = DB::table('mahasiswa')->where('nim', $nim)->first();
         if (!$mahasiswaRow) abort(404);
         $mahasiswa = Mahasiswa::hydrate([(array) $mahasiswaRow])->first();
@@ -63,6 +68,7 @@ class PengajuanSkpiController extends Controller
                             'id_tahun_akademik' => $activeTahun?->id_tahun_akademik,
                             'sk_akreditasi' => $universitas?->sk_akreditasi,
                             'sistem_penilaian' => $sistemPenilaian->toJson(),
+                            'tanggal_terbit_skpi' => $universitas?->tanggal_terbit_skpi,
                         ]);
 
                     DB::table('checklist_verifikasi_skpi')
