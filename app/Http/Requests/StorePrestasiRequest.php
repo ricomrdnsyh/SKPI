@@ -16,7 +16,7 @@ class StorePrestasiRequest extends FormRequest
         $rules = [
             'nama_prestasi' => 'required|string|max:255',
             'tingkat' => 'required|in:Internasional,Nasional,Provinsi,Lokal',
-            'peringkat' => 'required|string|max:100',
+            'peringkat' => 'required|string|max:255',
             'penyelenggara' => 'required|string|max:255',
             'tahun' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
         ];
