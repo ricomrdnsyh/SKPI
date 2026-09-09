@@ -22,9 +22,9 @@ class StoreOrganisasiRequest extends FormRequest
         ];
 
         if ($this->isMethod('post')) {
-            $rules['file_bukti'] = 'required|file|mimetypes:application/pdf,image/jpeg,image/png|max:2048';
+            $rules['file_bukti'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:2048';
         } else {
-            $rules['file_bukti'] = 'nullable|file|mimetypes:application/pdf,image/jpeg,image/png|max:2048';
+            $rules['file_bukti'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048';
         }
 
         return $rules;
