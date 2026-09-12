@@ -375,28 +375,28 @@
                             <a class="menu-link {{ Request::is('mahasiswa/prestasi*') ? 'active' : '' }}"
                                 href="{{ route('mahasiswa.prestasi.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-trophy fs-4"></i></span>
-                                <span class="menu-title">Prestasi</span>
+                                <span class="menu-title">Prestasi/Penghargaan</span>
                             </a>
                         </div>
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('mahasiswa/organisasi*') ? 'active' : '' }}"
                                 href="{{ route('mahasiswa.organisasi.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-users-rectangle fs-4"></i></span>
-                                <span class="menu-title">Organisasi</span>
+                                <span class="menu-title">Keorganisasian</span>
                             </a>
                         </div>
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('mahasiswa/sertifikat*') ? 'active' : '' }}"
                                 href="{{ route('mahasiswa.sertifikat.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-file-signature fs-4"></i></span>
-                                <span class="menu-title">Sertifikat</span>
+                                <span class="menu-title">Serifikat Keahlian</span>
                             </a>
                         </div>
                         <div class="menu-item">
                             <a class="menu-link {{ Request::is('mahasiswa/magang*') ? 'active' : '' }}"
                                 href="{{ route('mahasiswa.magang.index') }}">
                                 <span class="menu-icon"><i class="fa-solid fa-briefcase fs-4"></i></span>
-                                <span class="menu-title">Magang / KP</span>
+                                <span class="menu-title">Kerja Praktek/Magang</span>
                             </a>
                         </div>
                     @endif
