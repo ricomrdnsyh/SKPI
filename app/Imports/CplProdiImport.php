@@ -52,11 +52,12 @@ class CplProdiImport implements ToCollection, WithHeadingRow
 
             $validator = Validator::make([
                 'id_kategori' => $id_kategori,
+                'kode_kategori' => $kodeKategori,
                 'kode_cpl' => $row['kode_cpl'] ?? '',
                 'deskripsi_cpl' => $row['deskripsi_cpl'] ?? '',
                 'urutan' => $row['urutan'] ?? null,
             ], [
-                'id_kategori' => 'required',
+                'id_kategori' => empty($kodeKategori) ? 'nullable' : 'required',
                 'kode_cpl' => 'required|string|max:20',
                 'deskripsi_cpl' => 'required|string',
                 'urutan' => 'nullable|integer',

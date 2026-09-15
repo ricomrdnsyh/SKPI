@@ -94,7 +94,7 @@ class CplProdiController extends Controller
         $request->validate([
             'id_prodi' => 'required|exists:program_studi,id_prodi',
             'id_kurikulum' => 'required|exists:kurikulum,id_kurikulum',
-            'id_kategori' => 'required|exists:kategori_cpl,id_kategori',
+            'id_kategori' => 'nullable|exists:kategori_cpl,id_kategori',
             'kode_cpl' => 'required|string|max:20',
             'deskripsi_cpl' => 'required|string',
             'urutan' => 'nullable|integer',
@@ -154,7 +154,7 @@ class CplProdiController extends Controller
         $request->validate([
             'id_prodi' => 'required|exists:program_studi,id_prodi',
             'id_kurikulum' => 'required|exists:kurikulum,id_kurikulum',
-            'id_kategori' => 'required|exists:kategori_cpl,id_kategori',
+            'id_kategori' => 'nullable|exists:kategori_cpl,id_kategori',
             'kode_cpl' => 'required|string|max:20',
             'deskripsi_cpl' => 'required|string',
             'urutan' => 'nullable|integer',

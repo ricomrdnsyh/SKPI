@@ -53,7 +53,7 @@ class CacheService
         $cacheKey = "cpl:prodi:{$idProdi}:kur:{$idKurikulum}";
         return Cache::remember($cacheKey, self::TTL_CPL, function () use ($idProdi, $idKurikulum) {
             $query = DB::table('cpl_prodi')
-                ->join('kategori_cpl', 'cpl_prodi.id_kategori', '=', 'kategori_cpl.id_kategori')
+                ->leftJoin('kategori_cpl', 'cpl_prodi.id_kategori', '=', 'kategori_cpl.id_kategori')
                 ->where('cpl_prodi.id_prodi', $idProdi)
                 ->orderBy('kategori_cpl.urutan')
                 ->orderBy('cpl_prodi.urutan')
@@ -69,7 +69,12 @@ class CacheService
             if ($idKurikulum) {
                 $query->where('cpl_prodi.id_kurikulum', $idKurikulum);
             }
-            return $query->get()->groupBy('nama_kategori');
+            return $query->get()->map(function($item) {
+                if (empty($item->nama_kategori)) {
+                    $item->nama_kategori = ''; // Group for uncategorized
+                }
+                return $item;
+            })->groupBy('nama_kategori');
         });
     }
 

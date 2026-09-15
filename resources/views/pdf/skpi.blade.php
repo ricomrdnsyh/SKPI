@@ -259,10 +259,12 @@
             $alphabet = 'A';
         @endphp
         @foreach ($cplList as $categoryName => $items)
-            <tr>
-                <td colspan="2" style="font-weight: bold; vertical-align: middle;">{{ $alphabet }}.
-                    {{ strtoupper($categoryName) }}</td>
-            </tr>
+            @if ($categoryName !== '')
+                <tr>
+                    <td colspan="2" style="font-weight: bold; vertical-align: middle;">{{ $alphabet }}.
+                        {{ strtoupper($categoryName) }}</td>
+                </tr>
+            @endif
             @foreach ($items as $item)
                 <tr>
                     <td style="text-align: left; border-right: none; white-space: nowrap; vertical-align: top;">
@@ -272,7 +274,9 @@
                     </td>
                 </tr>
             @endforeach
-            @php $alphabet++; @endphp
+            @if ($categoryName !== '')
+                @php $alphabet++; @endphp
+            @endif
         @endforeach
     </table>
 

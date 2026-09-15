@@ -29,8 +29,8 @@
                             </select>
                         </div>
                         <div class="fv-row">
-                            <label for="edit_id_kategori" class="form-label required fw-bolder text-dark">Kategori CPL</label>
-                            <select name="id_kategori" id="edit_id_kategori" required class="form-select form-select-sm" data-control="select2" data-dropdown-parent="#form_edit" data-placeholder="Pilih Kategori">
+                            <label for="edit_id_kategori" class="form-label fw-bolder text-dark">Kategori CPL</label>
+                            <select name="id_kategori" id="edit_id_kategori" class="form-select form-select-sm" data-control="select2" data-dropdown-parent="#form_edit" data-placeholder="Pilih Kategori (Opsional)">
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach($kategori as $kat)
                                     <option value="{{ $kat->id_kategori }}">{{ $kat->kode_kategori }} - {{ $kat->nama_kategori }}</option>
