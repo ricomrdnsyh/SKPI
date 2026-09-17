@@ -12,10 +12,5 @@ class Universitas extends Model
         'sk_akreditasi',
         'email',
         'no_telepon',
-        'tanggal_terbit_skpi',
-    ];
-
-    protected $casts = [
-        'tanggal_terbit_skpi' => 'date',
     ];
 }

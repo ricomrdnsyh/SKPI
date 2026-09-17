@@ -21,8 +21,7 @@ class PengajuanSkpi extends Model
         'catatan_bak',
         'permohonan_cetak',
         'sk_akreditasi',
-        'sistem_penilaian',
-        'tanggal_terbit_skpi'
+        'sistem_penilaian'
     ];
 
     protected $casts = [
@@ -30,7 +29,6 @@ class PengajuanSkpi extends Model
         'tanggal_verifikasi' => 'datetime',
         'permohonan_cetak' => 'boolean',
         'sistem_penilaian' => 'array',
-        'tanggal_terbit_skpi' => 'date'
     ];
 
     public function mahasiswa()

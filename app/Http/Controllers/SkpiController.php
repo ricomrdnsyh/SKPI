@@ -99,9 +99,11 @@ class SkpiController extends Controller
                     'niy_dekan' => $mahasiswaRow->niy_dekan,
                 ];
                 $kodeFakultas = $mahasiswaRow->kode_fakultas ?? 'FAKULTAS';
+                $tanggalPengesahan = null;
                 try {
                     $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mahasiswa->nim);
                     $noTranskrip = $transkrip['ketuntasan']['no_transkrip'] ?? null;
+                    $tanggalPengesahan = $transkrip['ketuntasan']['tanggal_pengesahan'] ?? $transkrip['ketuntasan']['tgl_pengesahan'] ?? null;
                     if ($noTranskrip) {
                         $nomorSkpi = 'SKPI ' . $noTranskrip;
                     } else {
@@ -116,7 +118,7 @@ class SkpiController extends Controller
                     'nim' => $mahasiswa->nim,
                     'id_pengajuan' => $pengajuan->id_pengajuan,
                     'nomor_ijazah_nasional' => 'BELUM DITERBITKAN',
-                    'tanggal_terbit' => now(),
+                    'tanggal_terbit' => $tanggalPengesahan ?? now(),
                     'status_profesi' => 'Belum ada keanggotaan profesi',
                     'tanggal_ttd_dekan' => now(),
                     'ditandatangani_oleh' => $fakultas->dekan ?? 'Dekan Fakultas',

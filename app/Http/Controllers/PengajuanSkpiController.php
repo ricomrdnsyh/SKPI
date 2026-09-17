@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PengajuanSkpiRequest;
 use App\Models\Mahasiswa;
 use App\Services\CacheService;
+use App\Services\ClientSSO;
 use App\Services\PengajuanService;
 use App\Services\SkpiProgressService;
 use Illuminate\Http\Request;
@@ -26,9 +27,17 @@ class PengajuanSkpiController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        $universitas = DB::table('universitas')->first();
-        if (!$universitas || empty($universitas->tanggal_terbit_skpi)) {
-            return back()->with('error', 'Tanggal terbit SKPI belum diatur. Anda belum dapat mengajukan SKPI.');
+        try {
+            $transkrip = app(ClientSSO::class)->getTranskrip($nim);
+            $ketuntasan = $transkrip['ketuntasan'] ?? [];
+            $noIjazah = $ketuntasan['no_ijazah'] ?? null;
+            $tanggalPengesahan = $ketuntasan['tanggal_pengesahan'] ?? $ketuntasan['tgl_pengesahan'] ?? null;
+
+            if (!$noIjazah || !$tanggalPengesahan) {
+                return back()->with('error', 'Anda belum dapat mengajukan SKPI. Nomor Ijazah dan Tanggal Pengesahan Anda Belum Ada di Sistem.');
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memverifikasi status kelulusan Anda dari sistem.');
         }
 
         $mahasiswaRow = DB::table('mahasiswa')->where('nim', $nim)->first();
@@ -55,7 +64,7 @@ class PengajuanSkpiController extends Controller
                     $activeTahun = $this->pengajuanService->getStudentTahunAkademik($nim);
                     $universitas = DB::table('universitas')->first();
                     $sistemPenilaian = DB::table('sistem_penilaian')->get();
-                    
+
                     DB::table('pengajuan_skpi')
                         ->where('id_pengajuan', $existing->id_pengajuan)
                         ->update([
@@ -68,7 +77,6 @@ class PengajuanSkpiController extends Controller
                             'id_tahun_akademik' => $activeTahun?->id_tahun_akademik,
                             'sk_akreditasi' => $universitas?->sk_akreditasi,
                             'sistem_penilaian' => $sistemPenilaian->toJson(),
-                            'tanggal_terbit_skpi' => $universitas?->tanggal_terbit_skpi,
                         ]);
 
                     DB::table('checklist_verifikasi_skpi')

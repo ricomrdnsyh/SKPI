@@ -72,9 +72,12 @@ class SkpiService
         $niy = $fakultas->niy_dekan ?? null;
         $namaDekan = $fakultas->dekan ?? $user->nama_lengkap;
 
+        $tanggalPengesahan = null;
         try {
             $transkrip = app(\App\Services\ClientSSO::class)->getTranskrip($mahasiswa->nim);
             $noTranskrip = $transkrip['ketuntasan']['no_transkrip'] ?? null;
+            $tanggalPengesahan = $transkrip['ketuntasan']['tanggal_pengesahan'] ?? $transkrip['ketuntasan']['tgl_pengesahan'] ?? null;
+
             if ($noTranskrip) {
                 $nomorSkpi = 'SKPI ' . $noTranskrip;
             } else {
@@ -86,13 +89,13 @@ class SkpiService
             $nomorSkpi = $this->generateNomorSkpi($kodeFakultas);
         }
 
-        return DB::transaction(function () use ($nomorSkpi, $mahasiswa, $pengajuan, $nimIjazah, $statusProfesi, $user, $niy, $namaDekan) {
+        return DB::transaction(function () use ($nomorSkpi, $mahasiswa, $pengajuan, $nimIjazah, $statusProfesi, $user, $niy, $namaDekan, $tanggalPengesahan) {
             $skpi = Skpi::create([
                 'nomor_skpi' => $nomorSkpi,
                 'nim' => $mahasiswa->nim,
                 'id_pengajuan' => $pengajuan->id_pengajuan,
                 'nomor_ijazah_nasional' => $nimIjazah,
-                'tanggal_terbit' => now(),
+                'tanggal_terbit' => $tanggalPengesahan ?? now(),
                 'dicetak_oleh' => $user->id_user,
                 'status_profesi' => $statusProfesi ?? 'Belum ada keanggotaan profesi',
                 'tanggal_ttd_dekan' => now(),
