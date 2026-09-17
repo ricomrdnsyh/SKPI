@@ -106,6 +106,7 @@
                                 <thead>
                                     <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                         <th class="text-center p-0" style="width:28px; min-width:28px;"></th>
+                                        <th class="min-w-100px">NIM</th>
                                         <th class="min-w-150px">Mahasiswa</th>
                                         <th class="min-w-200px">Judul</th>
                                         <th class="min-w-150px">Pembimbing</th>

@@ -57,6 +57,7 @@
                 { data: null, defaultContent: '', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false },
                 @if(in_array(Auth::user()->role, ['bak_fakultas', 'admin']))
+                { data: 'nim', name: 'mahasiswa.nim' },
                 { data: 'nama_mahasiswa', name: 'mahasiswa.nama_lengkap' },
                 @endif
                 { data: 'nama_sertifikat' },

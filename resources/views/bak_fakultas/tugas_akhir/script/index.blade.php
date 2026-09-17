@@ -50,6 +50,7 @@
             },
             columns: [
                 { data: null, defaultContent: '', orderable: false, searchable: false },
+                { data: 'nim', name: 'mahasiswa.nim' },
                 { data: 'nama_mahasiswa', name: 'mahasiswa.nama_lengkap' },
                 { data: 'judul' },
                 { data: 'pembimbing', orderable: false, searchable: false },

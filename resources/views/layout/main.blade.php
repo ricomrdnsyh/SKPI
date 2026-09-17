@@ -108,7 +108,7 @@
                         e.target.value = '';
                         e.target.classList.add('is-invalid');
                         let errorDiv = document.createElement('div');
-                        errorDiv.className = 'invalid-feedback d-block fw-bold mt-2';
+                        errorDiv.className = 'invalid-feedback d-block fw-bold mt-2 w-100 text-center';
                         errorDiv.innerText = errorMessage;
                         e.target.parentNode.insertBefore(errorDiv, e.target.nextSibling);
                     }

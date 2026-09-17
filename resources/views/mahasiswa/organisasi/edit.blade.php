@@ -57,17 +57,23 @@
                         </div>
                     </div>
                     <div class="fv-row mb-5">
-                        <label for="edit_file_bukti" class="form-label fw-bold fs-6">Unggah SK / Surat Keterangan Bukti
-                            (Opsional)</label>
-                        <input type="file" name="file_bukti" id="edit_file_bukti" class="form-control">
-                        <div class="text-muted mt-2">Format: PDF / JPG / PNG, Maksimal 2MB. Kosongkan jika tidak ingin
-                            mengubah file bukti.</div>
+                        <label for="edit_file_bukti" class="form-label fw-bold fs-6">Unggah SK / Surat Keterangan Bukti Baru (Opsional)</label>
+                        <div class="mt-1">
+                            <label class="d-flex flex-column align-items-center justify-content-center p-5 border border-2 border-dashed border-warning rounded-3 cursor-pointer" style="background-color: #fff8f1;">
+                                <i class="fas fa-cloud-upload-alt text-warning fs-2x mb-2"></i>
+                                <span class="text-warning fw-bolder fs-6 mb-1">Pilih file bukti baru</span>
+                                <span class="text-muted fs-7 mb-2">Kosongkan jika tidak ingin mengubah file saat ini</span>
+                                <span class="text-muted fs-8">Format: PDF / JPG / PNG, Maksimal 2MB</span>
+                                <input type="file" name="file_bukti" id="edit_file_bukti" class="d-none" onchange="document.getElementById('file_name_display_edit_org').textContent = this.files[0] ? this.files[0].name : ''; document.getElementById('file_name_display_edit_org').style.display = this.files[0] ? 'inline-block' : 'none';">
+                                <div id="file_name_display_edit_org" class="mt-4 badge badge-light-success fs-6 py-2 px-4" style="display: none;"></div>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" data-kt-contacts-type="submit" class="btn btn-sm btn-primary">
-                        <span class="indicator-label">Update</span>
+                        <span class="indicator-label"><i class="fas fa-save me-1"></i> Update</span>
                         <span class="indicator-progress" style="display: none;">
                             Tunggu sebentar...
                             <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
