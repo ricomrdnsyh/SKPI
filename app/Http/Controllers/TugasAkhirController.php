@@ -46,6 +46,10 @@ class TugasAkhirController extends Controller
 
     private function checkIsLocked($tugasAkhir)
     {
+        if (in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
+            return false;
+        }
+
         if (!$tugasAkhir) return false;
         
         $pengajuan = DB::table('pengajuan_skpi')->where('nim', $tugasAkhir->nim)->first();
@@ -105,7 +109,7 @@ class TugasAkhirController extends Controller
                 $s = $statusMap[$row->status] ?? ['badge-light-secondary', ucfirst($row->status)];
                 return '<span class="badge ' . $s[0] . ' fw-bold px-4 py-2">' . $s[1] . '</span>';
             })
-            ->addColumn('action', function ($row) {
+            ->addColumn('action', function ($row) use ($user) {
                 $tugasAkhir = TugasAkhir::with('pembimbing')->find($row->id_tugas_akhir);
                 $pembimbingNames = $tugasAkhir ? $tugasAkhir->pembimbing->pluck('nama_dosen')->toArray() : [];
                 $pembimbing1 = $pembimbingNames[0] ?? '';
@@ -114,9 +118,11 @@ class TugasAkhirController extends Controller
                 $data = htmlspecialchars(json_encode([
                     'id_tugas_akhir' => $row->id_tugas_akhir,
                     'nim' => $row->nim,
+                    'nama_mahasiswa' => $row->nama_mahasiswa,
                     'judul' => $row->judul,
                     'pembimbing_1' => $pembimbing1,
-                    'pembimbing_2' => $pembimbing2
+                    'pembimbing_2' => $pembimbing2,
+                    'status' => $row->status
                 ]), ENT_QUOTES, 'UTF-8');
 
                 $isLocked = (new self)->checkIsLocked($tugasAkhir);
@@ -124,23 +130,37 @@ class TugasAkhirController extends Controller
                 if ($isLocked) {
                     return '
                     <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-sm btn-light btn-active-light-info text-center border-0" data-bs-toggle="tooltip" data-bs-title="Detail"
+                            onclick="showTugasAkhir(' . $row->id_tugas_akhir . ', ' . $data . ')">
+                            <i class="fas fa-file-alt"></i>
+                        </button>
                         <button class="btn btn-sm btn-light btn-active-light-secondary text-center border-0" disabled data-bs-toggle="tooltip" data-bs-title="Terkunci (Sudah disetujui / dalam proses SKPI)">
                             <i class="fas fa-lock"></i>
                         </button>
                     </div>';
                 }
 
-                return '
+                $btn = '
                 <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-sm btn-light btn-active-light-info text-center border-0" data-bs-toggle="tooltip" data-bs-title="Detail"
+                        onclick="showTugasAkhir(' . $row->id_tugas_akhir . ', ' . $data . ')">
+                        <i class="fas fa-file-alt"></i>
+                    </button>
                     <button class="btn btn-sm btn-light btn-active-light-warning text-center border-0" data-bs-toggle="tooltip" data-bs-title="Edit"
                         onclick="editTugasAkhir(' . $row->id_tugas_akhir . ', ' . $data . ')">
                         <i class="fas fa-edit"></i>
-                    </button>
+                    </button>';
+
+                if ($user->role === 'admin') {
+                    $btn .= '
                     <button class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"
                         onclick="confirmDelete(' . $row->id_tugas_akhir . ')">
                         <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>';
+                    </button>';
+                }
+                
+                $btn .= '</div>';
+                return $btn;
             })
             ->rawColumns(['status', 'pembimbing', 'action'])
             ->make(true);
@@ -241,6 +261,10 @@ class TugasAkhirController extends Controller
                 ]);
             }
         });
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data Tugas Akhir berhasil diperbarui.']);
+        }
 
         return redirect()->route('bak_fakultas.tugas_akhir.index')->with('success', 'Data Tugas Akhir berhasil diperbarui.');
     }
