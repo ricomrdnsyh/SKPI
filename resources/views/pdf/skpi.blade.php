@@ -21,14 +21,14 @@
 
         body {
             font-family: 'Garamond', serif;
-            font-size: 10pt;
+            font-size: 9pt;
             line-height: 1.15;
             color: #000;
         }
 
         @page {
             size: 210mm 330mm;
-            margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+            margin: 1.5cm 1.5cm 0.5cm 1.5cm;
         }
 
         .header-title-container {
@@ -115,7 +115,7 @@
 
         .signature-table {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 5px;
             border: none;
             page-break-inside: avoid;
         }
