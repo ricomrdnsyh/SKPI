@@ -27,10 +27,10 @@
         };
         $taMod = $mahasiswa->tugasAkhir ? collect([$mahasiswa->tugasAkhir]) : collect();
         $mods = [
-            ['label' => 'Prestasi', 'status' => $modStatus($prestasi)],
-            ['label' => 'Organisasi', 'status' => $modStatus($organisasi)],
-            ['label' => 'Sertifikat', 'status' => $modStatus($sertifikat)],
-            ['label' => 'Magang', 'status' => $modStatus($magang)],
+            ['label' => 'Prestasi/Penghargaan', 'status' => $modStatus($prestasi)],
+            ['label' => 'Keorganisasian', 'status' => $modStatus($organisasi)],
+            ['label' => 'Sertifikat Keahlian', 'status' => $modStatus($sertifikat)],
+            ['label' => 'Kerja Praktek/Magang', 'status' => $modStatus($magang)],
             ['label' => 'Tugas Akhir', 'status' => $modStatus($taMod)],
         ];
     @endphp

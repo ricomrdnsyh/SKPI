@@ -11,7 +11,7 @@
 <div class="card-body pt-5">
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="fa-solid fa-trophy fs-3 me-2 text-warning"></i> Prestasi
+            <i class="fa-solid fa-trophy fs-3 me-2 text-warning"></i> Prestasi/Penghargaan
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -36,7 +36,7 @@
     </div>
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="fa-solid fa-users-rectangle fs-3 me-2 text-success"></i> Organisasi
+            <i class="fa-solid fa-users-rectangle fs-3 me-2 text-success"></i> Keorganisasian
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -61,7 +61,7 @@
     </div>
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="fa-solid fa-file-signature fs-3 me-2 text-primary"></i> Sertifikat
+            <i class="fa-solid fa-file-signature fs-3 me-2 text-primary"></i> Sertifikat Keahlian
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -86,7 +86,7 @@
     </div>
     <div class="mb-8">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="fa-solid fa-briefcase fs-3 me-2 text-gray-600"></i> Magang / KP
+            <i class="fa-solid fa-briefcase fs-3 me-2 text-gray-600"></i> Kerja Praktek/Magang
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         <div class="d-flex flex-column gap-4">
@@ -111,7 +111,7 @@
     </div>
     <div class="mb-0">
         <h4 class="fw-bolder text-gray-800 mb-4 pb-2 border-bottom border-gray-200">
-            <i class="fa-solid fa-graduation-cap fs-3 me-2 text-info"></i> Tugas Akhir / Skripsi
+            <i class="fa-solid fa-graduation-cap fs-3 me-2 text-info"></i> Tugas Akhir
             <span class="badge badge-light-secondary ms-2 fw-normal fs-8">Verifikasi BAAK</span>
         </h4>
         @if($mahasiswa->tugasAkhir)

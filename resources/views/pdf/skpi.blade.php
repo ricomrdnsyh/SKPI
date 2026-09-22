@@ -21,8 +21,8 @@
 
         body {
             font-family: 'Garamond', serif;
-            font-size: 12pt;
-            line-height: 1.25;
+            font-size: 10pt;
+            line-height: 1.15;
             color: #000;
         }
 
@@ -96,9 +96,9 @@
         .content-table th,
         .content-table td {
             border: 1px solid #f4b084;
-            padding: 2px 4px;
+            padding: 1px 2px;
             vertical-align: middle;
-            line-height: 1.1;
+            line-height: 1.05;
         }
 
         .content-table .section-header {
@@ -106,7 +106,7 @@
             font-weight: bold;
             text-align: left;
             padding-left: 30px;
-            font-size: 12pt;
+            font-size: 10pt;
         }
 
         .label-col {
