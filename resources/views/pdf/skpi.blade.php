@@ -28,7 +28,7 @@
 
         @page {
             size: 210mm 330mm;
-            margin: 1.5cm 1.5cm 0.5cm 1.5cm;
+            margin: 1.5cm 1.5cm 1.5cm 1.5cm;
         }
 
         .header-title-container {
@@ -353,7 +353,9 @@
                 Dekan,<br>
                 @if ($pengajuan->status === 'dicetak')
                     @php
-                        $verifyUrl = route('skpi.verify', ['id_skpi' => $skpi]);
+                        $verifyUrl = route('skpi.verify', [
+                            'hash' => base64_encode('SKPI-' . ($skpi->id_skpi ?? $skpi->id)),
+                        ]);
                         $qrCodeBase64 = base64_encode(
                             \SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)
                                 ->errorCorrection('H')

@@ -168,8 +168,21 @@ class SkpiController extends Controller
         return $pdf->stream("SKPI_{$mahasiswa->nim}.pdf");
     }
 
-    public function verify(int $id_skpi)
+    public function verify(string $hash)
     {
+        try {
+            $decoded = base64_decode($hash);
+            if (!$decoded || strpos($decoded, 'SKPI-') !== 0) {
+                return view('skpi.verify_failed');
+            }
+            $id_skpi = (int) str_replace('SKPI-', '', $decoded);
+            if ($id_skpi <= 0) {
+                return view('skpi.verify_failed');
+            }
+        } catch (\Exception $e) {
+            return view('skpi.verify_failed');
+        }
+
         $data = Cache::remember("skpi:verify:{$id_skpi}", 300, function () use ($id_skpi) {
             $skpi = DB::table('skpi')
                 ->leftJoin('mahasiswa', 'skpi.nim', '=', 'mahasiswa.nim')

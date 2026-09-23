@@ -45,7 +45,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::any('/sso', [SsoController::class, 'sso'])->name('sso.callback');
 Route::any('/sso/logout/{sessionId}', [SsoController::class, 'logout'])->name('sso.logout');
-Route::get('/verify/skpi/{id_skpi}', [SkpiController::class, 'verify'])->name('skpi.verify');
+Route::get('/verify/skpi/{hash}', [SkpiController::class, 'verify'])->name('skpi.verify');
 Route::middleware(['auth:web,mahasiswa'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/skpi/{id_pengajuan}/print', [SkpiController::class, 'print'])->name('bak_fakultas.skpi.print');

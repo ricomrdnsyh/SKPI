@@ -9,124 +9,180 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-</head>
-
-<body id="kt_body" class="app-blank bgi-attachment-fixed bgi-position-center bgi-no-repeat">
-    <div class="d-flex flex-column flex-root" id="kt_app_root">
-        <style>
-            body {
-                background-color: #f4f6f9;
-                font-family: 'Inter', Helvetica, sans-serif;
+    <style>
+        body {
+            background-color: #f8f9fa;
+            background-image: radial-gradient(#e4e6ef 1px, transparent 1px);
+            background-size: 24px 24px;
+            font-family: 'Inter', Helvetica, sans-serif;
+        }
+        .official-card {
+            background-color: #ffffff;
+            border: 1px solid #e4e6ef;
+            border-radius: 16px;
+            box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .official-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #059669, #34d399, #059669);
+            z-index: 10;
+        }
+        .official-card-inner {
+            position: relative;
+            z-index: 1;
+            padding: 3rem;
+            border: 1px solid rgba(0,0,0,0.03);
+            border-radius: 12px;
+            margin: 1rem;
+            background: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.03;
+            width: 350px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .info-table th {
+            text-align: left;
+            padding: 16px 20px;
+            color: #7e8299;
+            font-weight: 500;
+            font-size: 0.95rem;
+            width: 35%;
+            border-bottom: 1px dashed #e4e6ef;
+        }
+        .info-table td {
+            font-weight: 700;
+            color: #181c32;
+            padding: 16px 20px;
+            font-size: 1rem;
+            border-bottom: 1px dashed #e4e6ef;
+        }
+        .info-table tr:last-child th,
+        .info-table tr:last-child td {
+            border-bottom: none;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0px 8px 15px rgba(16, 185, 129, 0.2);
+            transition: all 0.3s ease;
+        }
+        .status-badge.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: 2px solid #34d399;
+        }
+        .status-badge i {
+            color: #ffffff !important;
+        }
+        .institution-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .document-title {
+            font-size: 1.1rem;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+        .verification-footer {
+            background-color: #f0fdf4;
+            border-radius: 12px;
+            border: 2px dashed #10b981;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .shield-icon {
+            background: #e8fff3;
+            color: #10b981;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        @media (max-width: 768px) {
+            .official-card-inner {
+                padding: 1.5rem;
+                margin: 0.5rem;
             }
-            .official-card {
-                background-color: #ffffff;
-                border: 1px solid #e4e6ef;
-                border-radius: 12px;
-                box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
-                position: relative;
-                overflow: hidden;
-            }
-            .official-card::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
+            .info-table th, .info-table td {
+                display: block;
                 width: 100%;
-                height: 8px;
-                background: #50cd89;
-            }
-            .watermark {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                opacity: 0.04;
-                width: 300px;
-                pointer-events: none;
-                z-index: 0;
-            }
-            .content-relative {
-                position: relative;
-                z-index: 1;
-            }
-            .info-table {
-                width: 100%;
+                padding: 10px 15px;
             }
             .info-table th {
-                text-align: left;
-                padding: 14px 20px;
-                color: #5e6278;
-                font-weight: 500;
-                width: 40%;
-                border-bottom: 1px solid #eff2f5;
-                background-color: #f9f9f9;
-            }
-            .info-table td {
-                font-weight: 600;
-                color: #181c32;
-                padding: 14px 20px;
-                border-bottom: 1px solid #eff2f5;
-            }
-            .info-table tr:last-child th,
-            .info-table tr:last-child td {
                 border-bottom: none;
+                padding-bottom: 0;
             }
             .status-badge {
-                display: inline-flex;
-                align-items: center;
-                padding: 10px 24px;
-                border-radius: 8px;
-                font-weight: 700;
-                font-size: 1.15rem;
-                letter-spacing: 0.5px;
+                padding: 10px 20px;
+                font-size: 1rem;
             }
-            .status-badge.success {
-                background-color: #e8fff3;
-                color: #50cd89;
-                border: 1px dashed #50cd89;
-            }
-            .institution-title {
-                font-size: 1.5rem;
-                font-weight: 800;
-                color: #181c32;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-            .document-title {
-                font-size: 1.1rem;
-                color: #5e6278;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-        </style>
+        }
+    </style>
+</head>
 
+<body id="kt_body" class="app-blank">
+    <div class="d-flex flex-column flex-root" id="kt_app_root">
         <div class="d-flex flex-column flex-column-fluid">
-            <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
+            <div class="d-flex flex-center flex-column flex-column-fluid p-5 p-lg-10">
                 
-                <div class="w-lg-700px official-card p-10 p-lg-15 mx-auto">
+                <div class="w-100 w-lg-800px official-card mx-auto">
                     <img src="{{ asset('assets/media/logos/unuja.png') }}" class="watermark" alt="Watermark" />
                     
-                    <div class="content-relative">
-                        <div class="text-center mb-10 pb-5 border-bottom border-gray-300">
-                            <img alt="Logo" src="{{ asset('assets/media/logos/unuja.png') }}" class="h-80px mb-5" />
-                            <h1 class="institution-title mb-2">Universitas Nurul Jadid</h1>
+                    <div class="official-card-inner">
+                        <div class="text-center mb-12 pb-8 border-bottom border-gray-200">
+                            <img alt="Logo UNUJA" src="{{ asset('assets/media/logos/unuja.png') }}" class="h-90px mb-6" />
+                            <h1 class="institution-title mb-1">Universitas Nurul Jadid</h1>
                             <div class="document-title">Hasil Verifikasi Dokumen Akademik</div>
                         </div>
 
-                        <div class="text-center mb-10">
-                            <div class="status-badge success mb-5">
-                                <i class="ki-duotone ki-shield-tick fs-2x text-success me-3">
+                        <div class="text-center mb-12">
+                            <div class="status-badge success mb-6">
+                                <i class="ki-duotone ki-shield-tick fs-1 me-2">
                                     <span class="path1"></span><span class="path2"></span>
                                 </i>
-                                DOKUMEN VALID
+                                Dokumen Valid
                             </div>
-                            <div class="text-gray-600 fs-6">
-                                Surat Keterangan Pendamping Ijazah (SKPI) ini terdaftar resmi dan sah di basis data Universitas Nurul Jadid.
-                            </div>
+                            <p class="text-gray-600 fs-5 px-lg-10 lh-lg">
+                                Menyatakan bahwa <strong>Surat Keterangan Pendamping Ijazah (SKPI)</strong> di bawah ini terdaftar resmi dan sah di basis data sistem akademik Universitas Nurul Jadid.
+                            </p>
                         </div>
 
-                        <div class="border border-gray-300 rounded mb-10 overflow-hidden">
+                        <div class="border border-gray-200 bg-white rounded-xl mb-12 overflow-hidden shadow-sm">
                             <table class="info-table">
                                 <tbody>
                                     <tr>
@@ -134,7 +190,7 @@
                                         <td>{{ $mahasiswa->nama_lengkap }}</td>
                                     </tr>
                                     <tr>
-                                        <th>NIM</th>
+                                        <th>Nomor Induk Mahasiswa (NIM)</th>
                                         <td>{{ $mahasiswa->nim }}</td>
                                     </tr>
                                     <tr>
@@ -157,19 +213,23 @@
                                     </tr>
                                     <tr>
                                         <th>Nomor SKPI</th>
-                                        <td>{{ $skpi ? $skpi->nomor_skpi : '-' }}</td>
+                                        <td class="text-primary font-monospace">{{ $skpi ? $skpi->nomor_skpi : '-' }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="alert alert-secondary border border-gray-300 d-flex align-items-center p-5 mb-0">
-                            <i class="ki-duotone ki-shield-tick fs-2hx text-gray-600 me-4">
-                                <span class="path1"></span><span class="path2"></span>
-                            </i>
-                            <div class="d-flex flex-column text-gray-600">
-                                <span class="fw-bold">Verifikasi Keaslian Dokumen</span>
-                                <span class="fs-7">Untuk informasi lebih lanjut mengenai capaian pembelajaran dan prestasi, silakan hubungi BAAK Universitas Nurul Jadid.</span>
+                        <div class="verification-footer">
+                            <div class="shield-icon">
+                                <i class="ki-duotone ki-verify fs-2x">
+                                    <span class="path1"></span><span class="path2"></span>
+                                </i>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold fs-5 mb-1" style="color: #065f46;">Otentikasi Digital</span>
+                                <span class="fs-7 lh-base" style="color: #047857;">
+                                    Dokumen ini dilindungi dan diverifikasi secara elektronik. Untuk informasi lebih lanjut mengenai capaian pembelajaran dan prestasi mahasiswa bersangkutan, silakan hubungi BAAK Universitas Nurul Jadid.
+                                </span>
                             </div>
                         </div>
 
