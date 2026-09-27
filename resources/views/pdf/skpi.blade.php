@@ -52,6 +52,11 @@
             margin-right: -25px;
         }
 
+        .content-wrapper {
+            margin-left: -25px;
+            margin-right: -25px;
+        }
+
         .header-contact {
             text-align: center;
             border-bottom: 3px solid #000;
@@ -145,11 +150,11 @@
         </div>
     </div>
 
-    <div class="doc-title-container">
-        <div class="doc-number"><u>Nomor : {{ $skpi->nomor_skpi }}</u></div>
+    <div class="content-wrapper">
+        <div class="doc-title-container">
+            <div class="doc-number"><u>Nomor : {{ $skpi->nomor_skpi }}</u></div>
         <div class="doc-desc">
-            Surat Keterangan Pendamping Ijazah sebagai pelengkap Ijazah yang menerangkan capaian pembelajaran dan<br>
-            prestasi dari pemegang Ijazah selama masa studi
+            Surat Keterangan Pendamping Ijazah sebagai pelengkap Ijazah yang menerangkan capaian pembelajaran dan prestasi dari pemegang Ijazah selama masa studi
         </div>
     </div>
 
@@ -252,7 +257,8 @@
             <td colspan="2" class="section-header">03. INFORMASI TENTANG KUALIFIKASI DAN HASIL CAPAIAN</td>
         </tr>
         <tr>
-            <td style="font-weight: bold; width: 12%; text-align: left; white-space: nowrap;">KODE</td>
+            <td style="font-weight: bold; width: 1%; text-align: left; white-space: nowrap; border-right: none; padding-right: 10px;">KODE
+            </td>
             <td style="font-weight: bold; text-align: left; border-left: none;">CAPAIAN PEMBELAJARAN</td>
         </tr>
         @php
@@ -267,7 +273,7 @@
             @endif
             @foreach ($items as $item)
                 <tr>
-                    <td style="text-align: left; border-right: none; white-space: nowrap; vertical-align: top;">
+                    <td style="text-align: left; border-right: none; white-space: nowrap; vertical-align: top; padding-right: 10px;">
                         {{ $item->kode_cpl }}</td>
                     <td style="text-align: justify; border-left: none; vertical-align: top;">
                         <div style="text-align: justify;">{{ $item->deskripsi_cpl }}</div>
@@ -388,6 +394,7 @@
             <td style="width: 50%;"></td>
         </tr>
     </table>
+    </div>
 </body>
 
 </html>
