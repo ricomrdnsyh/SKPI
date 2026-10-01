@@ -22,19 +22,19 @@
                             @csrf
                             <div class="fv-row mb-8">
                                 <label class="form-label fw-bold fs-6">Judul Tugas Akhir / Skripsi</label>
-                                <textarea name="judul" rows="3" class="form-control" readonly>{{ $judulApi ?? '' }}</textarea>
+                                <textarea name="judul" rows="3" class="form-control" readonly placeholder="Data Judul Tugas Akhir belum ditarik dari SIM PT...">{{ $judulApi ?? '' }}</textarea>
                             </div>
 
                             <div class="row g-8 mb-8">
                                 <div class="col-md-6 fv-row">
                                     <label class="form-label fw-bold fs-6">Dosen Pembimbing 1 (Utama)</label>
                                     <input type="text" name="pembimbing[0]" class="form-control"
-                                        value="{{ $pembimbingNames[0] ?? '' }}" readonly>
+                                        value="{{ $pembimbingNames[0] ?? '' }}" readonly placeholder="Data Dosen Pembimbing Utama belum tersedia...">
                                 </div>
                                 <div class="col-md-6 fv-row">
                                     <label class="form-label fw-bold fs-6">Dosen Pembimbing 2 (Pendamping)</label>
                                     <input type="text" name="pembimbing[1]" class="form-control"
-                                        value="{{ $pembimbingNames[1] ?? '' }}" readonly>
+                                        value="{{ $pembimbingNames[1] ?? '' }}" readonly placeholder="Data Dosen Pembimbing Pendamping belum tersedia...">
                                 </div>
                             </div>
                             @if (!$readonly && (!isset($mahasiswa->tugasAkhir) || $mahasiswa->tugasAkhir->status === 'rejected'))
@@ -61,7 +61,27 @@
 @section('js')
     @if (!$readonly)
         <script>
-            document.getElementById('kt_tugas_akhir_form').addEventListener('submit', function() {
+            document.getElementById('kt_tugas_akhir_form').addEventListener('submit', function(e) {
+                var judul = document.querySelector('textarea[name="judul"]').value.trim();
+                
+                if (!judul) {
+                    e.preventDefault();
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            text: "Data Tugas Akhir dari SIM PT masih kosong, Anda belum bisa menyimpan dan mengajukan.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "Ok, Mengerti!",
+                            customClass: {
+                                confirmButton: "btn btn-primary"
+                            }
+                        });
+                    } else {
+                        alert("Data Tugas Akhir dari SIM PT masih kosong, Anda belum bisa menyimpan dan mengajukan.");
+                    }
+                    return false;
+                }
+
                 var btn = document.getElementById('kt_tugas_akhir_submit');
                 btn.setAttribute('data-kt-indicator', 'on');
                 btn.disabled = true;

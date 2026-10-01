@@ -601,7 +601,7 @@
                                                     $canEditTa = !$readonlyTa;
                                                 @endphp
                                                 <a href="{{ route('mahasiswa.tugas_akhir.edit') }}"
-                                                    class="btn btn-sm btn-{{ $canEditTa ? $taTheme : 'secondary' }} px-4">
+                                                    class="btn btn-sm btn-{{ $canEditTa ? $taTheme : 'secondary' }} px-4 w-100 w-sm-auto mt-3 mt-sm-0">
                                                     <i
                                                         class="ki-duotone ki-{{ $canEditTa ? 'pencil' : 'magnifier' }} fs-4"><span
                                                             class="path1"></span><span class="path2"></span></i>
@@ -754,12 +754,12 @@
                                                 </form>
                                             @else
                                                 <div
-                                                    class="alert alert-dismissible bg-light-danger border border-danger border-dashed d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+                                                    class="alert bg-light-danger border border-danger border-dashed d-flex flex-column flex-sm-row align-items-center w-100 p-5 mb-10 text-center text-sm-start">
                                                     <i
-                                                        class="ki-duotone ki-shield-cross fs-2hx text-danger me-4 mb-5 mb-sm-0"><span
+                                                        class="ki-duotone ki-shield-cross fs-2hx text-danger me-0 me-sm-4 mb-3 mb-sm-0"><span
                                                             class="path1"></span><span class="path2"></span><span
                                                             class="path3"></span></i>
-                                                    <div class="d-flex flex-column pe-0 pe-sm-10">
+                                                    <div class="d-flex flex-column">
                                                         <h5 class="mb-1 text-danger">Belum Memenuhi Syarat</h5>
                                                         <span class="fs-8 text-danger">Anda wajib melengkapi data
                                                             <span class="fw-bolder">Tugas Akhir / Skripsi</span>

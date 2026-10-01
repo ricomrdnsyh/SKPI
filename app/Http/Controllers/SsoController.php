@@ -26,9 +26,6 @@ class SsoController extends Controller
             $responseData = $response['data'];
 
             if (isset($responseData['nim'])) {
-                if ($responseData['id_jenis_keluar'] != 1) {
-                    return redirect('/')->with('error', 'Belum bisa buka SKPI karena status Anda belum lulus.');
-                }
 
                 $save['nama_lengkap'] = $responseData['nama'];
                 $save['tempat_lahir'] = $responseData['tempat_lahir'] ?? null;
