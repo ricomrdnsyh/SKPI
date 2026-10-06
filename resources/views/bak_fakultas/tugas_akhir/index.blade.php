@@ -219,6 +219,22 @@
                             <input type="text" class="form-control form-control-sm" name="pembimbing[]"
                                 id="edit_pembimbing_2" />
                         </div>
+                        @if(in_array(Auth::user()->role, ['bak_fakultas', 'admin']))
+                        <div class="row row-cols-1 row-cols-md-2 g-6 mb-5">
+                            <div class="fv-row">
+                                <label for="edit_status" class="form-label required fw-bold fs-6">Status</label>
+                                <select name="status" id="edit_status" required class="form-select form-select-sm" data-control="select2" data-hide-search="true" data-dropdown-parent="#form_edit">
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                            </div>
+                            <div class="fv-row">
+                                <label for="edit_keterangan" class="form-label fw-bold fs-6">Keterangan / Alasan Tolak</label>
+                                <input type="text" name="keterangan" id="edit_keterangan" class="form-control form-control-sm" placeholder="Isi jika ditolak atau ada catatan">
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>

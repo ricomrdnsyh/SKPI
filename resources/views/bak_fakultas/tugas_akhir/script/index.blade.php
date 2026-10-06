@@ -121,6 +121,8 @@
         $('#edit_judul').val(data.judul);
         $('#edit_pembimbing_1').val(data.pembimbing_1).trigger('change');
         $('#edit_pembimbing_2').val(data.pembimbing_2).trigger('change');
+        if($('#edit_status').length) $('#edit_status').val(data.status).trigger('change.select2');
+        if($('#edit_keterangan').length) $('#edit_keterangan').val(data.keterangan || '');
         $('#form_edit').modal('show');
     }
 

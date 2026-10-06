@@ -113,16 +113,28 @@ class MagangController extends Controller
             return redirect()->route('mahasiswa.magang.index')->with('error', 'Data tidak dapat dimodifikasi karena pengajuan SKPI sedang diproses atau sudah disetujui.');
         }
 
-        if ($magang->status === 'approved') {
+        if ($magang->status === 'approved' && !in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
             return redirect()->route('mahasiswa.magang.index')->with('error', 'Data yang telah disetujui tidak dapat diubah.');
         }
 
         $data = $request->validated();
-        $data['status'] = 'pending';
-        $data['keterangan'] = null;
-
-        $data['approved_by'] = null;
-        $data['approved_at'] = null;
+        
+        if (in_array(Auth::user()->role, ['bak_fakultas', 'admin']) && $request->has('status')) {
+            $data['status'] = $request->status;
+            $data['keterangan'] = $request->keterangan;
+            if ($request->status === 'approved') {
+                $data['approved_by'] = Auth::id();
+                $data['approved_at'] = now();
+            } else {
+                $data['approved_by'] = null;
+                $data['approved_at'] = null;
+            }
+        } else {
+            $data['status'] = 'pending';
+            $data['keterangan'] = null;
+            $data['approved_by'] = null;
+            $data['approved_at'] = null;
+        }
 
         if ($request->hasFile('file_bukti')) {
             if ($magang->file_bukti) {
@@ -148,7 +160,7 @@ class MagangController extends Controller
             return redirect()->route('mahasiswa.magang.index')->with('error', 'Data tidak dapat dimodifikasi karena pengajuan SKPI sedang diproses atau sudah disetujui.');
         }
 
-        if ($magang->status === 'approved') {
+        if ($magang->status === 'approved' && !in_array(Auth::user()->role, ['bak_fakultas', 'admin'])) {
             return redirect()->route('mahasiswa.magang.index')->with('error', 'Data yang telah disetujui tidak dapat dihapus.');
         }
 
@@ -200,9 +212,7 @@ class MagangController extends Controller
             ->addColumn('action', function ($row) use ($user) {
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
                 $btn = '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="' . $rowJson . '" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a> ' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>';
-                if ($user->role !== 'bak_fakultas') {
-                    $btn .= ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_magang . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>';
-                }
+                $btn .= ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->id_magang . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>';
                 $btn .= '</div>';
                 return $btn;
             })

@@ -122,7 +122,8 @@ class TugasAkhirController extends Controller
                     'judul' => $row->judul,
                     'pembimbing_1' => $pembimbing1,
                     'pembimbing_2' => $pembimbing2,
-                    'status' => $row->status
+                    'status' => $row->status,
+                    'keterangan' => $row->keterangan
                 ]), ENT_QUOTES, 'UTF-8');
 
                 $isLocked = (new self)->checkIsLocked($tugasAkhir);
@@ -238,11 +239,24 @@ class TugasAkhirController extends Controller
         }
 
         DB::transaction(function () use ($request, $tugasAkhir) {
-            $tugasAkhir->update([
+            $data = [
                 'nim' => $request->nim,
                 'judul' => $request->judul,
-                // Status remains unchanged when editing by admin? Or reset to pending? Let's keep existing status.
-            ]);
+            ];
+            
+            if ($request->has('status')) {
+                $data['status'] = $request->status;
+                $data['keterangan'] = $request->keterangan;
+                if ($request->status === 'approved') {
+                    $data['approved_by'] = Auth::id();
+                    $data['approved_at'] = now();
+                } else {
+                    $data['approved_by'] = null;
+                    $data['approved_at'] = null;
+                }
+            }
+            
+            $tugasAkhir->update($data);
 
             DB::table('pembimbing_tugas_akhir')
                 ->where('id_tugas_akhir', $tugasAkhir->id_tugas_akhir)
