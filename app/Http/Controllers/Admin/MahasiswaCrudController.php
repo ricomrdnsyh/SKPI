@@ -7,6 +7,7 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 use App\Http\Controllers\Traits\FilterByProdi;
 
@@ -85,6 +86,9 @@ class MahasiswaCrudController extends Controller
         ]);
 
         $data = $request->all();
+        if (isset($data['tempat_lahir'])) {
+            $data['tempat_lahir'] = !empty($data['tempat_lahir']) ? Str::title(trim($data['tempat_lahir'])) : null;
+        }
         if (!$request->filled('password')) {
             $data['password'] = $request->nim;
         }
@@ -154,6 +158,9 @@ class MahasiswaCrudController extends Controller
         ]);
 
         $data = $request->all();
+        if (isset($data['tempat_lahir'])) {
+            $data['tempat_lahir'] = !empty($data['tempat_lahir']) ? Str::title(trim($data['tempat_lahir'])) : null;
+        }
         if (!$request->filled('password')) {
             unset($data['password']);
         }
@@ -208,7 +215,11 @@ class MahasiswaCrudController extends Controller
             })
             ->addColumn('prodi', fn($m) => $m->prodi_nama ?? '-')
             ->addColumn('status', fn($m) => '<span class="badge badge-success">' . ($m->status ?? 'Aktif') . '</span>')
+            ->editColumn('tempat_lahir', fn($m) => $m->tempat_lahir ? Str::title($m->tempat_lahir) : null)
             ->addColumn('action', function ($row) {
+                if (!empty($row->tempat_lahir)) {
+                    $row->tempat_lahir = Str::title($row->tempat_lahir);
+                }
                 $rowJson = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
                 return '<div class="d-flex justify-content-center gap-2">' . '<a href="javascript:void(0)" onclick="showModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-info text-center" data-bs-toggle="tooltip" data-bs-title="Detail"><i class="fas fa-file-alt"></i></a>' . ' ' . '<a href="javascript:void(0)" onclick="editModal(this)" data-row="'.$rowJson.'" class="btn btn-sm btn-light btn-active-light-warning text-center" data-bs-toggle="tooltip" data-bs-title="Edit"><i class="fas fa-edit"></i></a>' . ' ' . '<button type="button" onclick="confirmDelete(\'' . $row->nim . '\')" class="btn btn-sm btn-light btn-active-light-danger text-center border-0" data-bs-toggle="tooltip" data-bs-title="Hapus"><i class="fas fa-trash-alt"></i></button>' . '</div>';
             })

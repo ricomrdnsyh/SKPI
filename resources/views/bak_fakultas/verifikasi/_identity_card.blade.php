@@ -13,7 +13,7 @@
                         ['label' => 'NIM', 'value' => $mahasiswa->nim],
                         ['label' => 'Nomor Ijazah Nasional', 'value' => $mahasiswa->skpi->nomor_ijazah_nasional ?? null, 'empty' => '<span class="badge badge-light-warning fw-bold text-uppercase fs-8"><i class="ki-duotone ki-time fs-7 me-1"><span class="path1"></span><span class="path2"></span></i> Diinput saat penerbitan</span>'],
                         ['label' => 'Program Studi', 'value' => $mahasiswa->programStudi->nama_prodi],
-                        ['label' => 'Tempat, Tanggal Lahir', 'value' => $mahasiswa->tempat_lahir . ', ' . $mahasiswa->tanggal_lahir],
+                        ['label' => 'Tempat, Tanggal Lahir', 'value' => ($mahasiswa->tempat_lahir ? \Illuminate\Support\Str::title($mahasiswa->tempat_lahir) : '-') . ', ' . $mahasiswa->tanggal_lahir],
                     ];
                 @endphp
                 @foreach($fields as $f)

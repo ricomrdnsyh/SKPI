@@ -168,7 +168,7 @@
         </tr>
         <tr>
             <td class="label-col">Tempat Dan Tanggal Lahir</td>
-            <td>{{ $mahasiswa->tempat_lahir }},
+            <td>{{ $mahasiswa->tempat_lahir ? \Illuminate\Support\Str::title($mahasiswa->tempat_lahir) : '-' }},
                 {{ \Carbon\Carbon::parse($mahasiswa->tanggal_lahir)->isoFormat('D MMMM YYYY') }}</td>
         </tr>
         <tr>

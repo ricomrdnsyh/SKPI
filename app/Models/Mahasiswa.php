@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Mahasiswa extends Authenticatable
 {
@@ -40,6 +41,16 @@ class Mahasiswa extends Authenticatable
             'password' => 'hashed',
             'tanggal_lahir' => 'date',
         ];
+    }
+
+    public function getTempatLahirAttribute($value): ?string
+    {
+        return $value ? Str::title($value) : $value;
+    }
+
+    public function setTempatLahirAttribute($value): void
+    {
+        $this->attributes['tempat_lahir'] = $value ? Str::title(trim($value)) : $value;
     }
 
     public function getAuthIdentifierName()

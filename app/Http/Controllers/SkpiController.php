@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SkpiController extends Controller
 {
@@ -54,9 +55,8 @@ class SkpiController extends Controller
 
         $mahasiswa = (object) [
             'nim' => $mahasiswaRow->nim,
-            'nim' => $mahasiswaRow->nim,
             'nama_lengkap' => $mahasiswaRow->nama_lengkap,
-            'tempat_lahir' => $mahasiswaRow->tempat_lahir,
+            'tempat_lahir' => $mahasiswaRow->tempat_lahir ? Str::title($mahasiswaRow->tempat_lahir) : null,
             'tanggal_lahir' => $mahasiswaRow->tanggal_lahir,
             'id_prodi' => $mahasiswaRow->id_prodi,
         ];
@@ -215,9 +215,8 @@ class SkpiController extends Controller
 
             $mahasiswa = (object) [
                 'nim' => $skpi->nim,
-                'nim' => $skpi->nim,
                 'nama_lengkap' => $skpi->mahasiswa_nama,
-                'tempat_lahir' => $skpi->tempat_lahir,
+                'tempat_lahir' => $skpi->tempat_lahir ? Str::title($skpi->tempat_lahir) : null,
                 'tanggal_lahir' => $skpi->tanggal_lahir,
                 'id_prodi' => $skpi->id_prodi,
                 'programStudi' => (object) [

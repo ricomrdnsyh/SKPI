@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class SsoController extends Controller
 {
@@ -28,7 +29,7 @@ class SsoController extends Controller
             if (isset($responseData['nim'])) {
 
                 $save['nama_lengkap'] = $responseData['nama'];
-                $save['tempat_lahir'] = $responseData['tempat_lahir'] ?? null;
+                $save['tempat_lahir'] = !empty($responseData['tempat_lahir']) ? Str::title(trim($responseData['tempat_lahir'])) : null;
                 $save['tanggal_lahir'] = $responseData['tanggal_lahir'] ?? null;
                 $save['id_prodi'] = $responseData['id_prodi'];
                 $save['id_kurikulum'] = $responseData['id_kurikulum'] ?? null;
