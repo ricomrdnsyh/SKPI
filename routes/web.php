@@ -112,6 +112,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::resource('mahasiswa', MahasiswaCrudController::class);
         Route::get('cpl/import/template', [CplProdiController::class, 'downloadTemplate'])->name('cpl.import.template');
         Route::post('cpl/import', [CplProdiController::class, 'import'])->name('cpl.import');
+        Route::post('cpl/bulk-delete', [CplProdiController::class, 'bulkDelete'])->name('cpl.bulk_delete');
         Route::resource('cpl', CplProdiController::class);
         Route::post('kurikulum/sync', [KurikulumController::class, 'sync'])->name('kurikulum.sync');
         Route::resource('kurikulum', KurikulumController::class)->except(['create', 'store']);
@@ -122,6 +123,7 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::resource('kategori-cpl', KategoriCplController::class);
     });
     Route::prefix('admin')->middleware('role:admin')->group(function () {
+        Route::delete('cpl/{id}', [CplProdiController::class, 'destroy'])->name('admin.cpl.destroy');
         Route::get('/dashboard', [MasterDataController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('penilaian/data', [SistemPenilaianController::class, 'datatable'])->name('penilaian.datatable');
         Route::get('users/data', [UserController::class, 'datatable'])->name('users.datatable');

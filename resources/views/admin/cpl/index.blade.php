@@ -100,8 +100,13 @@
                                 </div>
                             </div>
                             <div class="card-toolbar">
-                                <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
-                                    <button type="button" class="btn btn-sm btn-success me-2" data-bs-toggle="modal"
+                                <div class="d-flex justify-content-end align-items-center gap-2" data-kt-customer-table-toolbar="base">
+                                    @if(auth()->user()->role == 'admin')
+                                        <button type="button" class="btn btn-sm btn-danger" id="btn-bulk-delete-cpl" style="display: none;">
+                                            <i class="fas fa-trash-alt"></i> Hapus CPL Kurikulum Ini
+                                        </button>
+                                    @endif
+                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
                                         data-bs-target="#form_import"><i class="fas fa-upload"></i> Import CPL</button>
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#form_create"><i class="fas fa-plus"></i> Tambah CPL Prodi</button>

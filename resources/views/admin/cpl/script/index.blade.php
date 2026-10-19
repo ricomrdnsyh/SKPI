@@ -147,8 +147,85 @@
             table.ajax.reload(null, false);
         });
 
+        function checkBulkDeleteButton() {
+            let prodiVal = $('#filter-prodi').val();
+            let kurikulumVal = $('#filter-kurikulum').val();
+            if (prodiVal && kurikulumVal) {
+                $('#btn-bulk-delete-cpl').fadeIn(200);
+            } else {
+                $('#btn-bulk-delete-cpl').fadeOut(200);
+            }
+        }
+
         $('#filter-kurikulum').on('change', function() {
+            checkBulkDeleteButton();
             table.ajax.reload(null, false);
+        });
+
+        $('#filter-prodi').on('change', function() {
+            checkBulkDeleteButton();
+        });
+
+        $('#btn-bulk-delete-cpl').on('click', function() {
+            let prodiVal = $('#filter-prodi').val();
+            let kurikulumVal = $('#filter-kurikulum').val();
+            let prodiName = $('#filter-prodi option:selected').text();
+            let kurikulumName = $('#filter-kurikulum option:selected').text();
+
+            if (!prodiVal || !kurikulumVal) {
+                Swal.fire('Perhatian', 'Silakan pilih Program Studi dan Kurikulum terlebih dahulu.', 'warning');
+                return;
+            }
+
+            Swal.fire({
+                title: "Hapus CPL Kurikulum Ini?",
+                html: `Apakah Anda yakin ingin menghapus <b>SEMUA</b> CPL untuk:<br><b>Prodi:</b> ${prodiName}<br><b>Kurikulum:</b> ${kurikulumName}?<br><br><span class="text-danger fw-bold">Tindakan ini tidak dapat dibatalkan!</span>`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Ya, Hapus Semua!",
+                cancelButtonText: "Batal",
+                customClass: {
+                    confirmButton: "btn btn-danger",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('cpl.bulk_delete') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id_prodi: prodiVal,
+                            id_kurikulum: kurikulumVal
+                        },
+                        beforeSend: function() {
+                            Swal.fire({
+                                title: 'Menghapus Data CPL...',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            });
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                text: response.message || "Data CPL berhasil dihapus.",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            });
+                            $('#table-cpl').DataTable().ajax.reload(null, false);
+                        },
+                        error: function(xhr) {
+                            var msg = xhr.responseJSON?.message || "Terjadi kesalahan saat menghapus data CPL.";
+                            Swal.fire("Error!", msg, "error");
+                        }
+                    });
+                }
+            });
         });
     });
 </script>
@@ -168,7 +245,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/admin/cpl/' + id,
+                    url: '{{ url('akademik/cpl') }}/' + id,
                     type: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
@@ -197,7 +274,8 @@
                         $('#table-cpl').DataTable().ajax.reload(null, false);
                     },
                     error: function(xhr) {
-                        Swal.fire("Error!", "Terjadi kesalahan saat menghapus data.", "error");
+                        var msg = xhr.responseJSON?.message || "Terjadi kesalahan saat menghapus data.";
+                        Swal.fire("Error!", msg, "error");
                     }
                 });
             }

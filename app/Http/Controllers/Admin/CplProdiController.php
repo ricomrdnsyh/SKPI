@@ -168,8 +168,13 @@ class CplProdiController extends Controller
     public function destroy($id)
     {
         $row = DB::table('cpl_prodi')->where('id_cpl', $id)->first();
-        if (!$row) abort(404);
-        $cpl = CplProdi::hydrate([(array) $row])->first();
+        if (!$row) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Data CPL tidak ditemukan.'], 404);
+            }
+            abort(404);
+        }
+
         $user = Auth::user();
 
         if (in_array($user->role, ['baak', 'fakultas', 'bak_fakultas'])) {
@@ -181,15 +186,59 @@ class CplProdiController extends Controller
 
         $allowedProdis = $this->getAllowedProdiIds($user);
 
-        if ($allowedProdis !== null && !in_array($cpl->id_prodi, $allowedProdis)) {
+        if ($allowedProdis !== null && !in_array($row->id_prodi, $allowedProdis)) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak untuk prodi ini.'], 403);
+            }
             abort(403, 'Akses ditolak.');
         }
 
-        $cpl->delete();
+        DB::table('cpl_prodi')->where('id_cpl', $id)->delete();
+
+        // Clear CPL cache
+        \Illuminate\Support\Facades\Cache::forget("cpl:prodi:{$row->id_prodi}:kur:{$row->id_kurikulum}");
+
         if (request()->ajax()) {
             return response()->json(['success' => true, 'message' => 'Data CPL Prodi berhasil dihapus.']);
         }
         return redirect()->route('cpl.index')->with('success', 'Data CPL Prodi berhasil dihapus.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'Hanya Admin yang dapat menghapus data CPL secara massal.'], 403);
+        }
+
+        $request->validate([
+            'id_prodi' => 'required',
+            'id_kurikulum' => 'required',
+        ]);
+
+        $idProdi = $request->id_prodi;
+        $idKurikulum = $request->id_kurikulum;
+
+        $count = DB::table('cpl_prodi')
+            ->where('id_prodi', $idProdi)
+            ->where('id_kurikulum', $idKurikulum)
+            ->count();
+
+        if ($count === 0) {
+            return response()->json(['success' => false, 'message' => 'Tidak ada data CPL pada kurikulum dan prodi yang dipilih.'], 404);
+        }
+
+        DB::table('cpl_prodi')
+            ->where('id_prodi', $idProdi)
+            ->where('id_kurikulum', $idKurikulum)
+            ->delete();
+
+        \Illuminate\Support\Facades\Cache::forget("cpl:prodi:{$idProdi}:kur:{$idKurikulum}");
+
+        return response()->json([
+            'success' => true,
+            'message' => "Berhasil menghapus {$count} data CPL untuk kurikulum yang dipilih."
+        ]);
     }
 
     public function datatable(Request $request)
