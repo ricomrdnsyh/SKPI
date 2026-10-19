@@ -126,7 +126,10 @@ class SkpiService
         $prodi = $mahasiswa->programStudi;
         $fakultas = $prodi->fakultas ?? null;
         
-        $universitas = \App\Models\Universitas::first();
+        $universitasModel = Cache::remember('master:universitas:first', 3600, function () {
+            return \App\Models\Universitas::first();
+        });
+        $universitas = $universitasModel ? clone $universitasModel : null;
         if ($pengajuan->sk_akreditasi) {
             if ($universitas) {
                 $universitas->sk_akreditasi = $pengajuan->sk_akreditasi;

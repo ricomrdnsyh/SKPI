@@ -415,32 +415,127 @@
 
             $('#btn-download-zip').on('click', function(e) {
                 e.preventDefault();
-                var url = '{{ route('rekapitulasi.download_zip') }}?';
-                var params = new URLSearchParams();
-                if ($('#filter-fakultas').length) {
-                    params.append('fakultas_filter', $('#filter-fakultas').val() || '');
-                }
-                params.append('prodi_filter', $('#filter-prodi').val() || '');
-                params.append('tahun_akademik_filter', $('#filter-tahun').val() || '');
 
-                // SweetAlert for processing
+                var payload = {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    prodi_filter: $('#filter-prodi').val() || '',
+                    tahun_akademik_filter: $('#filter-tahun').val() || ''
+                };
+                if ($('#filter-fakultas').length) {
+                    payload.fakultas_filter = $('#filter-fakultas').val() || '';
+                }
+
                 Swal.fire({
-                    title: 'Memproses ZIP',
-                    text: 'Sedang men-generate PDF dan mengompresnya. Mohon tunggu...',
+                    title: 'Menyiapkan Berkas SKPI...',
+                    html: `
+                        <div class="my-4">
+                            <div class="progress mb-3" style="height: 22px; border-radius: 8px; background-color: #f1f1f4;">
+                                <div id="zip-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%; font-weight: bold;">0%</div>
+                            </div>
+                            <div id="zip-progress-text" class="text-gray-700 fs-7 fw-semibold">Memeriksa daftar data mahasiswa...</div>
+                        </div>
+                    `,
                     icon: 'info',
+                    showConfirmButton: false,
                     allowOutsideClick: false,
                     didOpen: () => {
-                        Swal.showLoading();
+                        // 1. Inisialisasi Batch
+                        $.ajax({
+                            url: '{{ route('rekapitulasi.zip.init') }}',
+                            type: 'POST',
+                            data: payload,
+                            dataType: 'json',
+                            success: function(initRes) {
+                                if (initRes.status !== 'success') {
+                                    Swal.fire('Gagal', initRes.message || 'Gagal memulai proses.', 'error');
+                                    return;
+                                }
+
+                                var batchId = initRes.batch_id;
+                                var total = initRes.total;
+                                var chunkSize = initRes.chunk_size || 15;
+                                var currentOffset = 0;
+
+                                $('#zip-progress-text').text(`Ditemukan ${total} berkas. Memulai render PDF...`);
+
+                                function processNextChunk() {
+                                    $.ajax({
+                                        url: '{{ route('rekapitulasi.zip.process') }}',
+                                        type: 'POST',
+                                        data: {
+                                            _token: $('meta[name="csrf-token"]').attr('content'),
+                                            batch_id: batchId,
+                                            offset: currentOffset,
+                                            limit: chunkSize
+                                        },
+                                        dataType: 'json',
+                                        success: function(procRes) {
+                                            if (procRes.status !== 'success') {
+                                                Swal.fire('Gagal', 'Terjadi kesalahan saat memproses data.', 'error');
+                                                return;
+                                            }
+
+                                            currentOffset = procRes.current;
+                                            var pct = procRes.percent;
+                                            $('#zip-progress-bar').css('width', pct + '%').text(pct + '%');
+                                            $('#zip-progress-text').text(`Memproses berkas ${Math.min(currentOffset, total)} dari ${total} (${pct}%)...`);
+
+                                            if (procRes.done || currentOffset >= total) {
+                                                // 3. Finalize & Kompres ZIP
+                                                $('#zip-progress-text').text('Mengompresi berkas ke dalam arsip ZIP...');
+                                                $.ajax({
+                                                    url: '{{ route('rekapitulasi.zip.finalize') }}',
+                                                    type: 'POST',
+                                                    data: {
+                                                        _token: $('meta[name="csrf-token"]').attr('content'),
+                                                        batch_id: batchId
+                                                    },
+                                                    dataType: 'json',
+                                                    success: function(finalRes) {
+                                                        if (finalRes.status === 'success') {
+                                                            $('#zip-progress-bar').css('width', '100%').text('100%').removeClass('bg-primary').addClass('bg-success');
+                                                            $('#zip-progress-text').text('Selesai! Mengunduh berkas ZIP...');
+
+                                                            window.location.href = finalRes.download_url;
+
+                                                            setTimeout(function() {
+                                                                Swal.fire({
+                                                                    title: 'Berhasil!',
+                                                                    text: `Berhasil mengemas ${finalRes.total_files} berkas PDF SKPI ke dalam ZIP. Unduhan akan otomatis berjalan.`,
+                                                                    icon: 'success',
+                                                                    timer: 3500,
+                                                                    showConfirmButton: true
+                                                                });
+                                                            }, 1500);
+                                                        } else {
+                                                            Swal.fire('Gagal', finalRes.message || 'Gagal membuat file ZIP.', 'error');
+                                                        }
+                                                    },
+                                                    error: function(xhr) {
+                                                        var msg = xhr.responseJSON?.message || 'Gagal menyelesaikan kompresi ZIP.';
+                                                        Swal.fire('Gagal', msg, 'error');
+                                                    }
+                                                });
+                                            } else {
+                                                processNextChunk();
+                                            }
+                                        },
+                                        error: function(xhr) {
+                                            var msg = xhr.responseJSON?.message || 'Gagal memproses batch PDF.';
+                                            Swal.fire('Gagal', msg, 'error');
+                                        }
+                                    });
+                                }
+
+                                processNextChunk();
+                            },
+                            error: function(xhr) {
+                                var msg = xhr.responseJSON?.message || 'Gagal menyiapkan data unduhan.';
+                                Swal.fire('Perhatian', msg, 'warning');
+                            }
+                        });
                     }
                 });
-
-                // Redirect to download URL
-                window.location.href = url + params.toString();
-
-                // Hide Swal after a few seconds (since download triggers in browser)
-                setTimeout(function() {
-                    Swal.close();
-                }, 5000);
             });
         });
     </script>

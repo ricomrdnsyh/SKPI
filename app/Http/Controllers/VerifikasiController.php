@@ -117,8 +117,13 @@ class VerifikasiController extends Controller
         });
     }
 
-    public function detail(int $id_pengajuan)
+    public function detail($id_pengajuan)
     {
+        if (!is_numeric($id_pengajuan)) {
+            abort(404, 'ID Pengajuan tidak valid.');
+        }
+        $id_pengajuan = (int) $id_pengajuan;
+
         $user = Auth::user();
         $allowedProdis = $this->getAllowedProdiIds($user);
 

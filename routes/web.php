@@ -48,10 +48,14 @@ Route::any('/sso/logout/{sessionId}', [SsoController::class, 'logout'])->name('s
 Route::get('/verify/skpi/{hash}', [SkpiController::class, 'verify'])->name('skpi.verify');
 Route::middleware(['auth:web,mahasiswa'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/skpi/{id_pengajuan}/print', [SkpiController::class, 'print'])->name('bak_fakultas.skpi.print');
+    Route::get('/skpi/{id_pengajuan}/print', [SkpiController::class, 'print'])->whereNumber('id_pengajuan')->name('bak_fakultas.skpi.print');
     Route::middleware('role:admin,bak_fakultas')->group(function () {
         Route::get('/rekapitulasi/data', [RekapitulasiController::class, 'datatable'])->name('rekapitulasi.datatable');
         Route::get('/rekapitulasi/download-zip', [RekapitulasiController::class, 'downloadZip'])->name('rekapitulasi.download_zip');
+        Route::post('/rekapitulasi/zip/init', [RekapitulasiController::class, 'initBatchZip'])->name('rekapitulasi.zip.init');
+        Route::post('/rekapitulasi/zip/process', [RekapitulasiController::class, 'processBatchZip'])->name('rekapitulasi.zip.process');
+        Route::post('/rekapitulasi/zip/finalize', [RekapitulasiController::class, 'finalizeBatchZip'])->name('rekapitulasi.zip.finalize');
+        Route::get('/rekapitulasi/zip/download/{batchId}', [RekapitulasiController::class, 'downloadBatchZip'])->name('rekapitulasi.zip.download');
         Route::get('/rekapitulasi', [RekapitulasiController::class, 'index'])->name('rekapitulasi.index');
     });
 
@@ -85,14 +89,14 @@ Route::middleware(['auth:web,mahasiswa'])->group(function () {
         Route::middleware('role:bak_fakultas,admin')->group(function () {
             Route::get('/dashboard', [VerifikasiController::class, 'dashboard'])->name('dashboard');
             Route::get('/data', [VerifikasiController::class, 'datatable'])->name('datatable');
-            Route::get('/verifikasi/{id_pengajuan}', [VerifikasiController::class, 'detail'])->name('verifikasi.detail');
-            Route::post('/verifikasi/{id_pengajuan}/publish', [VerifikasiController::class, 'publish'])->name('verifikasi.publish');
-            Route::post('/verifikasi/{id_pengajuan}/cancel-print', [VerifikasiController::class, 'cancelPrint'])->name('verifikasi.cancel_print');
-            Route::post('/verifikasi/{id_pengajuan}/checklist', [VerifikasiController::class, 'submitChecklist'])->name('verifikasi.checklist');
+            Route::get('/verifikasi/{id_pengajuan}', [VerifikasiController::class, 'detail'])->whereNumber('id_pengajuan')->name('verifikasi.detail');
+            Route::post('/verifikasi/{id_pengajuan}/publish', [VerifikasiController::class, 'publish'])->whereNumber('id_pengajuan')->name('verifikasi.publish');
+            Route::post('/verifikasi/{id_pengajuan}/cancel-print', [VerifikasiController::class, 'cancelPrint'])->whereNumber('id_pengajuan')->name('verifikasi.cancel_print');
+            Route::post('/verifikasi/{id_pengajuan}/checklist', [VerifikasiController::class, 'submitChecklist'])->whereNumber('id_pengajuan')->name('verifikasi.checklist');
             Route::post('/tugas-akhir/{id}/approve', [VerifikasiController::class, 'approveTugasAkhir'])->name('tugas_akhir.approve');
             Route::post('/tugas-akhir/{id}/reject', [VerifikasiController::class, 'rejectTugasAkhir'])->name('tugas_akhir.reject');
-            Route::post('/pengajuan-cetak/{id_pengajuan}/approve', [VerifikasiController::class, 'approvePengajuanCetak'])->name('pengajuan_cetak.approve');
-            Route::post('/pengajuan-cetak/{id_pengajuan}/reject', [VerifikasiController::class, 'rejectPengajuanCetak'])->name('pengajuan_cetak.reject');
+            Route::post('/pengajuan-cetak/{id_pengajuan}/approve', [VerifikasiController::class, 'approvePengajuanCetak'])->whereNumber('id_pengajuan')->name('pengajuan_cetak.approve');
+            Route::post('/pengajuan-cetak/{id_pengajuan}/reject', [VerifikasiController::class, 'rejectPengajuanCetak'])->whereNumber('id_pengajuan')->name('pengajuan_cetak.reject');
             Route::post('/{type}/{id}/approve', [VerifikasiController::class, 'approveItem'])->name('data.approve');
             Route::post('/{type}/{id}/reject', [VerifikasiController::class, 'rejectItem'])->name('data.reject');
         });

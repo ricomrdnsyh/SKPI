@@ -38,7 +38,13 @@ class ClientSSO
 
     public function getTranskrip(string $nim): array
     {
-        return $this->fetchData('transkrip', ['nim' => $nim]);
+        return \Illuminate\Support\Facades\Cache::remember("sso:transkrip:{$nim}", 86400, function () use ($nim) {
+            try {
+                return $this->fetchData('transkrip', ['nim' => $nim]);
+            } catch (\Throwable $e) {
+                return [];
+            }
+        });
     }
 
     public function getKaryawanFromApi(): array
@@ -75,8 +81,8 @@ class ClientSSO
         /** @var Response $response */
         $response = Http::withHeaders($headers)
             ->withoutVerifying()
-            ->timeout(60)
-            ->connectTimeout(10)
+            ->timeout(15)
+            ->connectTimeout(5)
             ->post($url, $payload);
 
         if ($response->status() === 401) {
@@ -87,8 +93,8 @@ class ClientSSO
             /** @var Response $response */
             $response = Http::withHeaders($headers)
                 ->withoutVerifying()
-                ->connectTimeout(30)
-                ->timeout(120)
+                ->connectTimeout(5)
+                ->timeout(15)
                 ->post($url, $payload);
         }
 
